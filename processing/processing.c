@@ -9,7 +9,7 @@
 // renderer: Renderer to draw on.
 // colored: Texture that contains the colored image.
 // grayscale: Texture that contains the grayscale image.
-void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale)
+void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, int angle)
 {
     SDL_Event event;
     SDL_Texture* t = grayscale;
@@ -26,8 +26,9 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale)
 
             // If the window is resized, updates and redraws the diagonals.
             case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_RESIZED)
-                    draw(renderer, t);
+                if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
+                    draw(renderer, t, angle);
+                }
                 break;
         }
     }
@@ -45,7 +46,7 @@ int processing_image(int argc, char** argv)
 
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1000, 1000,
-            SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
+            SDL_WINDOW_SHOWN);
     if (window == NULL)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
@@ -63,6 +64,9 @@ int processing_image(int argc, char** argv)
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
 
+    // - Rotate image
+    int angle = 45;
+
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayT = SDL_CreateTextureFromSurface(renderer, s);
 
@@ -70,7 +74,7 @@ int processing_image(int argc, char** argv)
     SDL_FreeSurface(s);
 
     // - Dispatch the events.
-    event_loop(renderer, grayT);
+    event_loop(renderer, grayT, angle);
 
     // - Destroy the objects.
     SDL_DestroyTexture(grayT);
