@@ -65,7 +65,7 @@ void write(char* filename,char* result)
     fclose(output_file);
 }
 
-void read(char* filename,char* buffer, int len)
+void read(char* filename,char* buffer)
 {
     
     FILE* input_file = fopen(filename , "r+");
@@ -73,7 +73,7 @@ void read(char* filename,char* buffer, int len)
         errx(1,"fopen");
     }
     
-    fread(buffer, len+1, 1, input_file);
+    fread(buffer, strlen(buffer)+1, 1, input_file);
     fclose(input_file);
 }
 
