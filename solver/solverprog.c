@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "solver.h"
 
 size_t x_of(size_t i);
 size_t y_of(size_t i);
