@@ -2,14 +2,14 @@
 #include <stdlib.h>
 #include <err.h>
 #include <time.h>
-#include <solver.h>
+#include "solver.h"
 
 int main(int argc,char** argv)
 {
 	if(argc == 1)
 		printf("solver(char* filename) => void\nsolve the sudoku of filename and save it in filename.result");
 	else if (argc == 2)
-		errx("\033[0;31m main:\n-invalid argument: solver must have just 1 argument (try ./solver to know more about) \033[0m");
+		errx(2,"\033[0;31m main:\n-invalid argument: solver must have just 1 argument (try ./solver to know more about) \033[0m");
 	
 	char grid[111];
 	char sudoku[81][10] = {{0}};
@@ -26,7 +26,7 @@ int main(int argc,char** argv)
 	initstop = clock();
 	
 	start = clock();
-	success = force(sudoku);
+	success = force(sudoku,0);
 	stop = clock();
 	
 	print(sudoku);

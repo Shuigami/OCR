@@ -132,7 +132,7 @@ void translateback(char board[81][10], char* result)
             result[j] = '\n';
             j++;
         }
-        result[j] = board[i] + 48;
+        result[j] = board[i][0] + 48;
         j++;
     }
     result[j] = 0;

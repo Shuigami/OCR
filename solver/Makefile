@@ -2,17 +2,17 @@
 
 CC = gcc
 CPPFLAGS =
-CFLAGS = -Wall -Wextra -O3 `pkg-config --cflags sdl2 SDL2_image`
+CFLAGS = -Wall -Wextra -O3
 LDFLAGS =
-LDLIBS = `pkg-config --libs sdl2 SDL2_image`
+LDLIBS =
 
-all: main
+all: solver
 
 SRC = solver.c solverprog.c tools.c
 OBJ = ${SRC:.c=.o}
-EXE = ${SRC:.c=} 
+EXE = solver 
 
-main:${OBJ}
+main: ${OBJ}
 
 .PHONY: clean
 

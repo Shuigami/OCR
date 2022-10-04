@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+size_t x_of(size_t i);
+size_t y_of(size_t i);
+size_t i_of(size_t i);
+size_t valid_numb(char s[81][10],size_t i,size_t j);
+
 //_____________________________initialisation___________________________________
 
 void fill(char s[81][10])
