@@ -83,13 +83,15 @@ void verified(char *board,char *output)
     for(size_t i = 0; i < 110; i++)
     {
         if(i == space[ispace] )
+		{
             if(board[i] != ' ')
                 errx(2,"invalid sudoku file: space missing");
-                
+		}
         else if(i == back[iback] )
+		{
             if(board[i] != '\n')
                 errx(2,"invalid sudoku file: back line missing");
-                
+		}
         else if(board[i] == ' ' || board[i] ==  '\n')
             errx(2,"invalid sudoku file: invalid numbers");
         else
@@ -108,5 +110,31 @@ void translate(char* board,char result[81][10])
     for(size_t i = 0;i<81;i++)
         if(vboard[i] != '.')
             result[i][0] = vboard[i]-48;
+}
+
+void translateback(char board[81][10], char* result)
+{
+    size_t j = 0 ; size_t ispace = 0 ; size_t iback = 0;
+    for(size_t i = 0; i<81;i++)
+    {
+        if(i == 35 || i == 72)
+        {
+            result[j] = ' ';
+            j++;
+        }
+        if(i == space[ispace] )
+        {
+            result[j] = ' ';
+            j++;
+        }
+        else if(i == back[iback] )
+        {
+            result[j] = '\n';
+            j++;
+        }
+        result[j] = board[i] + 48;
+        j++;
+    }
+    result[j] = 0;
 }
 

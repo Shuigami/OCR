@@ -6,11 +6,13 @@ CFLAGS = -Wall -Wextra -O3 `pkg-config --cflags sdl2 SDL2_image`
 LDFLAGS =
 LDLIBS = `pkg-config --libs sdl2 SDL2_image`
 
-all: solver
+all: main
 
 SRC = solver.c solverprog.c tools.c
 OBJ = ${SRC:.c=.o}
-EXE = ${SRC:.c=}
+EXE = ${SRC:.c=} 
+
+main:${OBJ}
 
 .PHONY: clean
 
