@@ -13,6 +13,7 @@ int main(int argc,char** argv)
 	
 	char grid[111];
 	char sudoku[81][10] = {{0}};
+	
 	clock_t start,stop,initstart,initstop;
 	unsigned long time,inittime;
 	char success;
@@ -32,6 +33,9 @@ int main(int argc,char** argv)
 	time = (unsigned long) difftime (stop, start);
 	inittime = (unsigned long) difftime (initstop, initstart);
 	printf("Init finished in %6.3ld millisec\n Solve finished in %6.3ld millisec\n",inittime,time);
+	
+	translateback(sudoku,grid);
+	write(argv[1],grid);
 	
 	if(success)
 		return EXIT_FAILURE;

@@ -85,15 +85,15 @@ void verified(char *board,char *output)
         if(i == space[ispace] )
 		{
             if(board[i] != ' ')
-                errx(2,"invalid sudoku file: space missing");
+                errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match \033[0m");
 		}
         else if(i == back[iback] )
 		{
             if(board[i] != '\n')
-                errx(2,"invalid sudoku file: back line missing");
+                errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match \033[0m");
 		}
         else if(board[i] == ' ' || board[i] ==  '\n')
-            errx(2,"invalid sudoku file: invalid numbers");
+            errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match \033[0m");
         else
         {
             output[j] = board[i];
