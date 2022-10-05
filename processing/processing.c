@@ -59,7 +59,9 @@ int processing_image(int argc, char** argv)
     SDL_Surface* s = load_image(argv[1]);
 
     // - Resize the window according to the size of the image.
-    SDL_SetWindowSize(window, s->w / 2, s->h /2);
+    SDL_SetWindowSize(window, s->w, s->h);
+    printf("width : %i\n", s->w);
+    printf("height : %i\n", s->h);
 
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
@@ -67,7 +69,7 @@ int processing_image(int argc, char** argv)
     // - Rotate image
     int angle = 45;
 
-    find_line(s);
+    find_lines(s);
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayT = SDL_CreateTextureFromSurface(renderer, s);

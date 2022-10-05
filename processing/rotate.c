@@ -17,13 +17,30 @@ int is_pixel_black(Uint32 pixel, SDL_PixelFormat* format, int tol, int min)
         b < g - tol || b > g + tol ||
         r < min || g < min || b < min)
     {
-        return 0;
+        return 1;
     }
-    printf("Pixel black : %i, %i, %i\n", r, g, b);
-    return 1;
+    // printf("Pixel black : %i, %i, %i\n", r, g, b);
+    return 0;
 }
 
-void find_line(SDL_Surface* s) 
+// dir= 1 => left
+//      2 => bottom right
+//      3 => bottom
+//      4 => bottom left
+
+int[] find_line(Uint32* pixels, int i, int dir)
+{
+    int j = i;
+
+    switch (dir)
+    {
+        case 1:
+            while(is_pixel_black)
+    }
+
+}
+
+void find_lines(SDL_Surface* s) 
 {
     Uint32* pixels = s->pixels;
     int len = s->w * s->h;
@@ -32,11 +49,26 @@ void find_line(SDL_Surface* s)
 
     SDL_PixelFormat* format = s->format;
 
+    int w = s->w;
+    int h = s->h;
+
+    int tol = 10;
+    int min = 100;
+
     for (int i = 0; i < len; i++)
     {
-        is_pixel_black(pixels[i], format, 10, 200);
-    }
+        if(is_pixel_black(pixels[i], format, tol, min))
+        {
+            printf("Pixels[%i] black\n", i);
 
+            if(is_pixel_black(pixels[i+1], format, tol, min))
+
+
+                    || is_pixel_black(pixels[i+w-1], format, tol, min)
+                    || is_pixel_black(pixels[i+w], format, tol, min)
+                    || is_pixel_black(pixels[i+w+1], format, tol, min))
+        }
+    }
 
     SDL_UnlockSurface(s);
 }
