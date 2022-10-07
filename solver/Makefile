@@ -6,11 +6,11 @@ CFLAGS = -Wall -Wextra -O3
 LDFLAGS =
 LDLIBS =
 
-all: solver
+all: main
 
-SRC = solver.c solverprog.c tools.c
+SRC = solverprog.c tools.c solver.c
 OBJ = ${SRC:.c=.o}
-EXE = solver 
+EXE = ${SRC:.c=}
 
 main: ${OBJ}
 

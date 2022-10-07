@@ -60,7 +60,7 @@ void write(char* filename,char* result)
         errx(1,"fopen");
     }
 
-    fwrite(result, 1, strlen(result), output_file);
+    fwrite(result, 1, 110, output_file);
     printf("Done Writing!\n");
 
     fclose(output_file);
@@ -74,27 +74,32 @@ void read(char* filename,char* buffer)
         errx(1,"fopen");
     }
     
-    fread(buffer, strlen(buffer)+1, 1, input_file);
+    fread(buffer, 110, 1, input_file);
     fclose(input_file);
 }
 
+//_____________________________________________________________________________
+
 void verified(char *board,char *output)
 {
+
     size_t j = 0 ; size_t ispace = 0 ; size_t iback = 0;
     for(size_t i = 0; i < 110; i++)
     {
         if(i == space[ispace] )
-		{
+	{
             if(board[i] != ' ')
-                errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match \033[0m");
-		}
+                errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match (unexpect number, must be ' ' at %lu) \033[0m",i);
+	ispace++;
+	}
         else if(i == back[iback] )
-		{
+	{
             if(board[i] != '\n')
-                errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match \033[0m");
-		}
+                errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match (unexpect number, must be \\n at %lu) \033[0m",i);
+	iback++;
+	}
         else if(board[i] == ' ' || board[i] ==  '\n')
-            errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match \033[0m");
+            errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match (unexpect space, must be a number at %lu)\033[0m",i);
         else
         {
             output[j] = board[i];
@@ -115,26 +120,26 @@ void translate(char* board,char result[81][10])
 
 void translateback(char board[81][10], char* result)
 {
-    size_t j = 0 ; size_t ispace = 0 ; size_t iback = 0;
+    size_t j = 0 ;
     for(size_t i = 0; i<81;i++)
     {
-        if(i == 35 || i == 72)
-        {
-            result[j] = ' ';
-            j++;
-        }
-        if(i == space[ispace] )
-        {
-            result[j] = ' ';
-            j++;
-        }
-        else if(i == back[iback] )
+	result[j] = board[i][0] + 48;
+	j++;
+        if(i == 26 || i == 53)
         {
             result[j] = '\n';
             j++;
         }
-        result[j] = board[i][0] + 48;
-        j++;
+        if((i+1)%9 == 0)
+        {
+            result[j] = '\n';
+	    j++;
+        }
+        else if((i+1)%3 == 0 && i != 0)
+        {
+            result[j] = ' ';
+	    j++;
+        }
     }
     result[j] = 0;
 }
