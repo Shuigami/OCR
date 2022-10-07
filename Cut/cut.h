@@ -1,3 +1,5 @@
 #pragma once
+#include <SDL2/SDL.h>
 
-SDL_surface* cut(SDL* surface);
+void cut(SDL_Surface* surface, SDL_Surface* L[]);
+SDL_Surface* load_image(const char* path);

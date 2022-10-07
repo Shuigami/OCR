@@ -2,36 +2,36 @@
 #include <err.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "cut.h"
 
-SDL_surface* cut(SDL_Surface* surface)
+void cut(SDL_Surface* surface, SDL_Surface* L[])
 {
     Uint32* pixels = surface->pixels;
-    int len = surface->w * surface->h;
+    //int len = surface->w * surface->h;
     if(SDL_LockSurface(surface) != 0)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
     SDL_PixelFormat* format = surface->format;
 
 
     int length = (surface->w)/9;
-    SDL_surface* L[81] = {};
-    size_t = count = 0;
+    //SDL_Surface* L[81] = {};
+    size_t count = 0;
 
     int nb_pixel = surface->w;  
 
-    for(size_t i = 0; i < nb_pixel; i+=length) 
+    for(size_t i = 0; i < (size_t)nb_pixel; i+=length) 
     {
-	    for(size_t j = 0; j < nb_pixel; j+=length)
+	    for(size_t j = 0; j < (size_t)nb_pixel; j+=length)
 	    {
-		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, length, length, 28, format);//peut etre 32
+		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, length, length, 28, format->format);//peut etre 32
+		    Uint32* pixels_tmp = surface_tmp->pixels;
 		    SDL_LockSurface(surface_tmp);
-		    Uint32* pixels_tmp;
-		    size_t pixels_tmp_count = 0;
+		    		    size_t pixels_tmp_count = 0;
 
-		    for(size_t i2 = i; i2 < i+length; i2++)
-		    {
+		    for(size_t i2 = i; i2 < i+length; i2++)//utiliser blitsurface(surface, rect(i, j, length, length), surface_tmp, NULL) pour copier chaque		    {
 			    for(size_t j2 = j; j2 < j+length; j2++)
 			    {
-				pixels_tmp[pixels_tmp_count] = pixel[i2*nb_pixel + j2];    
+				pixels_tmp[pixels_tmp_count] = pixels[i2*nb_pixel + j2];    
 				pixels_tmp_count++;
 
 
@@ -48,17 +48,23 @@ SDL_surface* cut(SDL_Surface* surface)
 			    }
 		    }
 
-		    SDL_UnlockSurface(surface_tmp)
+		    SDL_UnlockSurface(surface_tmp);
 		    L[count] = surface_tmp;
 		    count++;
 
 	    }
     }
 
-	}
-
-
     SDL_UnlockSurface(surface);
-    return L;
+    //return L;
 
 }
+
+SDL_Surface* load_image(const char* path)
+{
+    SDL_Surface* tmp = IMG_Load(path);
+    SDL_Surface* surface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_RGB888, 0);
+    SDL_FreeSurface(tmp);
+    return surface;
+}
+
