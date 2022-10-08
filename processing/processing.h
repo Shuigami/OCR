@@ -1,6 +1,6 @@
 #pragma once
 
-void find_lines(SDL_Surface* s);
+int find_lines(SDL_Surface* s, int line[][2]);
 int processing_image(int argc, char** argv);
 void draw(SDL_Renderer* renderer, SDL_Texture* texture, int angle);
 SDL_Surface* load_image(const char* path);

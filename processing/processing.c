@@ -45,7 +45,7 @@ int processing_image(int argc, char** argv)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
     // - Create a window.
-    SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1000, 1000,
+    SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
             SDL_WINDOW_SHOWN);
     if (window == NULL)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
@@ -67,9 +67,11 @@ int processing_image(int argc, char** argv)
     surface_to_grayscale(s);
 
     // - Rotate image
-    int angle = 45;
+    int angle = 0;
+    int lines[][2] = {};
 
-    find_lines(s);
+    int len = find_lines(s, lines);
+    printf("len = %i\n", len);
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayT = SDL_CreateTextureFromSurface(renderer, s);
