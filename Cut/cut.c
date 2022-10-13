@@ -6,7 +6,7 @@
 
 void cut(SDL_Surface* surface, SDL_Surface* L[])
 {
-    Uint32* pixels = surface->pixels;
+    //Uint32* pixels = surface->pixels;
     //int len = surface->w * surface->h;
     if(SDL_LockSurface(surface) != 0)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
@@ -24,15 +24,24 @@ void cut(SDL_Surface* surface, SDL_Surface* L[])
 	    for(size_t j = 0; j < (size_t)nb_pixel; j+=length)
 	    {
 		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, length, length, 28, format->format);//peut etre 32
-		    Uint32* pixels_tmp = surface_tmp->pixels;
-		    SDL_LockSurface(surface_tmp);
-		    		    size_t pixels_tmp_count = 0;
+		    //Uint32* pixels_tmp = surface_tmp->pixels;
+		    //SDL_LockSurface(surface_tmp);
+		    //size_t pixels_tmp_count = 0;
+		    
+		    SDL_Rect rect;
+		    rect.x = i;
+		    rect.y = j;
+		    rect.w = length;
+		    rect.h = length;
 
-		    for(size_t i2 = i; i2 < i+length; i2++)//utiliser blitsurface(surface, rect(i, j, length, length), surface_tmp, NULL) pour copier chaque		    {
+		    if(!SDL_BlitSurface(surface, &rect, surface_tmp, NULL))
+			printf("error");
+
+		    /*for(size_t i2 = i; i2 < i+length; i2++)//utiliser blitsurface(surface, rect(i, j, length, length), surface_tmp, NULL) pour copier chaque		    {
 			    for(size_t j2 = j; j2 < j+length; j2++)
 			    {
 				pixels_tmp[pixels_tmp_count] = pixels[i2*nb_pixel + j2];    
-				pixels_tmp_count++;
+				pixels_tmp_count++;*/
 
 
 				/*if(i != 0 || j != 0)
@@ -43,17 +52,18 @@ void cut(SDL_Surface* surface, SDL_Surface* L[])
 					pixels_tmp[i2*nb_pixel + (j2/j)] = pixel[i2*nb_pixel + j2];    //changer a droite pour n'avoir que pixels_tmp[count]=
 				else
 					pixels_tmp[i2*nb_pixel + j2] = pixel[i2*nb_pixel + j2];*/
-
-
-			    }
-		    }
-
-		    SDL_UnlockSurface(surface_tmp);
+		    
+		    
+		    //SDL_UnlockSurface(surface_tmp);
 		    L[count] = surface_tmp;
 		    count++;
 
-	    }
-    }
+
+
+		}
+	}
+
+		    
 
     SDL_UnlockSurface(surface);
     //return L;
