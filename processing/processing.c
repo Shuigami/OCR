@@ -65,6 +65,7 @@ int processing_image(int argc, char** argv)
 
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
+    surface_to_blackORwhite(s);
 
     // - Rotate image
     int angle = 0;
@@ -90,4 +91,3 @@ int processing_image(int argc, char** argv)
 
     return EXIT_SUCCESS;
 }
-
