@@ -56,7 +56,7 @@ void surface_to_grayscale(SDL_Surface* surface)
 Uint8 get_gray(Uint32 pixel_color, SDL_PixelFormat* format)
 {
   Uint8 c, _ , _;
-  SDL_GetRGB(pixel_color, format, &c, &_, &_);
+  SDL_GetRGB(pixel_color, format, &c, NULL, NULL);
   return c
 }
 
