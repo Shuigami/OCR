@@ -71,8 +71,8 @@ int processing_image(int argc, char** argv)
     int angle = 0;
     int lines[][2] = {};
 
-    int len = find_lines(s, lines);
-    printf("len = %i\n", len);
+    //int len = find_lines(s, lines);
+    //printf("len = %i\n", len);
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayT = SDL_CreateTextureFromSurface(renderer, s);

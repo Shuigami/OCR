@@ -55,9 +55,9 @@ void surface_to_grayscale(SDL_Surface* surface)
 
 Uint8 get_gray(Uint32 pixel_color, SDL_PixelFormat* format)
 {
-  Uint8 c, _ , _;
-  SDL_GetRGB(pixel_color, format, &c, NULL, NULL);
-  return c
+  Uint8 c;
+  SDL_GetRGB(pixel_color, format, &c, &c, &c);
+  return c;
 }
 
 void surface_to_blackORwhite(SDL_Surface* surface)
@@ -69,20 +69,21 @@ void surface_to_blackORwhite(SDL_Surface* surface)
 
   SDL_PixelFormat* format = surface->format;
 
-  Uint8 black , white , midgray , save
+  Uint8 black , white , midgray , save;
   for (int i = 0; i < len; i++)
+  {
       midgray = (black - white)/2 + white;
-      save = get_gray(pixels[i],format)
+      save = get_gray(pixels[i],format);
       if(save <= midgray)
       {
         pixels[i] = SDL_MapRGB(format, 0, 0, 0);
-        white = save
+        white = save;
       }
       else
       {
         pixels[i] = SDL_MapRGB(format, 255, 255, 255);
-        black = save
+        black = save;
       }
-
+  }
   SDL_UnlockSurface(surface);
 }
