@@ -63,7 +63,7 @@ Uint8 get_gray(Uint32 pixel_color, SDL_PixelFormat* format)
 void black_or_white(Uint8 black,Uint8 white,Uint32* pixels,SDL_PixelFormat* format ,int x,int y,int width, int height)
 {
       Uint8 midgray = (black - white)/2 + white;
-      Uint8 save = get_gray(pixels[i],format);
+      Uint8 save = get_gray(pixels[x+y*width],format);
 
       if(save <= midgray)
       {
