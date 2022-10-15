@@ -67,12 +67,12 @@ void black_or_white(Uint8 black,Uint8 white,Uint32* pixels,SDL_PixelFormat* form
 
       if(save <= midgray)
       {
-        pixels[i] = SDL_MapRGB(format, 0, 0, 0);
+        pixels[x+y*width] = SDL_MapRGB(format, 0, 0, 0);
         white = save;
       }
       else
       {
-        pixels[i] = SDL_MapRGB(format, 255, 255, 255);
+        pixels[x+y*width] = SDL_MapRGB(format, 255, 255, 255);
         black = save;
       }
 
