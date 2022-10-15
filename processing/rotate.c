@@ -25,6 +25,8 @@ int is_pixel_black(Uint32 pixel, SDL_PixelFormat* format, int tol, int min)
     return 0;
 }
 
+SDL_Surface* persepective_transform(SDL_Surface* s,)
+
 int find_lines(SDL_Surface* s, int line[][2])
 {
     Uint32* pixels = s->pixels;
@@ -38,57 +40,7 @@ int find_lines(SDL_Surface* s, int line[][2])
     int len = w * h;
     printf("len = %i\n", len);
 
-    int R = sqrt(w*w + h*h);
-    printf("R = %i\n", R);
+    
 
-    int tol = 10;
-    int min = 10;
-
-    int blackPixels[] = {};
-    int blackIndex = 0;
-
-    // Get all black pixels
-    for(int i = 0; i < len; i++)
-    {
-        if(is_pixel_black(pixels[i], format, tol, min))
-        {
-            // printf("Pixels[%i] is black \n", i);
-            blackPixels[blackIndex] = i;
-            blackIndex++;
-        }
-    }
-
-    int i = 0;
-
-    int M[][180] = {};
-
-    while(i <= blackIndex)
-    {
-        int x = i / w;
-        int y = i % w;
-
-        for(int t = 0; t < 180; t++)
-        {
-            int p = x * sin(t * (M_PI/180)) + y * cos(t * (M_PI/180));
-            M[p+R][t] += 1;
-        }
-
-        i++;
-    }
-
-    int maxV = 0;
-
-    for(int j = 0; j < 2*R; j++)
-    {
-        for(int k = 0; i < 180; k++)
-        {
-            if(M[j][k] > maxV)
-            {
-                maxV = M[j][k];
-            }
-        }
-    }
-
-    SDL_UnlockSurface(s);
     return 0;
 }
