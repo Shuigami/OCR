@@ -82,7 +82,7 @@ void black_or_white(Uint8 black,Uint8 white,Uint32* pixels,SDL_PixelFormat* form
         black_or_white(black,white,pixels,format,x,y+1,width,height);
 }
 
-void surface_to_blackORwhite(SDL_Surface* surface)
+void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 {
   Uint32* pixels = surface->pixels;
   int width = surface->w;
@@ -94,6 +94,68 @@ void surface_to_blackORwhite(SDL_Surface* surface)
 
   black_or_white(0,255,pixels,format,0,0,width,height);
 
-
   SDL_UnlockSurface(surface);
+}
+
+void surface_to_simple_blackORwhite(SDL_Surface* surface)
+{
+    Uint32* pixels = surface->pixels;
+    int len = surface->w * surface->h;
+    if(SDL_LockSurface(surface) != 0)
+        errx(EXIT_FAILURE, "%s", SDL_GetError());
+
+    SDL_PixelFormat* format = surface->format;
+
+    for (int i = 0; i < len; i++)
+    {
+      if (get_gray(pixels[i],format) <= 127)
+        pixels[i] = SDL_MapRGB(format, 0, 0, 0);
+      else if (get_gray(pixels[i],format) <= 127)
+        pixels[i] = SDL_MapRGB(format, 255, 255, 255);
+    }
+
+    SDL_UnlockSurface(surface);
+}
+
+void surface_to_blackORwhite(SDL_Surface* surface)
+{
+    Uint32* pixels = surface->pixels;
+    int width = surface->w;
+    int height = surface->h;
+    if(SDL_LockSurface(surface) != 0)
+        errx(EXIT_FAILURE, "%s", SDL_GetError());
+
+    SDL_PixelFormat* format = surface->format;
+
+
+    Uint8 black = 255;
+    Uint8 white = 0;
+    for (int x = 0; x < len; x++)
+    {
+      for (int y = 0; y < len; y++)
+      {
+
+        Uint8 midgray = (black - white)/2 + white;
+        Uint8 save = get_gray(pixels[x+y*width],format);
+
+        if(save <= midgray)
+        {
+          pixels[x+y*width] = SDL_MapRGB(format, 0, 0, 0);
+          white = save;
+        }
+        else
+        {
+          pixels[x+y*width] = SDL_MapRGB(format, 255, 255, 255);
+          black = save;
+        }
+
+        if (x < width)
+          black_or_white(black,white,pixels,format,x+1,y,width,height);
+        if (y < height)
+          black_or_white(black,white,pixels,format,x,y+1,width,height);
+
+      }
+    }
+
+    SDL_UnlockSurface(surface);
 }
