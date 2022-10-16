@@ -130,9 +130,9 @@ void surface_to_blackORwhite(SDL_Surface* surface)
 
     Uint8 black = 255;
     Uint8 white = 0;
-    for (int x = 0; x < len; x++)
+    for (int x = 0; x < width; x++)
     {
-      for (int y = 0; y < len; y++)
+      for (int y = 0; y < height; y++)
       {
 
         Uint8 midgray = (black - white)/2 + white;
