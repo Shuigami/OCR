@@ -107,7 +107,7 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 
   SDL_PixelFormat* format = surface->format;
 
-  Uint8 min_max[2] = get_max_and_min(pixels,format);
+  Uint8 *min_max = get_max_and_min(pixels,format,width*height);
 
   for(int x = 0;x < width-1;x++)
     black_or_white(min_max[0],min_max[1],pixels,format,x,0,width,height);
@@ -124,7 +124,8 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
 
     SDL_PixelFormat* format = surface->format;
 
-    Uint8 min_max[2] = get_max_and_min(pixels,format);
+    Uint8 *min_max = get_max_and_min(pixels,format,len);
+
     Uint8 mid = (min_max[1] - min_max[0])/2 + min_max[0];
 
     for (int i = 0; i < len; i++)
@@ -148,7 +149,7 @@ void surface_to_blackORwhite(SDL_Surface* surface)
 
     SDL_PixelFormat* format = surface->format;
 
-    Uint8 min_max[2] = get_max_and_min(pixels,format);
+    Uint8 *min_max = get_max_and_min(pixels,format,width*height);
 
 
     for (int x = 0; x < width-1; x++)
