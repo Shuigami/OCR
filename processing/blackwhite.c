@@ -66,7 +66,9 @@ Uint8* get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len)
   Uint8 max = 0;
   for (int i = 0; i < len; i++)
   {
+    printf("boucle getmaxmin\n");
     Uint8 curr = get_gray(pixels[i],format);
+    printf("get cell getmaxmin\n");
     if (curr < min)
       min = curr;
     if (curr > max)
@@ -75,6 +77,35 @@ Uint8* get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len)
   Uint8 min_max[2] = {min,max};
   return &min_max;
 }
+
+void surface_to_simple_blackORwhite(SDL_Surface* surface)
+{
+    Uint32* pixels = surface->pixels;
+    int len = surface->w * surface->h;
+    if(SDL_LockSurface(surface) != 0)
+        errx(EXIT_FAILURE, "%s", SDL_GetError());
+
+    SDL_PixelFormat* format = surface->format;
+
+    printf("before getmaxmin\n");
+    Uint8 *min_max = get_max_and_min(pixels,format,len);
+    printf("after getmaxmin\n");
+
+    Uint8 mid = (min_max[1] - min_max[0])/2 + min_max[0];
+    printf("cell get getmaxmin\n");
+
+    for (int i = 0; i < len; i++)
+    {
+      printf("boucle\n");
+      if (get_gray(pixels[i],format) <= mid)
+        pixels[i] = SDL_MapRGB(format, 0, 0, 0);
+      else if (get_gray(pixels[i],format) > mid)
+        pixels[i] = SDL_MapRGB(format, 255, 255, 255);
+    }
+
+    SDL_UnlockSurface(surface);
+}
+
 
 void black_or_white(Uint8 black,Uint8 white,Uint32* pixels,SDL_PixelFormat* format ,int x,int y,int width, int height)
 {
@@ -115,29 +146,6 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
   SDL_UnlockSurface(surface);
 }
 
-void surface_to_simple_blackORwhite(SDL_Surface* surface)
-{
-    Uint32* pixels = surface->pixels;
-    int len = surface->w * surface->h;
-    if(SDL_LockSurface(surface) != 0)
-        errx(EXIT_FAILURE, "%s", SDL_GetError());
-
-    SDL_PixelFormat* format = surface->format;
-
-    Uint8 *min_max = get_max_and_min(pixels,format,len);
-
-    Uint8 mid = (min_max[1] - min_max[0])/2 + min_max[0];
-
-    for (int i = 0; i < len; i++)
-    {
-      if (get_gray(pixels[i],format) <= mid)
-        pixels[i] = SDL_MapRGB(format, 0, 0, 0);
-      else if (get_gray(pixels[i],format) > mid)
-        pixels[i] = SDL_MapRGB(format, 255, 255, 255);
-    }
-
-    SDL_UnlockSurface(surface);
-}
 
 void surface_to_blackORwhite(SDL_Surface* surface)
 {
