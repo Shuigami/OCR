@@ -61,7 +61,7 @@ Uint8 get_gray(Uint32 pixel_color, SDL_PixelFormat* format)
 }
 
 void black_or_white(Uint8 black,Uint8 white,Uint32* pixels,SDL_PixelFormat* format ,int x,int y,int width, int height)
-{
+{     
       Uint8 midgray = (black - white)/2 + white;
       Uint8 save = get_gray(pixels[x+y*width],format);
 
@@ -76,10 +76,9 @@ void black_or_white(Uint8 black,Uint8 white,Uint32* pixels,SDL_PixelFormat* form
         black = save;
       }
 
-      if (x < width)
-        black_or_white(black,white,pixels,format,x+1,y,width,height);
-      if (y < height)
+      if (y < height-1)
         black_or_white(black,white,pixels,format,x,y+1,width,height);
+
 }
 
 void surface_to_blackORwhite_Rec(SDL_Surface* surface)
@@ -92,7 +91,8 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 
   SDL_PixelFormat* format = surface->format;
 
-  black_or_white(0,255,pixels,format,0,0,width,height);
+  for(int x = 0;x < width-1;x++)
+    black_or_white(0,255,pixels,format,x,0,width,height);
 
   SDL_UnlockSurface(surface);
 }
@@ -110,7 +110,7 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
     {
       if (get_gray(pixels[i],format) <= 127)
         pixels[i] = SDL_MapRGB(format, 0, 0, 0);
-      else if (get_gray(pixels[i],format) <= 127)
+      else if (get_gray(pixels[i],format) > 127)
         pixels[i] = SDL_MapRGB(format, 255, 255, 255);
     }
 
@@ -130,9 +130,9 @@ void surface_to_blackORwhite(SDL_Surface* surface)
 
     Uint8 black = 255;
     Uint8 white = 0;
-    for (int x = 0; x < width; x++)
+    for (int x = 0; x < width-1; x++)
     {
-      for (int y = 0; y < height; y++)
+      for (int y = 0; y < height-1; y++)
       {
 
         Uint8 midgray = (black - white)/2 + white;
@@ -147,13 +147,7 @@ void surface_to_blackORwhite(SDL_Surface* surface)
         {
           pixels[x+y*width] = SDL_MapRGB(format, 255, 255, 255);
           black = save;
-        }
-
-        if (x < width)
-          black_or_white(black,white,pixels,format,x+1,y,width,height);
-        if (y < height)
-          black_or_white(black,white,pixels,format,x,y+1,width,height);
-
+	}
       }
     }
 

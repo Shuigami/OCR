@@ -65,16 +65,16 @@ int processing_image(int argc, char** argv)
 
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
-    switch (argv[2]) {
-      case "1":
+    switch (atoi(argv[2])) {
+      case 3:
         surface_to_blackORwhite_Rec(s);
         break;
 
-      case "2":
+      case 1:
         surface_to_simple_blackORwhite(s);
         break;
 
-      case "3":
+      case 2:
         surface_to_blackORwhite(s);
         break;
     }
