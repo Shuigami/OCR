@@ -92,7 +92,7 @@ void black_or_white(Uint8 black,Uint8 white,Uint32* pixels,SDL_PixelFormat* form
         black = save;
       }
 
-      if (y < height-1)
+      if (y < height)
         black_or_white(black,white,pixels,format,x,y+1,width,height);
 
 }
@@ -109,7 +109,7 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 
   Uint8 *min_max = get_max_and_min(pixels,format,width*height);
 
-  for(int x = 0;x < width-1;x++)
+  for(int x = 0;x < width;x++)
     black_or_white(min_max[0],min_max[1],pixels,format,x,0,width,height);
 
   SDL_UnlockSurface(surface);
