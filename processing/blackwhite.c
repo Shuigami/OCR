@@ -60,22 +60,16 @@ Uint8 get_gray(Uint32 pixel_color, SDL_PixelFormat* format)
   return c;
 }
 
-Uint8* get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len)
+void get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len,Uint8 *min,Uint8 *max)
 {
-  Uint8 min = 255;
-  Uint8 max = 0;
   for (int i = 0; i < len; i++)
   {
-    printf("boucle getmaxmin\n");
     Uint8 curr = get_gray(pixels[i],format);
-    printf("get cell getmaxmin\n");
     if (curr < min)
       min = curr;
     if (curr > max)
       max = curr;
   }
-  Uint8 min_max[2] = {min,max};
-  return &min_max;
 }
 
 void surface_to_simple_blackORwhite(SDL_Surface* surface)
@@ -87,16 +81,13 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
 
     SDL_PixelFormat* format = surface->format;
 
-    printf("before getmaxmin\n");
-    Uint8 *min_max = get_max_and_min(pixels,format,len);
-    printf("after getmaxmin\n");
-
-    Uint8 mid = (min_max[1] - min_max[0])/2 + min_max[0];
-    printf("cell get getmaxmin\n");
+    Uint8 black = 0 , white = 255;
+    get_max_and_min(pixels,format,len,&white,&black);
+    
+    Uint8 mid = (black - white)/2 + white;
 
     for (int i = 0; i < len; i++)
     {
-      printf("boucle\n");
       if (get_gray(pixels[i],format) <= mid)
         pixels[i] = SDL_MapRGB(format, 0, 0, 0);
       else if (get_gray(pixels[i],format) > mid)
@@ -138,10 +129,11 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 
   SDL_PixelFormat* format = surface->format;
 
-  Uint8 *min_max = get_max_and_min(pixels,format,width*height);
+  Uint8 black = 0 , white = 255;
+  get_max_and_min(pixels,format,width*height,&white,&black);
 
   for(int x = 0;x < width;x++)
-    black_or_white(min_max[0],min_max[1],pixels,format,x,0,width,height);
+    black_or_white(white,black,pixels,format,x,0,width,height);
 
   SDL_UnlockSurface(surface);
 }
@@ -156,15 +148,14 @@ void surface_to_blackORwhite(SDL_Surface* surface)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
     SDL_PixelFormat* format = surface->format;
-
-    Uint8 *min_max = get_max_and_min(pixels,format,width*height);
+    
+    Uint8 black = 0 , white = 255;
+    get_max_and_min(pixels,format,width*height,&white,&black);
 
 
     for (int x = 0; x < width-1; x++)
     {
 
-      Uint8 black = min_max[1];
-      Uint8 white = min_max[0];
       for (int y = 0; y < height-1; y++)
       {
 
