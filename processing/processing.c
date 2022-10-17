@@ -70,8 +70,16 @@ int processing_image(int argc, char** argv)
     int angle = 0;
     int lines[][2] = {};
 
-    int len = find_lines(s, lines);
-    printf("len = %i\n", len);
+    int hough_transform[] = hough_transform(s);
+    int l = hough_transform[3];
+    int accumulator[l][180] = *hough_transform[0];
+    for (int i = 0; i < 180; i++)
+    {
+        for (int j = 0; j < l; j++)
+        {
+            printf("%i ", accumulator[j][i]
+        }
+    }
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayT = SDL_CreateTextureFromSurface(renderer, s);
