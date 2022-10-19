@@ -1,42 +1,7 @@
 #include <err.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-
-// Updates the display.
-//
-// renderer: Renderer to draw on.
-// texture: Texture that contains the image.
-void draw(SDL_Renderer* renderer, SDL_Texture* texture, int angle)
-{
-    SDL_RenderCopyEx(renderer, texture, NULL, NULL, angle, NULL, SDL_FLIP_NONE);
-    SDL_RenderPresent(renderer);
-}
-
-// Loads an image in a surface.
-// The format of the surface is SDL_PIXELFORMAT_RGB888.
-//
-// path: Path of the image.
-SDL_Surface* load_image(const char* path)
-{
-    SDL_Surface* tmp = IMG_Load(path);
-    SDL_Surface* surface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_RGB888, 0);
-    SDL_FreeSurface(tmp);
-    return surface;
-}
-
-// Converts a colored pixel into grayscale.
-//
-// pixel_color: Color of the pixel to convert in the RGB format.
-// format: Format of the pixel used by the surface.
-Uint32 pixel_to_grayscale(Uint32 pixel_color, SDL_PixelFormat* format)
-{
-    Uint8 r, g, b;
-    SDL_GetRGB(pixel_color, format, &r, &g, &b);
-
-    Uint8 average = 0.3*r + 0.59*g + 0.11*b;
-    Uint32 color = SDL_MapRGB(format, average, average, average);
-    return color;
-}
+#include "processing.h"
 
 void surface_to_grayscale(SDL_Surface* surface)
 {
@@ -53,25 +18,6 @@ void surface_to_grayscale(SDL_Surface* surface)
     SDL_UnlockSurface(surface);
 }
 
-Uint8 get_gray(Uint32 pixel_color, SDL_PixelFormat* format)
-{
-  Uint8 c;
-  SDL_GetRGB(pixel_color, format, &c, &c, &c);
-  return c;
-}
-
-void get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len,Uint8 *min,Uint8 *max)
-{
-  for (int i = 0; i < len; i++)
-  {
-    Uint8 curr = get_gray(pixels[i],format);
-    if (curr < min)
-      min = curr;
-    if (curr > max)
-      max = curr;
-  }
-}
-
 void surface_to_simple_blackORwhite(SDL_Surface* surface)
 {
     Uint32* pixels = surface->pixels;
@@ -83,7 +29,7 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
 
     Uint8 black = 0 , white = 255;
     get_max_and_min(pixels,format,len,&white,&black);
-    
+
     Uint8 mid = (black - white)/2 + white;
 
     for (int i = 0; i < len; i++)
@@ -98,24 +44,21 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
 }
 
 
-void black_or_white(Uint8 black,Uint8 white,Uint32* pixels,SDL_PixelFormat* format ,int x,int y,int width, int height)
+void black_or_white(Uint8 black,Uint8 white,
+                    Uint32* pixels,Uint32* results,SDL_PixelFormat* format ,
+                    int x,int y,int width, int height,
+                    char (*limit)(*int,*int,int,int))
 {
       Uint8 midgray = (black - white)/2 + white;
-      Uint8 save = get_gray(pixels[x+y*width],format);
+      Uint8 temp = get_gray(pixels[x+y*width],format);
 
-      if(save <= midgray)
-      {
-        pixels[x+y*width] = SDL_MapRGB(format, 0, 0, 0);
-        white = save;
-      }
+      if(temp <= midgray)
+        results[x+y*width] = SDL_MapRGB(format, 0, 0, 0),white = temp;
       else
-      {
-        pixels[x+y*width] = SDL_MapRGB(format, 255, 255, 255);
-        black = save;
-      }
+        results[x+y*width] = SDL_MapRGB(format, 255, 255, 255),black = temp;
 
-      if (y < height)
-        black_or_white(black,white,pixels,format,x,y+1,width,height);
+      if ((*limit)(&x,&y,height,width))
+        black_or_white(black,white,pixels,format,x,y,width,height,(*limit)(*int,*int,int,int));
 
 }
 
@@ -129,11 +72,39 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 
   SDL_PixelFormat* format = surface->format;
 
-  Uint8 black = 0 , white = 255;
-  get_max_and_min(pixels,format,width*height,&white,&black);
+    Uint8 black = 0 , white = 255;
+    get_max_and_min(pixels,format,width*height,&white,&black);
 
-  for(int x = 0;x < width;x++)
-    black_or_white(white,black,pixels,format,x,0,width,height);
+    char down(int *x,int *y,int width,int height)
+    {
+      y++;
+      return y < height;
+    }
+    char up(int *x,int *y,int width,int height)
+    {
+      y--;
+      return y >= 0;
+    }
+    char right(int *x,int *y,int width,int height)
+    {
+      x++;
+      return x < width;
+    }
+    char left(int *x,int *y,int width,int height)
+    {
+      x--;
+      return x >= 0;
+    }
+
+    for(int x = 0;x < width;x++)
+      black_or_white(white,black,pixels,format,x,0,width,height,&down);
+    for(int x = 0;x < width;x++)
+      black_or_white(white,black,pixels,format,x,height-1,width,height,&up);
+
+    for(int y = 0;x < height;y++)
+      black_or_white(white,black,pixels,format,x,0,width,height,&down);
+    for(int y = 0;x < height;y++)
+      black_or_white(white,black,pixels,format,x,height-1,width,height,&up);
 
   SDL_UnlockSurface(surface);
 }
@@ -148,7 +119,7 @@ void surface_to_blackORwhite(SDL_Surface* surface)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
     SDL_PixelFormat* format = surface->format;
-    
+
     Uint8 black = 0 , white = 255;
     get_max_and_min(pixels,format,width*height,&white,&black);
 
