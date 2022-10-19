@@ -3,6 +3,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "processing.h"
+#include "hough_transform.h"
 
 // Event loop that calls the relevant event handler.
 //
@@ -44,6 +45,16 @@ int processing_image(int argc, char** argv)
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
+    // - Create a surface from the colored image.
+    SDL_Surface* s = load_image(argv[1]);
+
+    // - Convert the surface into grayscale.
+    surface_to_grayscale(s);
+
+    // - Rotate image
+    int angle = 0;
+    hough_transform(s);
+
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
             SDL_WINDOW_SHOWN);
@@ -55,31 +66,10 @@ int processing_image(int argc, char** argv)
     if (renderer == NULL)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
-    // - Create a surface from the colored image.
-    SDL_Surface* s = load_image(argv[1]);
-
     // - Resize the window according to the size of the image.
     SDL_SetWindowSize(window, s->w, s->h);
-    printf("width : %i\n", s->w);
-    printf("height : %i\n", s->h);
-
-    // - Convert the surface into grayscale.
-    surface_to_grayscale(s);
-
-    // - Rotate image
-    int angle = 0;
-    int lines[][2] = {};
-
-    int hough_transform[] = hough_transform(s);
-    int l = hough_transform[3];
-    int accumulator[l][180] = *hough_transform[0];
-    for (int i = 0; i < 180; i++)
-    {
-        for (int j = 0; j < l; j++)
-        {
-            printf("%i ", accumulator[j][i]
-        }
-    }
+    // printf("width : %i\n", s->w);
+    // printf("height : %i\n", s->h);
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayT = SDL_CreateTextureFromSurface(renderer, s);

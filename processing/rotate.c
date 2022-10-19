@@ -24,23 +24,3 @@ int is_pixel_black(Uint32 pixel, SDL_PixelFormat* format, int tol, int min)
 
     return 0;
 }
-
-SDL_Surface* persepective_transform(SDL_Surface* s,)
-
-int find_lines(SDL_Surface* s, int line[][2])
-{
-    Uint32* pixels = s->pixels;
-    if(SDL_LockSurface(s) != 0)
-        errx(EXIT_FAILURE, "%s", SDL_GetError());
-
-    SDL_PixelFormat* format = s->format;
-
-    int w = s->w;
-    int h = s->h;
-    int len = w * h;
-    printf("len = %i\n", len);
-
-    
-
-    return 0;
-}
