@@ -71,5 +71,7 @@ int **hough_transform(SDL_Surface* s)
     free(cos_t);
     free(sin_t);
 
+    print_2d_array(accumulator, theta_num, rho_num);
+
     return accumulator;
 }
