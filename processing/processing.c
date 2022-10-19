@@ -4,13 +4,15 @@
 #include <SDL2/SDL_image.h>
 #include "processing.h"
 #include "hough_transform.h"
+#include "rotate.h"
+#include "blackwhite.h"
 
 // Event loop that calls the relevant event handler.
 //
 // renderer: Renderer to draw on.
 // colored: Texture that contains the colored image.
 // grayscale: Texture that contains the grayscale image.
-void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, int angle)
+void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, double angle)
 {
     SDL_Event event;
     SDL_Texture* t = grayscale;
@@ -29,6 +31,7 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, int angle)
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                     draw(renderer, t, angle);
+                    angle = 0;
                 }
                 break;
         }
@@ -52,8 +55,8 @@ int processing_image(int argc, char** argv)
     surface_to_grayscale(s);
 
     // - Rotate image
-    int angle = 0;
-    hough_transform(s);
+    int **hough_accumulator = hough_transform(s);
+    double angle = automatic_rotation(hough_accumulator, s);
 
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,

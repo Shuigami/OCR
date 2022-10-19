@@ -6,7 +6,7 @@
 //
 // renderer: Renderer to draw on.
 // texture: Texture that contains the image.
-void draw(SDL_Renderer* renderer, SDL_Texture* texture, int angle)
+void draw(SDL_Renderer* renderer, SDL_Texture* texture, double angle)
 {
     SDL_RenderCopyEx(renderer, texture, NULL, NULL, angle, NULL, SDL_FLIP_NONE);
     SDL_RenderPresent(renderer);
