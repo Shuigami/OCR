@@ -49,7 +49,7 @@ double automatic_rotation(int **hough_accumulator, SDL_Surface *s)
     {
         for (int t = 0; t <= size; t++)
         {
-            if (hough_accumulator[r][t] >= 9)
+            if (hough_accumulator[r][t] >= 255)
                 thetas_v[t] += hough_accumulator[r][t];
         }
 
@@ -72,9 +72,6 @@ double automatic_rotation(int **hough_accumulator, SDL_Surface *s)
     free(hough_accumulator);
     free(thetas);
     free(thetas_v);
-
-    if (most_freq_theta < 0)
-        most_freq_theta = most_freq_theta + 90;
 
     printf("automatic rotation: %.2f\n", most_freq_theta);
 

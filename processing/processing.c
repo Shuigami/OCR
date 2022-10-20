@@ -31,7 +31,6 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, double angle)
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                     draw(renderer, t, angle);
-                    angle = 0;
                 }
                 break;
         }
@@ -71,8 +70,6 @@ int processing_image(int argc, char** argv)
 
     // - Resize the window according to the size of the image.
     SDL_SetWindowSize(window, s->w, s->h);
-    // printf("width : %i\n", s->w);
-    // printf("height : %i\n", s->h);
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* grayT = SDL_CreateTextureFromSurface(renderer, s);

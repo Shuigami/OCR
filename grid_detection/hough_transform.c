@@ -32,7 +32,9 @@ int **hough_transform(SDL_Surface* s)
     double *thetas = create_array(theta_num + 1, theta_min, theta_max, theta_step);
 
     for (int i = 0; i <= theta_num; i++)
+    {
         thetas[i] = degrees_to_rad(thetas[i]);
+    }
 
     int **accumulator = malloc(sizeof(int*) * (rho_num + 1) + 1);
     for (int r = 0; r <= rho_num; r++)

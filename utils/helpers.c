@@ -19,10 +19,10 @@ double *create_array(int size, double min, double max, double step)
     return array;
 }
 
-int degrees_to_rad(int degrees)
+double degrees_to_rad(double degrees)
 {
-    double r = (double) degrees * (3.14149265359 / 180);
-    return (int) r;
+    double rad = degrees * (3.14149265359 / 180);
+    return rad;
 }
 
 void print_2d_array(int **array, int size_x, int size_y)
