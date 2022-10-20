@@ -30,7 +30,7 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
     Uint8 black = 0 , white = 255;
     get_max_and_min(pixels,format,len,&white,&black);
 
-    Uint8 mid = (black - white)/2 + white;
+    Uint8 mid = 127; //(black - white)/2 + white;
 
     for (int i = 0; i < len; i++)
     {
@@ -70,10 +70,14 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
   if(SDL_LockSurface(surface) != 0)
     errx(EXIT_FAILURE, "%s", SDL_GetError());
 
+
   SDL_PixelFormat* format = surface->format;
 
-    Uint8 black = 0 , white = 255;
-    get_max_and_min(pixels,format,width*height,&white,&black);
+  Uint32* copy;
+  copy(pixels,copy,w*h);
+
+  Uint8 black = 0 , white = 255;
+  get_max_and_min(pixels,format,width*height,&white,&black);
 
     char down(int *x,int *y,int width,int height)
     {
@@ -97,14 +101,16 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
     }
 
     for(int x = 0;x < width;x++)
-      black_or_white(white,black,pixels,format,x,0,width,height,&down);
+      black_or_white(white,black,result,pixels,format,x,0,width,height,&down);
     for(int x = 0;x < width;x++)
-      black_or_white(white,black,pixels,format,x,height-1,width,height,&up);
+      black_or_white(white,black,result,pixels,format,x,height-1,width,height,&up);
 
     for(int y = 0;x < height;y++)
-      black_or_white(white,black,pixels,format,x,0,width,height,&down);
+      black_or_white(white,black,result,pixels,format,x,0,width,height,&down);
     for(int y = 0;x < height;y++)
-      black_or_white(white,black,pixels,format,x,height-1,width,height,&up);
+      black_or_white(white,black,result,pixels,format,x,height-1,width,height,&up);
+
+    surface_to_simple_blackORwhite(SDL_Surface* surface);
 
   SDL_UnlockSurface(surface);
 }

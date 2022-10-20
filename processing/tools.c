@@ -56,3 +56,9 @@ void get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len,Uint8 *min,U
       max = curr;
   }
 }
+
+void get_max_and_min(Uint32* source,Uint32* dest,int len)
+{
+  for (int i = 0; i < len; i++)
+    dest[i] = const source[i];
+}
