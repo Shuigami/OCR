@@ -15,8 +15,7 @@
 
 int main(int argc, char **argv)
 {
-    printf("y");
-	// Checks the number of arguments.
+    // Checks the number of arguments.
     if (argc != 2)
         errx(EXIT_FAILURE, "Usage: image-file");
 
@@ -31,19 +30,43 @@ int main(int argc, char **argv)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
     // - Creates a renderer.
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if (renderer == NULL)
+    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0); //SDL_RENDERER_ACCELERATED
+    if(renderer == NULL) 
         errx(EXIT_FAILURE, "%s", SDL_GetError());
-
     // - Create a surface from the colored image.
     SDL_Surface* s = load_image(argv[1]);
     
-    SDL_Surface* L[81] = {};
-    printf("oui");
+    SDL_Surface* L[81];
+    //SDL_Surface **L = malloc(sizeof(SDL_Surface) * 81);
     cut(s, L);
-    printf("ok");
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, s);
+    SDL_Rect rect;
+    rect.x = 888;
+    rect.y = 888;
+    rect.w = 111;
+    rect.h = 111;
+
+    SDL_Rect rect2;
+    rect2.x = 777;
+    rect2.y = 888;
+    rect2.w = 111;
+    rect2.h = 111;
+
+    SDL_Surface* p[2];
+
+    SDL_Surface* tmp = SDL_CreateRGBSurfaceWithFormat(0, s->w, s->h, 28, s->format->format);
+    SDL_Surface* tmp2 = SDL_CreateRGBSurfaceWithFormat(0, s->w, s->h, 28, s->format->format);
+
+
+    SDL_BlitSurface(s, &rect, tmp, NULL);
+    SDL_BlitSurface(s, &rect2, tmp2, NULL);
+
+
+    p[0] = tmp;
+    p[1] = tmp2;
+
+
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, L[80]);
 
     int w, h;
     if(SDL_QueryTexture(texture, NULL, NULL, &w, &h) != 0)
@@ -80,6 +103,11 @@ int main(int argc, char **argv)
 
     // - Free the surface.
     SDL_FreeSurface(s);
+    size_t k = 0;
+    while(L[k] != 0)
+    {
+	    SDL_FreeSurface(L[k]);
+    }
 
     // - Dispatch the events.
     //event_loop(renderer, grayT);
