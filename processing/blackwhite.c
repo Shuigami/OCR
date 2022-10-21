@@ -110,7 +110,7 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
     for(int y = 0;y < height;y++)
       black_or_white(white,black,save,pixels,format,0,y,width,height,&left);
     for(int y = 0;y < height;y++)
-      black_or_white(white,black,save,pixels,format,width-1,y,height,&right);
+      black_or_white(white,black,save,pixels,format,width-1,y,width,height,&right);
 
     surface_to_simple_blackORwhite(surface);
 
