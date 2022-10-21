@@ -47,7 +47,7 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
 void black_or_white(Uint8 black,Uint8 white,
                     Uint32* pixels,Uint32* results,SDL_PixelFormat* format ,
                     int x,int y,int width, int height,
-                    char (*limit)(*int,*int,int,int))
+                    char (*limit)(int*,int*,int,int))
 {
       Uint8 midgray = (black - white)/2 + white;
       Uint8 temp = get_gray(pixels[x+y*width],format);
@@ -112,7 +112,7 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
     for(int y = 0;y < height;y++)
       black_or_white(white,black,copy,pixels,format,width-1,y,height,&right);
 
-    surface_to_simple_blackORwhite(SDL_Surface* surface);
+    surface_to_simple_blackORwhite(surface);
 
   SDL_UnlockSurface(surface);
 }
