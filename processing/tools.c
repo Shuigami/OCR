@@ -57,19 +57,13 @@ void get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len,Uint8 *min,U
   }
 }
 
-void get_max_and_min(Uint32* source,Uint32* dest,int len)
-{
-  for (int i = 0; i < len; i++)
-    dest[i] = const source[i];
-}
-
 void copy(Uint32 *pixels,Uint32 *copy,size_t len)
 {
   for(size_t i = 0; i < len; i++)
     copy[i] = pixels[i];
 }
 
-void fill(Uint32* pixels,size_t len,format f)
+void fill(Uint32* pixels,size_t len,SDL_PixelFormat* format)
 {
   for(size_t i = 0; i < len; i++)
     pixels[i] = SDL_MapRGB(format, 127,  127,  127);
