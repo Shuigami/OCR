@@ -76,7 +76,7 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 
   Uint32* copy;
   copy(pixels,copy,width*height);
-  fill(pixels,format);
+  fill(pixels,width*height,format);
 
   Uint8 black = 0 , white = 255;
   get_max_and_min(copy,format,width*height,&white,&black);
@@ -108,9 +108,9 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
       black_or_white(white,black,copy,pixels,format,x,height-1,width,height,&up);
 
     for(int y = 0;y < height;y++)
-      black_or_white(white,black,copy,pixels,format,x,0,width,height,&down);
+      black_or_white(white,black,copy,pixels,format,0,y,width,height,&left);
     for(int y = 0;y < height;y++)
-      black_or_white(white,black,copy,pixels,format,x,height-1,width,height,&up);
+      black_or_white(white,black,copy,pixels,format,width-1,y,height,&right);
 
     surface_to_simple_blackORwhite(SDL_Surface* surface);
 
