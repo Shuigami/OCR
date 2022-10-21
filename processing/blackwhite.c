@@ -51,14 +51,15 @@ void black_or_white(Uint8 black,Uint8 white,
 {
       Uint8 midgray = (black - white)/2 + white;
       Uint8 temp = get_gray(pixels[x+y*width],format);
+      Uint8 gray = get_gray(results[x+y*width],format);
 
       if(temp <= midgray)
-        results[x+y*width] = SDL_MapRGB(format, 0, 0, 0),white = temp;
+        results[x+y*width] = SDL_MapRGB(format, gray-31,  gray-31,  gray-31),white = temp;
       else
-        results[x+y*width] = SDL_MapRGB(format, 255, 255, 255),black = temp;
+        results[x+y*width] = SDL_MapRGB(format,  gray+31, gray+31, gray+31),black = temp;
 
       if ((*limit)(&x,&y,height,width))
-        black_or_white(black,white,pixels,format,x,y,width,height,(*limit)(*int,*int,int,int));
+        black_or_white(black,white,pixels,results,format,x,y,width,height,(*limit)(*int,*int,int,int));
 
 }
 
@@ -75,9 +76,10 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 
   Uint32* copy;
   copy(pixels,copy,w*h);
+  fill(pixels,format);
 
   Uint8 black = 0 , white = 255;
-  get_max_and_min(pixels,format,width*height,&white,&black);
+  get_max_and_min(copy,format,width*height,&white,&black);
 
     char down(int *x,int *y,int width,int height)
     {
@@ -101,14 +103,14 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
     }
 
     for(int x = 0;x < width;x++)
-      black_or_white(white,black,result,pixels,format,x,0,width,height,&down);
+      black_or_white(white,black,copy,pixels,format,x,0,width,height,&down);
     for(int x = 0;x < width;x++)
-      black_or_white(white,black,result,pixels,format,x,height-1,width,height,&up);
+      black_or_white(white,black,copy,pixels,format,x,height-1,width,height,&up);
 
     for(int y = 0;x < height;y++)
-      black_or_white(white,black,result,pixels,format,x,0,width,height,&down);
+      black_or_white(white,black,copy,pixels,format,x,0,width,height,&down);
     for(int y = 0;x < height;y++)
-      black_or_white(white,black,result,pixels,format,x,height-1,width,height,&up);
+      black_or_white(white,black,copy,pixels,format,x,height-1,width,height,&up);
 
     surface_to_simple_blackORwhite(SDL_Surface* surface);
 
