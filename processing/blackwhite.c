@@ -59,7 +59,7 @@ void black_or_white(Uint8 black,Uint8 white,
         results[x+y*width] = SDL_MapRGB(format,  gray+31, gray+31, gray+31),black = temp;
 
       if ((*limit)(&x,&y,height,width))
-        black_or_white(black,white,pixels,results,format,x,y,width,height,(*limit)(int*,int*,int,int));
+        black_or_white(black,white,pixels,results,format,x,y,width,height,limit;
 
 }
 
