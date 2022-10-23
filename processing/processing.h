@@ -2,7 +2,6 @@
 
 int find_lines(SDL_Surface* s, int line[][2]);
 int processing_image(int argc, char** argv);
-
 void draw(SDL_Renderer* renderer, SDL_Texture* texture, int angle);
 SDL_Surface* load_image(const char* path);
 Uint32 pixel_to_grayscale(Uint32 pixel_color, SDL_PixelFormat* format);
@@ -10,7 +9,6 @@ Uint8 get_gray(Uint32 pixel_color, SDL_PixelFormat* format);
 void get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len,Uint8 *min,Uint8 *max);
 void copy(Uint32 *pixels,Uint32 *copy,size_t len);
 void fill(Uint32* pixels,size_t len,SDL_PixelFormat* format);
-
 void surface_to_grayscale(SDL_Surface* surface);
 void surface_to_blackORwhite(SDL_Surface* surface);
 void surface_to_blackORwhite_Rec(SDL_Surface* surface);

@@ -1,4 +1,5 @@
 #include <err.h>
+#include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -57,10 +58,14 @@ void get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len,Uint8 *min,U
   }
 }
 
-void copy(Uint32 *pixels,Uint32 *copy,size_t len)
+void copy(Uint32 *src,Uint32 *dst,size_t len)
 {
+  printf("%li",len);
   for(size_t i = 0; i < len; i++)
-    copy[i] = pixels[i];
+  {
+	printf("%li/",i);
+	  //dst[i] = src[i];
+  }
 }
 
 void fill(Uint32* pixels,size_t len,SDL_PixelFormat* format)

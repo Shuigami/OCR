@@ -1,4 +1,5 @@
 #include <err.h>
+#include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "processing.h"
@@ -59,25 +60,28 @@ void black_or_white(Uint8 black,Uint8 white,
         results[x+y*width] = SDL_MapRGB(format,  gray+31, gray+31, gray+31),black = temp;
 
       if ((*limit)(&x,&y,height,width))
-        black_or_white(black,white,pixels,results,format,x,y,width,height,limit;
+        black_or_white(black,white,pixels,results,format,x,y,width,height,limit);
 
 }
 
 void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 {
+  printf("test");
   Uint32* pixels = surface->pixels;
   int width = surface->w;
   int height = surface->h;
+  int len = width * height;
   if(SDL_LockSurface(surface) != 0)
     errx(EXIT_FAILURE, "%s", SDL_GetError());
 
 
   SDL_PixelFormat* format = surface->format;
 
-  Uint32* save;
-  copy(pixels,save,width*height);
-  fill(pixels,width*height,format);
-
+  Uint32 save[len];
+  
+  //copy(pixels,save,width*height);
+  //fill(pixels,width*height,format);
+/*
   Uint8 black = 0 , white = 255;
   get_max_and_min(save,format,width*height,&white,&black);
 
@@ -102,11 +106,13 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
       return *x >= 0;
     }
 
+    printf("allez stp");
     for(int x = 0;x < width;x++)
       black_or_white(white,black,save,pixels,format,x,0,width,height,&down);
+    printf("12222111111");
     for(int x = 0;x < width;x++)
       black_or_white(white,black,save,pixels,format,x,height-1,width,height,&up);
-
+    printf("mid");
     for(int y = 0;y < height;y++)
       black_or_white(white,black,save,pixels,format,0,y,width,height,&left);
     for(int y = 0;y < height;y++)
@@ -114,6 +120,7 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 
     surface_to_simple_blackORwhite(surface);
 
+    */
   SDL_UnlockSurface(surface);
 }
 
