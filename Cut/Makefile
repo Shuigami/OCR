@@ -1,4 +1,4 @@
-CC = gcc -fsanitize=address
+CC = gcc -fsanitize=address 
 
 CFLAGS = -Wall -Wextra -O3 `pkg-config --cflags sdl2 SDL2_image` -g
 LDLIBS  = `pkg-config --libs sdl2 SDL2_image`

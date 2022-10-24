@@ -6,7 +6,7 @@
 #include <SDL2/SDL_image.h>
 #include "cut.h"
 
-void cut(SDL_Surface* surface, SDL_Surface* L[])
+void cut(SDL_Surface* surface, SDL_Surface*** L)
 {
     //Uint32* pixels = surface->pixels;
     //int len = surface->w * surface->h;
@@ -25,7 +25,9 @@ void cut(SDL_Surface* surface, SDL_Surface* L[])
     {
 	    for(size_t j = 0; j < (size_t)nb_pixel-1; j+=length)
 	    {
-		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 28, format->format);//peut etre 32
+		    //SDL_Surface* surface_tmp = (SDL_Surface*)malloc(sizeof(SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 28, format->format)));//peut etre 32
+		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 28, format->format);
+		    //surface_tmp = malloc(sizeof(SDL_Surface));
 		    //Uint32* pixels_tmp = surface_tmp->pixels;
 		    //SDL_LockSurface(surface_tmp);
 		    //size_t pixels_tmp_count = 0;
@@ -60,8 +62,12 @@ void cut(SDL_Surface* surface, SDL_Surface* L[])
 		    
 		    //SDL_UnlockSurface(surface_tmp);
 		    //printf("%zi\n",count);
-		    //*(L + count) = surface_tmp;
-		    L[count] = surface_tmp;
+		    *L = malloc(sizeof(SDL_Surface) * 82);
+		    if(*L == NULL)
+			    return;
+		    (*L)[count] = surface_tmp;
+		    //*(*L + count) = surface_tmp;
+		    //L[count] = surface_tmp;
 		    count++;
 
 
