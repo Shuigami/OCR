@@ -6,9 +6,9 @@
 #include "helpers.h"
 #include "grid_detection.h"
 
-int **hough_transform(SDL_Surface* s, int **lines, int *len)
+int **hough_transform(SDL_Surface* s)
 {
-    printf("     Hough Transform...\n");
+    printf(" Hough Transform...\n");
 
     // Get pixels list of surface
     Uint32* pixels = s->pixels;
@@ -71,6 +71,8 @@ int **hough_transform(SDL_Surface* s, int **lines, int *len)
 
     free(rhos);
     free(thetas);
+
+    printf("     Done Hough Transform\n\n");
 
     return accumulator;
 }

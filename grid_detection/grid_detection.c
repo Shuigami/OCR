@@ -10,7 +10,7 @@
 
 float **find_line_equations(int **lines, int *len)
 {
-    printf("     Finding line equations...\n");
+    printf(" Finding line equations...\n");
     float **line_eq = malloc(sizeof(float*) * *len);
 
     for (int i = 0; i < *len; i++)
@@ -37,13 +37,15 @@ float **find_line_equations(int **lines, int *len)
         }
     }
 
+    printf("     Found line equations\n\n");
+
     return line_eq;
 }
 
 int **find_lines(int **accumulator, SDL_Surface* s, double *rhos, 
         double *thetas, int *len_lines)
 {
-    printf("     Searching Lines...\n");
+    printf(" Searching Lines...\n");
     // Get width and height of the image
     double w = s->w;
     double h = s->h;
@@ -54,7 +56,7 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
 
     int **lines = NULL;
 
-    printf("     Finding max\n");
+    printf("     Finding max...\n");
     int max = 0;
     for (int r = 0; r <= num; r++)
     {
@@ -122,8 +124,10 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
     printf("     Found %i line(s) :\n", *len_lines);
 
     for (int i = 0; i < *len_lines; i++)
-        printf("    - Liens from (%i,%i) to (%i, %i)\n", lines[i][0], 
+        printf("        - Lines from (%i,%i) to (%i, %i)\n", lines[i][0], 
                 lines[i][1], lines[i][2], lines[i][3]);
+
+    printf("     Found lines\n\n");
 
     return lines;
 }
@@ -163,8 +167,19 @@ void grid_detection(SDL_Surface* s, double *angle)
 
     float **lines_eq = find_line_equations(lines, &len);
 
+    /*
+    for (int i = 0; i < len; i++)
+    {
+        if (lines_eq[i][2] == 1.)
+            printf("x = %f\n", lines_eq[i][0]);
+        else
+            printf("y = %f * x + %f\n", lines_eq[i][0], lines_eq[i][1]);
+    }
+    */
+
     if (*angle == -1)
         *angle = automatic_rotation(hough_accumulator, s);
 
     free(lines);
+    free(lines_eq);
 }
