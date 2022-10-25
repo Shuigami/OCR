@@ -73,7 +73,7 @@ double automatic_rotation(int **hough_accumulator, SDL_Surface *s)
     free(thetas);
     free(thetas_v);
 
-    printf("automatic rotation: %.2f\n", most_freq_theta);
+    printf("   不 Automatic Rotation: %.2f\n", most_freq_theta);
 
     return most_freq_theta;
 }

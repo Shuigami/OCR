@@ -4,10 +4,11 @@
 #include <stdio.h>
 #include <err.h>
 #include "helpers.h"
+#include "grid_detection.h"
 
-int **hough_transform(SDL_Surface* s)
+int **hough_transform(SDL_Surface* s, int **lines, int *len)
 {
-    printf("        🔥 Hough Transform...\n");
+    printf("     Hough Transform...\n");
 
     // Get pixels list of surface
     Uint32* pixels = s->pixels;
@@ -18,6 +19,7 @@ int **hough_transform(SDL_Surface* s)
 
     // Max distance equals to the diagonal
     double diag = sqrt(w*w + h*h);
+    printf("   壟 Diagonal : %f\n", diag);
 
     double rho_min = -diag;
     double rho_max = diag;
@@ -29,7 +31,8 @@ int **hough_transform(SDL_Surface* s)
     double theta_max = 90;
     int theta_num = diag * 2;
     double theta_step = (theta_max - theta_min) / theta_num;
-    double *thetas = create_array(theta_num + 1, theta_min, theta_max, theta_step);
+    double *thetas = create_array(theta_num + 1, theta_min, 
+            theta_max, theta_step);
 
     for (int i = 0; i <= theta_num; i++)
     {
@@ -68,8 +71,6 @@ int **hough_transform(SDL_Surface* s)
 
     free(rhos);
     free(thetas);
-
-    // print_2d_array(accumulator, rho_num, theta_num);
 
     return accumulator;
 }

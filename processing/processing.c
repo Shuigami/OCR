@@ -2,10 +2,9 @@
 #include <stdlib.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
-#include "processing.h"
-#include "hough_transform.h"
-#include "rotate.h"
 #include "blackwhite.h"
+#include "grid_detection.h"
+#include "helpers.h"
 
 // Event loop that calls the relevant event handler.
 //
@@ -40,7 +39,7 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, double angle)
 int processing_image(int argc, char** argv)
 {
     // Checks the number of arguments.
-    if (argc != 2)
+    if (argc < 2)
         errx(EXIT_FAILURE, "Usage: image-file");
 
     // - Initialize the SDL.
@@ -53,9 +52,22 @@ int processing_image(int argc, char** argv)
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
 
-    // - Rotate image
-    int **hough_accumulator = hough_transform(s);
-    double angle = automatic_rotation(hough_accumulator, s);
+    // - Grid Detection
+    double angle = -1;
+    for (int i = 1; i < argc - 1; i++)
+        if (argv[i][0] == '-' && argv[i][1] == 'a')
+            angle = str_to_double(argv[i+1]);
+
+    double *angleP = &angle;
+    grid_detection(s, angleP);
+
+    int display = 1;
+    char d = 'd';
+    if (argc > 2 && *argv[2] == d)
+        display = 0;
+
+    if (display == 0)
+        return EXIT_SUCCESS;
 
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
