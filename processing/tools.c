@@ -46,26 +46,22 @@ Uint8 get_gray(Uint32 pixel_color, SDL_PixelFormat* format)
   return c;
 }
 
-void get_max_and_min(Uint32* pixels,SDL_PixelFormat* format,int len,Uint8 *min,Uint8 *max)
+void get_max_and_min(Uint32* pixels,SDL_PixelFormat *format,int len,Uint8 *min,Uint8 *max)
 {
   for (int i = 0; i < len; i++)
   {
     Uint8 curr = get_gray(pixels[i],format);
-    if (curr < min)
-      min = curr;
-    if (curr > max)
-      max = curr;
+    if (curr < *min)
+      *min = curr;
+    if (curr > *max)
+      *max = curr;
   }
 }
 
-void copy(Uint32 *src,Uint32 *dst,size_t len)
+void copy(Uint32 *src,Uint8 *dst,size_t len,SDL_PixelFormat* format)
 {
-  printf("%li",len);
   for(size_t i = 0; i < len; i++)
-  {
-	printf("%li/",i);
-	  //dst[i] = src[i];
-  }
+    dst[i] = get_gray(src[i],format);
 }
 
 void fill(Uint32* pixels,size_t len,SDL_PixelFormat* format)
