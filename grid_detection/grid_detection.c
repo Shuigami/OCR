@@ -7,13 +7,15 @@
 #include "hough_transform.h"
 #include "rotate.h"
 #include "blackwhite.h"
+#include "square_detection.h"
+#include "resize.h"
 
-float **find_line_equations(int **lines, int *len)
+float **find_line_equations(int **lines, int len)
 {
     printf(" Finding line equations...\n");
-    float **line_eq = malloc(sizeof(float*) * *len);
+    float **line_eq = malloc(sizeof(float*) * len);
 
-    for (int i = 0; i < *len; i++)
+    for (int i = 0; i < len; i++)
     {
         line_eq[i] = malloc(sizeof(float) * 3);
         int x1 = lines[i][0];
@@ -21,16 +23,16 @@ float **find_line_equations(int **lines, int *len)
         int x2 = lines[i][2];
         int y2 = lines[i][3];
 
-        if (x1 == x2)
+        if (x1 <= x2 + 5 && x1 >= x2 - 5)
         {
             line_eq[i][0] = x1;
-            line_eq[i][1] = 0.;
+            line_eq[i][1] = -1;
             line_eq[i][2] = 1.;
         }
         else
         {
-            float m = (y1 - y2) / (x1 - x2);
-            float b = m * x1 + y1;
+            float m = (float) (y1 - y2) / (x1 - x2);
+            float b = - m * x1 + y1;
             line_eq[i][0] = m;
             line_eq[i][1] = b;
             line_eq[i][2] = -1.;
@@ -132,9 +134,18 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
     return lines;
 }
 
-void grid_detection(SDL_Surface* s, double *angle)
+SDL_Rect grid_detection(SDL_Surface* s, double *angle)
 {
     int **hough_accumulator = hough_transform(s);
+
+    if (*angle == -1)
+        *angle = automatic_rotation(hough_accumulator, s);
+
+    SDL_Surface *d = SDL_CreateRGBSurface(0, s->w, s->h, 32, 0, 255, 0, 0);
+    rotate(s, d, *angle);
+    *s = *d;
+
+    hough_accumulator = hough_transform(s);
 
     // Get width and height of the image
     double w = s->w;
@@ -165,21 +176,13 @@ void grid_detection(SDL_Surface* s, double *angle)
     free(rhos);
     free(thetas);
 
-    float **lines_eq = find_line_equations(lines, &len);
+    float **lines_eq = find_line_equations(lines, len);
 
-    /*
-    for (int i = 0; i < len; i++)
-    {
-        if (lines_eq[i][2] == 1.)
-            printf("x = %f\n", lines_eq[i][0]);
-        else
-            printf("y = %f * x + %f\n", lines_eq[i][0], lines_eq[i][1]);
-    }
-    */
+    int *square = square_detection(lines_eq, len);
 
-    if (*angle == -1)
-        *angle = automatic_rotation(hough_accumulator, s);
+    SDL_Rect r = resize(lines_eq, square);
 
     free(lines);
     free(lines_eq);
+    return r;
 }

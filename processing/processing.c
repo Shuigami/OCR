@@ -5,13 +5,15 @@
 #include "blackwhite.h"
 #include "grid_detection.h"
 #include "helpers.h"
+#include "rotate.h"
 
 // Event loop that calls the relevant event handler.
 //
 // renderer: Renderer to draw on.
 // colored: Texture that contains the colored image.
 // grayscale: Texture that contains the grayscale image.
-void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, double angle)
+void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, 
+        SDL_Window* window, const SDL_Rect * srcrect, const SDL_Rect * dstrect)
 {
     SDL_Event event;
     SDL_Texture* t = grayscale;
@@ -29,7 +31,7 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, double angle)
             // If the window is resized, updates and redraws the diagonals.
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    draw(renderer, t, angle);
+                    draw(renderer, t, window, srcrect, dstrect);
                 }
                 break;
         }
@@ -58,16 +60,18 @@ int processing_image(int argc, char** argv)
         if (argv[i][0] == '-' && argv[i][1] == 'a')
             angle = str_to_double(argv[i+1]);
 
-    double *angleP = &angle;
-    grid_detection(s, angleP);
+    const SDL_Rect cRect = grid_detection(s, &angle);
+    printf("%i %i\n", cRect.x, cRect.y);
+    SDL_Rect rect;
+    rect.x = 0;
+    rect.y = 0;
+    rect.w = cRect.w;
+    rect.h = cRect.h;
+    const SDL_Rect newRect = rect;
 
-    int display = 1;
-    char d = 'd';
-    if (argc > 2 && *argv[2] == d)
-        display = 0;
-
-    if (display == 0)
-        return EXIT_SUCCESS;
+    for (int i = 1; i < argc - 1; i++)
+        if (argv[i][0] == '-' && argv[i][1] == 'd')
+            return EXIT_SUCCESS;
 
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
@@ -84,16 +88,16 @@ int processing_image(int argc, char** argv)
     SDL_SetWindowSize(window, s->w, s->h);
 
     // - Create a new texture from the grayscale surface.
-    SDL_Texture* grayT = SDL_CreateTextureFromSurface(renderer, s);
+    SDL_Texture* t = SDL_CreateTextureFromSurface(renderer, s);
 
     // - Free the surface.
     SDL_FreeSurface(s);
 
     // - Dispatch the events.
-    event_loop(renderer, grayT, angle);
+    event_loop(renderer, t, window, &cRect, &newRect);
 
     // - Destroy the objects.
-    SDL_DestroyTexture(grayT);
+    SDL_DestroyTexture(t);
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();

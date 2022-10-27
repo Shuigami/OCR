@@ -6,9 +6,12 @@
 //
 // renderer: Renderer to draw on.
 // texture: Texture that contains the image.
-void draw(SDL_Renderer* renderer, SDL_Texture* texture, double angle)
+void draw(SDL_Renderer* renderer, SDL_Texture* texture, 
+        SDL_Window *window, const SDL_Rect * srcrect, const SDL_Rect * dstrect)
 {
-    SDL_RenderCopyEx(renderer, texture, NULL, NULL, angle, NULL, SDL_FLIP_NONE);
+    SDL_RenderCopyEx(renderer, texture, srcrect, dstrect, 
+            0, NULL, SDL_FLIP_NONE);
+    SDL_SetWindowSize(window, dstrect->w, dstrect->h);
     SDL_RenderPresent(renderer);
 }
 
