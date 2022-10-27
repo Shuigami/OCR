@@ -15,11 +15,6 @@
 
 int main(int argc, char **argv)
 {
-    printf("cut");
-    printf("cut");
-    printf("cut");
-    printf("cut");
-    printf("cut");
 
     // Checks the number of arguments.
     if (argc != 2)
@@ -42,20 +37,15 @@ int main(int argc, char **argv)
     // - Create a surface from the colored image.
     SDL_Surface* s = load_image(argv[1]);
 
-    printf("cut");
-    printf("cut");
-    printf("cut");
-    printf("cut");
-    printf("cut");
     
-    SDL_Surface** L = calloc(81, sizeof(SDL_Surface));
+    //SDL_Surface** L = calloc(81, sizeof(SDL_Surface));
     //SDL_Surface* L[81];
-    //SDL_Surface **L = malloc(sizeof(SDL_Surface) * 81);
+    SDL_Surface **L = malloc(sizeof(SDL_Surface*) * 81);
     cut(s, &L);
 
     SDL_Rect rect;
-    rect.x = 888;
-    rect.y = 888;
+    rect.x = 0;
+    rect.y = 0;
     rect.w = 111;
     rect.h = 111;
 
@@ -80,7 +70,7 @@ int main(int argc, char **argv)
     
     printf("oui");
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, p[0]);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, *(L+80));
 
     printf("ok");
 
