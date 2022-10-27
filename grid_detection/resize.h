@@ -1,3 +1,3 @@
 #pragma once
 
-SDL_Rect resize(float **lines, int *square_corners);
+void resize(SDL_Surface *s, float **lines, int *square_corners);

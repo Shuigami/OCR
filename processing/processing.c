@@ -12,8 +12,7 @@
 // renderer: Renderer to draw on.
 // colored: Texture that contains the colored image.
 // grayscale: Texture that contains the grayscale image.
-void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, 
-        SDL_Window* window, const SDL_Rect * srcrect, const SDL_Rect * dstrect)
+void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale)
 {
     SDL_Event event;
     SDL_Texture* t = grayscale;
@@ -31,7 +30,7 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale,
             // If the window is resized, updates and redraws the diagonals.
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
-                    draw(renderer, t, window, srcrect, dstrect);
+                    draw(renderer, t);
                 }
                 break;
         }
@@ -60,14 +59,7 @@ int processing_image(int argc, char** argv)
         if (argv[i][0] == '-' && argv[i][1] == 'a')
             angle = str_to_double(argv[i+1]);
 
-    const SDL_Rect cRect = grid_detection(s, &angle);
-    printf("%i %i\n", cRect.x, cRect.y);
-    SDL_Rect rect;
-    rect.x = 0;
-    rect.y = 0;
-    rect.w = cRect.w;
-    rect.h = cRect.h;
-    const SDL_Rect newRect = rect;
+    grid_detection(s, &angle);
 
     for (int i = 1; i < argc - 1; i++)
         if (argv[i][0] == '-' && argv[i][1] == 'd')
@@ -94,7 +86,7 @@ int processing_image(int argc, char** argv)
     SDL_FreeSurface(s);
 
     // - Dispatch the events.
-    event_loop(renderer, t, window, &cRect, &newRect);
+    event_loop(renderer, t);
 
     // - Destroy the objects.
     SDL_DestroyTexture(t);

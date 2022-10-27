@@ -62,7 +62,7 @@ float **sort_points(float **lines, int *square_corners)
     return points;
 }
 
-SDL_Rect resize(float **lines, int *square_corners)
+void resize(SDL_Surface *s, float **lines, int *square_corners)
 {
     printf("ﬕ Resizing...\n");
     float **points = sort_points(lines, square_corners);
@@ -82,13 +82,28 @@ SDL_Rect resize(float **lines, int *square_corners)
     printf("        - Width of square : %f\n", w);
     printf("        - Height of square : %f\n", h);
 
+    int sizeLine = 1;
+    w += sizeLine;
+    h += sizeLine;
     SDL_Rect newRect;
-    newRect.x = tl[0];
-    newRect.y = tl[1];
-    newRect.w = w + 1;
-    newRect.h = h + 1;
+    int x = tl[0];
+    int y = tl[1];
+    newRect.x = x;
+    newRect.y = y;
+    newRect.w = w;
+    newRect.h = h;
+    const SDL_Rect newRectC = newRect;
+
+    SDL_Rect pastRect;
+    pastRect.x = 0;
+    pastRect.y = 0;
+    pastRect.w = s->w;
+    pastRect.h = s->h;
+
+    SDL_BlitSurface(s, &newRectC, s, &pastRect);
+    s->w = w;
+    s->h = h;
 
     printf("\n");
-    return newRect;
 }
 

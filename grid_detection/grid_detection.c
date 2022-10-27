@@ -134,7 +134,7 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
     return lines;
 }
 
-SDL_Rect grid_detection(SDL_Surface* s, double *angle)
+void grid_detection(SDL_Surface* s, double *angle)
 {
     int **hough_accumulator = hough_transform(s);
 
@@ -180,9 +180,8 @@ SDL_Rect grid_detection(SDL_Surface* s, double *angle)
 
     int *square = square_detection(lines_eq, len);
 
-    SDL_Rect r = resize(lines_eq, square);
+    resize(s, lines_eq, square);
 
     free(lines);
     free(lines_eq);
-    return r;
 }
