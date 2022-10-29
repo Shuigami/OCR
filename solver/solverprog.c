@@ -34,7 +34,7 @@ void del_h(char s[81][10],size_t y)
 }
 
 void del_v(char s[81][10],size_t x)
-{  
+{
     //delete impossible numbers for the row "x"
     char notpermit[9] = {0};
     //find every impossible numbers
@@ -71,30 +71,37 @@ void one(char s[81][10])
 {
     //init every empty box with only one possible number
     for(size_t i = 0;i<81;i++)
+        //if it's an empty box
         if(s[i][0] == 0)
         {
             char nbr = 0;
             size_t j = 1;
+            //as long as there is 1 or less number different from 0
             while(j < 10 && !(s[i][j] && nbr))
             {
                 if(s[i][j])
                     nbr = s[i][j];
                 j++;
             }
+            //if there was just 1 number different from 0
+            //put him in the case
             if(j == 10)
                 s[i][0] = nbr;
         }
-            
+
 }
 
 void init(char s[81][10])
 {
     //init sudoku board
     fill(s);
+    //delete impossible numbers for each line
     for(size_t i = 0;i<81;i+=9)
         del_h(s,i);
+    //delete impossible numbers for each column
     for(size_t i = 0;i<9;i++)
         del_v(s,i);
+    //delete impossible numbers for each area
     for(size_t i = 0;i<81;i+=27)
         for(size_t j = 0;j<9;j+=3)
             del_s(s,i+j);
