@@ -61,9 +61,25 @@ int processing_image(int argc, char** argv)
 
     grid_detection(s, &angle);
 
+    int stop = 0;
+    double w = s->w;
+    double h = s->h;
     for (int i = 1; i < argc - 1; i++)
-        if (argv[i][0] == '-' && argv[i][1] == 'd')
-            return EXIT_SUCCESS;
+    {
+        if (argv[i][0] == '-')
+        {
+            if (argv[i][1] == 'd')
+                stop = 0;
+            if (argv[i][1] == 's' && i + 2 < argc)
+            {
+                w = str_to_double(argv[i+1]);
+                h = str_to_double(argv[i+2]);
+            }
+        }
+    }
+
+    if (stop)
+        return EXIT_SUCCESS;
 
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
@@ -77,7 +93,7 @@ int processing_image(int argc, char** argv)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
     // - Resize the window according to the size of the image.
-    SDL_SetWindowSize(window, s->w, s->h);
+    SDL_SetWindowSize(window, w, h);
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* t = SDL_CreateTextureFromSurface(renderer, s);

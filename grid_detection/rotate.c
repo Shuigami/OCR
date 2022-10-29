@@ -80,6 +80,8 @@ double automatic_rotation(int **hough_accumulator, SDL_Surface *s)
     free(thetas);
     free(thetas_v);
 
+    most_freq_theta = abs((int)most_freq_theta);
+
     printf("不 Automatic Rotation: %.2f\n", most_freq_theta);
 
     return most_freq_theta;
@@ -106,14 +108,14 @@ void rotate(SDL_Surface *s, SDL_Surface *d, float angle)
             if (0 <= rx && rx < w && 0 <= ry && ry < h)
             {
                 Uint8 r, g, b;
-                SDL_GetRGB(pixels[(int)rx * h + (int)ry], s->format, &r, &g, &b);
+                SDL_GetRGB(pixels[(int)ry * w + (int)rx], s->format, &r, &g, &b);
                 Uint32 color = SDL_MapRGB(d->format, r, g, b);
-                rPixels[x * h + y] = color;
+                rPixels[y * w + x] = color;
             }
             else
             {
                 Uint32 black = SDL_MapRGB(d->format, 0, 0, 0);
-                rPixels[x * h + y] = black;
+                rPixels[y * w + x] = black;
             }
         }
     }

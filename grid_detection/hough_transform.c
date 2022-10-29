@@ -53,8 +53,8 @@ int **hough_transform(SDL_Surface* s)
         for (int y = 0; y < h; y++)
         {
             Uint8 r, g, b;
-            SDL_GetRGB(pixels[x * (int) w + y], s->format, &r, &g, &b);
-            if(r != 255 || g != 255 || b != 255)
+            SDL_GetRGB(pixels[x * (int) h + y], s->format, &r, &g, &b);
+            if(r != 255)
                 continue;
 
             for (int t = 0; t <= theta_num; t++)
