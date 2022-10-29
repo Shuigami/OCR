@@ -31,7 +31,7 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
     Uint8 black = 0 , white = 255;
     get_max_and_min(pixels,format,len,&white,&black);
 
-    Uint8 mid = 127; //(black - white)/2 + white;
+    Uint8 mid = (black - white)/2 + white;
 
     for (int i = 0; i < len; i++)
     {
@@ -44,7 +44,7 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
     SDL_UnlockSurface(surface);
 }
 
-
+/*
 void black_or_white(Uint8 black,Uint8 white,
                     Uint8* pixels,Uint32* results,SDL_PixelFormat* format ,
                     int x,int y,int width, int height,
@@ -76,15 +76,16 @@ void black_or_white(Uint8 black,Uint8 white,
 	}
        // nextpix = SDL_MapRGB(format,  gray, gray, gray);
       }
-}
+}*/
 
+/*
 void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 {
   Uint32* pixels = surface->pixels;
   int width = surface->w;
   int height = surface->h;
   int len = width * height;
-  SDL_PixelFormat* format = surface->format;
+  SDL_PixelFormat* format = surface->format;*/
 
   //SDL_Surface *surfaceTEMP = SDL_CreateRGBSurfaceFrom(pixels,width,height,32,4*width,0,0,0,0);
   //if(surfaceTEMP == NULL)
@@ -93,8 +94,8 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
   if(SDL_BlitSurface(surface,NULL,surfaceTEMP,NULL) != 0)
     errx(EXIT_FAILURE,"%s",SDL_GetError());
   Uint32 *pixelsTEMP = surfaceTEMP->pixels;*/
-  
 
+/*
   Uint8 *save = NULL;
   save = (Uint8 *) malloc(len);
   copy(pixels,save,len,format);
@@ -141,12 +142,12 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
       (void)(width);
       *x=*x-1;
       return *x >= 0;
-    }
+    }*/
 
-    
+
     //for(int x = 0;x < width;x++)
-    black_or_white(white,black,save,pixels,format,0,0,width,height,&down);
-    printf("%u/%u\n",black,white);/*
+    /*black_or_white(white,black,save,pixels,format,0,0,width,height,&down);
+    printf("%u/%u\n",black,white);*//*
     for(int x = 0;x < width;x++)
       black_or_white(white,black,pixelsTEMP,pixels,format,x,height-1,width,height,&up);
     printf("mid");
@@ -157,12 +158,12 @@ void surface_to_blackORwhite_Rec(SDL_Surface* surface)
 
     surface_to_simple_blackORwhite(surface);
 
-    */
+    *//*
   //SDL_UnlockSurface(surfaceTEMP);
   SDL_UnlockSurface(surface);
-}
+}*/
 
-
+/*
 void surface_to_blackORwhite(SDL_Surface* surface)
 {
     Uint32* pixels = surface->pixels;
@@ -200,4 +201,4 @@ void surface_to_blackORwhite(SDL_Surface* surface)
     }
 
     SDL_UnlockSurface(surface);
-}
+}*/

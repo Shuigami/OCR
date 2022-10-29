@@ -37,7 +37,7 @@ void event_loop(SDL_Renderer* renderer, SDL_Texture* grayscale, int angle)
 int processing_image(int argc, char** argv)
 {
     // Checks the number of arguments.
-    if (argc < 3)
+    if (argc != 2)
         errx(EXIT_FAILURE, "Usage: image-file");
 
     // - Initialize the SDL.
@@ -65,7 +65,8 @@ int processing_image(int argc, char** argv)
 
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
-    switch (atoi(argv[2])) {
+    surface_to_simple_blackORwhite(s);
+    /*switch (atoi(argv[2])) {
       case 3:
         surface_to_blackORwhite_Rec(s);
         break;
@@ -77,7 +78,7 @@ int processing_image(int argc, char** argv)
       case 2:
         surface_to_blackORwhite(s);
         break;
-    }
+    }*/
 
     // - Rotate image
     int angle = 0;
