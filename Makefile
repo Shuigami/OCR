@@ -6,7 +6,7 @@ CFLAGS = -g -Wall -Wextra -O3 `pkg-config --cflags sdl2 SDL2_image`
 LDFLAGS =
 LDLIBS = `pkg-config --libs sdl2 SDL2_image` -lm
 
-SRC = $(wildcard utils/*.c) $(wildcard processing/*.c) $(wildcard grid_detection/*.c)
+SRC = $(wildcard utils/*.c) $(wildcard processing/*.c) $(wildcard grid_detection/*.c) $(wildcard Cut/*.c)
 OBJ = ${SRC:.c=.o}
 EXE = ${SRC:.c=}
 

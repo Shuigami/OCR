@@ -29,7 +29,7 @@ int main(int argc,char** argv)
 	//initstop = clock();
 
 	//start = clock();
-	success = force(sudoku,0);
+	int success = force(sudoku,0);
 	//stop = clock();
 
 	print(sudoku);
