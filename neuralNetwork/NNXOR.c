@@ -45,7 +45,7 @@ void write(char* filename, char* result)
 	fclose(output_file);
 }
 
-int main(void)
+int NNXOR()
 {
 	//initialisation des poids et de ce dont nous avons besoins
 	double hiddenNode[2];
@@ -75,7 +75,7 @@ int main(void)
 	}
 
 
-	double hideNodeBias[2];
+	double hideNodeBias[2] = {};
 	double outputNodeBias[1];
 
 	for(int j = 0; j<1; j++)
