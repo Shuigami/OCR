@@ -205,3 +205,52 @@ void surface_to_blackORwhite(SDL_Surface* surface)
 
     SDL_UnlockSurface(surface);
 }*/
+void otsu(SDL_Surface* surface)
+{
+    Uint32* pixels = surface->pixels;
+    int len = surface->w * surface->h;
+    if(SDL_LockSurface(surface) != 0)
+        errx(EXIT_FAILURE, "%s", SDL_GetError());
+
+    SDL_PixelFormat* format = surface->format;
+
+
+    Uint8 mid = 0;
+    double uT = 0;
+    double uTT[256];
+    double w[256] = {0};
+    double u[256] = {0};
+
+    double histo[256] = {0};
+    for (int i = 0; i < len; i++)
+        histo[get_gray(pixels[i],format)] += (1/len);
+
+    w[0] = histo[0];
+    for (int i = 1; i < 256; i++) {
+        w[i] = w[i - 1] + histo[i];
+        u[i] = u[i - 1] + i * histo[i];
+    }
+
+    for(int i = 0; i < 255; i++) {
+        if(w[i] != 0.0 && w[i] != 1.0)
+            uTT[i] = pow(u[255] * w[i], 2) / (w[i] * (1.0 - w[i]));
+        else
+            uTT[i] = 0.0;
+        if(uTT[i] > uT) {
+            uT = uTT[i];
+            mid = i;
+        }
+    }
+
+    printf("%i\n", mid);
+
+    for (int i = 0; i < len; i++)
+    {
+      if (get_gray(pixels[i],format) <= mid)
+        pixels[i] = SDL_MapRGB(format, 0, 0, 0);
+      else if (get_gray(pixels[i],format) > mid)
+        pixels[i] = SDL_MapRGB(format, 255, 255, 255);
+    }
+
+    SDL_UnlockSurface(surface);
+}
