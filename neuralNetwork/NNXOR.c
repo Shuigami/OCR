@@ -89,7 +89,7 @@ int NNXOR()
 
 	double outputs[4][1] = {{0.0f},
 		{1.0f},{1.0f},{0.0f}};
-	int epoch = 10000;
+	int epoch = 100000;
 	int orderTrain[] = {0,1,2,3};
 
 	for(int n = 0; n < epoch; n++)
@@ -152,57 +152,56 @@ int NNXOR()
 			}
 		}
 	}
-
-
+	
 	//sauvegarde des meilleurs poids et biais
-	fputs("Final Hidden Weights \n [",stdout);
+	//fputs("Final Hidden Weights \n [",stdout);
 	for(int j = 0; j < 2;j++)
 	{
-		fputs("[ ",stdout);			
+		//fputs("[ ",stdout);			
 		for(int k = 0; k < 2; k++)
 		{
 			char bu[10];
-			printf("%f ", hiddenWeights[k][j]);
+			//printf("%f ", hiddenWeights[k][j]);
 			sprintf(bu,"%f",hiddenWeights[k][j]);
 			write("FinalHiddenWeights",bu);
 		}
-		fputs("] ",stdout);
+		//fputs("] ",stdout);
 	}	
 
-	fputs(" ]\n Final Hidden Biases \n[ ", stdout);
+	//fputs(" ]\n Final Hidden Biases \n[ ", stdout);
 	for(int j = 0; j < 2; j++)
 	{
 		char buf[10];
-		printf("%f ", hideNodeBias[j]);
+		//printf("%f ", hideNodeBias[j]);
 		sprintf(buf,"%f",hideNodeBias[j]);
 		write("FinalHiddenBias",buf);
 	}
-	fputs("] \n",stdout);
+	//fputs("] \n",stdout);
 
-	fputs("Final Output Weights \n[ ",stdout);
+	//fputs("Final Output Weights \n[ ",stdout);
 	for(int j = 0; j < 1;j++)
 	{
-		fputs("[ ",stdout);
+		//fputs("[ ",stdout);
 		for(int k = 0; k < 2; k++)
 		{
 			char buff[10];
-			printf("%f ", outputWeights[k][j]);
+			//printf("%f ", outputWeights[k][j]);
 			sprintf(buff,"%f",outputWeights[k][j]);
 			write("FinalOutputWeight",buff);
 		}
-		fputs("] ",stdout);
+		//fputs("] ",stdout);
 
 	}
 
-	fputs(" ]\n Final Outputs Biases \n[ ", stdout);
+	//fputs(" ]\n Final Outputs Biases \n[ ", stdout);
 	for(int j = 0; j < 1; j++)
 	{
 		char buffe[10];
-		printf("%f ", outputNodeBias[j]);
+		//printf("%f ", outputNodeBias[j]);
 		sprintf(buffe,"%f",outputNodeBias[j]);
 		write("FinalOutputBias",buffe);
 	}
 
-	fputs("] \n",stdout);
+	//fputs("] \n",stdout);
 	return 0;
 }
