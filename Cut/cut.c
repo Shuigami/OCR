@@ -76,11 +76,11 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
 
 }
 
-SDL_Surface* load_image(const char* path)
+/*SDL_Surface* load_image(const char* path)
 {
     SDL_Surface* tmp = IMG_Load(path);
     SDL_Surface* surface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_RGB888, 0);
     SDL_FreeSurface(tmp);
     return surface;
-}
+}*/
 
