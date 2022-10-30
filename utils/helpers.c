@@ -194,13 +194,17 @@ int get_tl(float **points)
         top_index++;
     }
 
+    int t0 = top[0];
+    int t1 = top[1];
+    free(top);
+
     if (top_index == 1)
-        return top[0];
+        return t0;
     else
     {
-        if (points[top[0]][0] < points[top[1]][0])
-            return top[0];
-        return top[1];
+        if (points[t0][0] < points[t1][0])
+            return t0;
+        return t1;
     }
 }
 
@@ -235,13 +239,17 @@ int get_bl(float **points)
         bottom_index++;
     }
 
+    int b0 = bottom[0];
+    int b1 = bottom[1];
+    free(bottom);
+
     if (bottom_index == 1)
-        return bottom[0];
+        return b0;
     else
     {
-        if (points[bottom[0]][1] < points[bottom[1]][1])
-            return bottom[1];
-        return bottom[0];
+        if (points[b0][1] < points[b1][1])
+            return b1;
+        return b0;
     }
 }
 
@@ -276,13 +284,17 @@ int get_tr(float **points)
         top_index++;
     }
 
+    int t0 = top[0];
+    int t1 = top[1];
+    free(top);
+
     if (top_index == 1)
-        return top[0];
+        return t0;
     else
     {
-        if (points[top[0]][1] > points[top[1]][1])
-            return top[1];
-        return top[0];
+        if (points[t0][1] > points[t1][1])
+            return t1;
+        return t0;
     }
 }
 
@@ -317,12 +329,16 @@ int get_br(float **points)
         bottom_index++;
     }
 
+    int b0 = bottom[0];
+    int b1 = bottom[1];
+    free(bottom);
+
     if (bottom_index == 1)
-        return bottom[0];
+        return b0;
     else
     {
-        if (points[bottom[0]][0] > points[bottom[1]][0])
-            return bottom[0];
-        return bottom[1];
+        if (points[b0][0] > points[b1][0])
+            return b0;
+        return b1;
     }
 }

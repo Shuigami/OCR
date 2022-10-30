@@ -86,6 +86,11 @@ float square_perimeter(float **lines, int i, int j, int k, int l)
             + (p3[1] - p4[1]) * (p3[1] - p4[1]));
     d += sqrt((p4[0] - p1[0]) * (p4[0] - p1[0]) 
             + (p4[1] - p1[1]) * (p4[1] - p1[1]));
+
+    free(p1);
+    free(p2);
+    free(p3);
+    free(p4);
     return d;
 }
 
@@ -162,5 +167,9 @@ int *square_detection(float **lines, int len)
     printf("     Perimeter of largest square : %.2f\n\n", 
             square_perimeter(lines, i, j, k, l));
 
+    free(p1);
+    free(p2);
+    free(p3);
+    free(p4);
     return square_lines;
 }

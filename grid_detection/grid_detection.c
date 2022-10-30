@@ -138,8 +138,6 @@ void grid_detection(SDL_Surface* s, double *angle)
 {
     int **hough_accumulator = hough_transform(s);
 
-    // hough_accumulator = hough_transform(s);
-
     // Get width and height of the image
     double w = s->w;
     double h = s->h;
@@ -189,4 +187,5 @@ void grid_detection(SDL_Surface* s, double *angle)
 
     free(lines);
     free(lines_eq);
+    free(square);
 }
