@@ -34,6 +34,7 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
 
     // Uint8 mid = (black - white)/2 + white;
     Uint8 mid = 110;
+    // Uint8 mid = get_average(pixels,format,len);
 
     for (int i = 0; i < len; i++)
     {

@@ -58,6 +58,18 @@ void get_max_and_min(Uint32* pixels,SDL_PixelFormat *format,int len,Uint8 *min,U
   }
 }
 
+Uint8 get_average(Uint32* pixels, SDL_PixelFormat *format, int len)
+{
+  Uint8 average = 0;
+  for (int i = 0; i < len; i++)
+  {
+      Uint8 curr = get_gray(pixels[i],format);
+      average += curr;
+  }
+  return average/len;
+}
+
+
 void copy(Uint32 *src,Uint8 *dst,size_t len,SDL_PixelFormat* format)
 {
   for(size_t i = 0; i < len; i++)
