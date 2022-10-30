@@ -60,9 +60,9 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
 
     printf("     Finding max...\n");
     int max = 0;
-    for (int r = 0; r <= num; r++)
+    for (int r = 0; r <= (int) num; r++)
     {
-        for (int t = 0; t <= num; t++)
+        for (int t = 0; t <= (int) num; t++)
         {
             if (accumulator[r][t] > max)
                 max = accumulator[r][t];
@@ -138,14 +138,7 @@ void grid_detection(SDL_Surface* s, double *angle)
 {
     int **hough_accumulator = hough_transform(s);
 
-    if (*angle == -1)
-        *angle = automatic_rotation(hough_accumulator, s);
-
-    SDL_Surface *d = SDL_CreateRGBSurface(0, s->w, s->h, 32, 0, 255, 0, 0);
-    rotate(s, d, *angle);
-    *s = *d;
-
-    hough_accumulator = hough_transform(s);
+    // hough_accumulator = hough_transform(s);
 
     // Get width and height of the image
     double w = s->w;
@@ -175,6 +168,18 @@ void grid_detection(SDL_Surface* s, double *angle)
 
     free(rhos);
     free(thetas);
+
+    if (*angle == -1)
+        *angle = automatic_rotation(hough_accumulator, s);
+
+    if (*angle > .5)
+    {
+        SDL_Surface *d = SDL_CreateRGBSurface(0, s->w, s->h, 32, 0, 255, 0, 0);
+        rotate(s, d, *angle);
+        *s = *d;
+
+        lines = rotate_lines(s, *angle, lines, len);
+    }
 
     float **lines_eq = find_line_equations(lines, len);
 

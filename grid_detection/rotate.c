@@ -82,13 +82,47 @@ double automatic_rotation(int **hough_accumulator, SDL_Surface *s)
 
     most_freq_theta = abs((int)most_freq_theta);
 
-    printf("不 Automatic Rotation: %.2f\n", most_freq_theta);
+    printf("不 Automatic angle found : %.2f\n", most_freq_theta);
 
     return most_freq_theta;
 }
 
+int *rotate_line(SDL_Surface *s, float angle, int *line)
+{
+    int *rotated_line = malloc(sizeof(int) * 4);
+    int x1 = line[0];
+    int y1 = line[1];
+    int x2 = line[2];
+    int y2 = line[3];
+
+    angle = degrees_to_rad(angle);
+
+    int w = s->w;
+    int h = s->h;
+
+    rotated_line[0] = (x1 - w/2) * cos(angle) - (y1 - h/2) * sin(angle) + w/2;
+    rotated_line[1] = (x1 - w/2) * sin(angle) + (y1 - h/2) * cos(angle) + h/2;
+    rotated_line[2] = (x2 - w/2) * cos(angle) - (y2 - h/2) * sin(angle) + w/2;
+    rotated_line[3] = (x2 - w/2) * sin(angle) + (y2 - h/2) * cos(angle) + h/2;
+
+    return rotated_line;
+}
+
+int **rotate_lines(SDL_Surface *s, float angle, int **lines, int len)
+{
+    printf("不 Rotating lines found...\n");
+    int **rotated_lines = malloc(sizeof(int*) * len);
+    for (int i = 0; i < len; i++)
+        rotated_lines[i] = rotate_line(s, angle, lines[i]);
+
+    printf("     Rotate lines found\n\n");
+    return rotated_lines;
+}
+
 void rotate(SDL_Surface *s, SDL_Surface *d, float angle)
 {
+    printf("不 Rotating by %.2f...\n", angle);
+
     angle = degrees_to_rad(angle);
 
     int w = s->w;
@@ -119,4 +153,5 @@ void rotate(SDL_Surface *s, SDL_Surface *d, float angle)
             }
         }
     }
+    printf("     Rotate image\n\n");
 }
