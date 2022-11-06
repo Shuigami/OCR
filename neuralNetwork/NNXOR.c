@@ -21,7 +21,7 @@ double init_weight()
 void sgd(int *array,size_t n)
 {
 	if(n>1)
-	{	
+	{
 		size_t i;
 		for(i = 0; i < n - 1; i++)
 		{
@@ -82,7 +82,7 @@ int NNXOR()
 	{
 		outputNodeBias[j] = init_weight();
 	}
-	
+
 	//training
 	double inputs[4][2]={{0.0f,0.0f},
 	{1.0f,0.0f},{0.0f,1.0f},{1.0f,1.0f}};
@@ -101,7 +101,7 @@ int NNXOR()
 			int i = orderTrain[u];
 			//forward_pass
 			for(int j = 0; j < 2; j++)
-			{	
+			{
 				double activation = hideNodeBias[j];//fonction d'activation
 				for(int k = 0; k < 2;k++)
 					activation +=inputs[i][k]*hiddenWeights[k][j];
@@ -109,7 +109,7 @@ int NNXOR()
 			}
 
 			for(int j = 0; j < 1;j++)
-			{	
+			{
 				double activation = outputNodeBias[j];
 				for(int k = 0; k < 2;k++)
 					activation += hiddenNode[k]*outputWeights[k][j];
@@ -126,7 +126,7 @@ int NNXOR()
 			{
 				double error_rate = (outputs[i][j]-outputNode[j]);
 				deltaOutput[j] = error_rate * dSigmoid(outputNode[j]);
-			}	
+			}
 
 
 			for(int j = 0; j<2; j++)
@@ -138,42 +138,42 @@ int NNXOR()
 			}
 
 			for(int j = 0; j < 1; j++)
-			{	
+			{
 				outputNodeBias[j]+=deltaOutput[j]*learningSpeed;
 				for(int k = 0; k<2;k++)
 					outputWeights[k][j]+=hiddenNode[k]*deltaOutput[j]*learningSpeed;
 			}
-	
+
 			for(int j = 0; j<2;j++)
-			{	
+			{
 				hideNodeBias[j]+=deltaHidden[j]*learningSpeed;
 				for(int k = 0; k<2;k++)
 					hiddenWeights[k][j]+=inputs[i][k]*deltaHidden[j]*learningSpeed;
 			}
 		}
 	}
-	
+
 	//sauvegarde des meilleurs poids et biais
 	//fputs("Final Hidden Weights \n [",stdout);
 	for(int j = 0; j < 2;j++)
 	{
-		//fputs("[ ",stdout);			
+		//fputs("[ ",stdout);
 		for(int k = 0; k < 2; k++)
 		{
-			char bu[10];
+			char bu[10] = {0};
 			//printf("%f ", hiddenWeights[k][j]);
-			sprintf(bu,"%f",hiddenWeights[k][j]);
+			sprintf(bu,"%lf",hiddenWeights[k][j]);
 			write("FinalHiddenWeights",bu);
 		}
 		//fputs("] ",stdout);
-	}	
+	}
 
 	//fputs(" ]\n Final Hidden Biases \n[ ", stdout);
 	for(int j = 0; j < 2; j++)
 	{
-		char buf[10];
+		char buf[10] = {0};
 		//printf("%f ", hideNodeBias[j]);
-		sprintf(buf,"%f",hideNodeBias[j]);
+		sprintf(buf,"%lf",hideNodeBias[j]);
 		write("FinalHiddenBias",buf);
 	}
 	//fputs("] \n",stdout);
@@ -184,9 +184,9 @@ int NNXOR()
 		//fputs("[ ",stdout);
 		for(int k = 0; k < 2; k++)
 		{
-			char buff[10];
+			char buff[10] = {0};
 			//printf("%f ", outputWeights[k][j]);
-			sprintf(buff,"%f",outputWeights[k][j]);
+			sprintf(buff,"%lf",outputWeights[k][j]);
 			write("FinalOutputWeight",buff);
 		}
 		//fputs("] ",stdout);
@@ -196,9 +196,9 @@ int NNXOR()
 	//fputs(" ]\n Final Outputs Biases \n[ ", stdout);
 	for(int j = 0; j < 1; j++)
 	{
-		char buffe[10];
+		char buffe[10] = {0};
 		//printf("%f ", outputNodeBias[j]);
-		sprintf(buffe,"%f",outputNodeBias[j]);
+		sprintf(buffe,"%lf",outputNodeBias[j]);
 		write("FinalOutputBias",buffe);
 	}
 
