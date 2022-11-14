@@ -22,5 +22,6 @@ test: main
 clean:
 	${RM} ${OBJ}
 	${RM} ${EXE}
+	${RM} Final*
 
 # END
