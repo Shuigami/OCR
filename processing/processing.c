@@ -51,23 +51,12 @@ int processing_image(int argc, char** argv)
     // - Create a surface from the colored image.
     SDL_Surface* s = load_image(argv[1]);
 
+    double w = s->w;
+    double h = s->h;
+
     // - Convert the surface into grayscale.
-    surface_to_grayscale(s);
-    // surface_to_simple_blackORwhite(s);
-    // otsu(s);
-    /*switch (atoi(argv[2])) {
-      case 3:
-        surface_to_blackORwhite_Rec(s);
-        break;
-
-      case 1:
-        surface_to_simple_blackORwhite(s);
-        break;
-
-      case 2:
-        surface_to_blackORwhite(s);
-        break;
-    }*/
+    // surface_to_grayscale(s);
+    otsu(s);
 
     // - Grid Detection
     double angle = -1;
@@ -78,8 +67,6 @@ int processing_image(int argc, char** argv)
     grid_detection(s, &angle);
 
     int stop = 0;
-    double w = s->w;
-    double h = s->h;
     for (int i = 1; i < argc - 1; i++)
     {
         if (argv[i][0] == '-')
