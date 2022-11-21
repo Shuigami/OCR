@@ -58,7 +58,6 @@ int processing_image(int argc, char** argv)
     // surface_to_grayscale(s);
     otsu(s);
 
-    /*
     // - Grid Detection
     double angle = -1;
     for (int i = 1; i < argc - 1; i++)
@@ -84,7 +83,7 @@ int processing_image(int argc, char** argv)
 
     if (stop)
         return EXIT_SUCCESS;
-    */
+
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
             SDL_WINDOW_SHOWN);
