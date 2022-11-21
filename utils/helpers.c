@@ -91,7 +91,6 @@ int *draw_line(SDL_Surface *s, int x0, int y0, int x1, int y1)
 
 double str_to_double(char *str)
 {
-  /*
     double r = 0;
     size_t n = strlen(str);
 
@@ -99,8 +98,6 @@ double str_to_double(char *str)
         r = r * 10 + (double) (str[i] - '0');
 
     return r;
-    */
-    return strtod(str,(str + 10));
 }
 
 int **append_lines(int **L, int *len, int x1, int y1, int x2, int y2)
