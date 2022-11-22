@@ -13,3 +13,4 @@ int get_tl(float **points);
 int get_bl(float **points);
 int get_tr(float **points);
 int get_br(float **points);
+int clamp(int val, int min, int max);

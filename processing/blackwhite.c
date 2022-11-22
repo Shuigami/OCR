@@ -49,7 +49,6 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
 
 void otsu(SDL_Surface* surface)
 {
-    surface_to_grayscale(surface);
     Uint32* pixels = surface->pixels;
     SDL_PixelFormat* format = surface->format;
     int w = surface->w;

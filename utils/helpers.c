@@ -342,3 +342,12 @@ int get_br(float **points)
         return b1;
     }
 }
+
+int clamp(int val, int min, int max)
+{
+    if (val < min)
+        return min;
+    if (val > max)
+        return max;
+    return val;
+}

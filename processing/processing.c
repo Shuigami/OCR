@@ -7,6 +7,7 @@
 #include "helpers.h"
 #include "rotate.h"
 #include "tools.h"
+#include "blur.h"
 
 // Event loop that calls the relevant event handler.
 //
@@ -55,9 +56,11 @@ int processing_image(int argc, char** argv)
     double h = s->h;
 
     // - Convert the surface into grayscale.
-    // surface_to_grayscale(s);
+    surface_to_grayscale(s);
+    gaussian_blur(s, 10, 6.0);
     otsu(s);
 
+    /*
     // - Grid Detection
     double angle = -1;
     for (int i = 1; i < argc - 1; i++)
@@ -83,7 +86,7 @@ int processing_image(int argc, char** argv)
 
     if (stop)
         return EXIT_SUCCESS;
-
+    */
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
             SDL_WINDOW_SHOWN);
