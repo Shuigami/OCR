@@ -7,7 +7,7 @@
 #include "helpers.h"
 #include "rotate.h"
 #include "tools.h"
-#include "blur.h"
+#include "edge.h"
 
 // Event loop that calls the relevant event handler.
 //
@@ -57,8 +57,8 @@ int processing_image(int argc, char** argv)
 
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
-    gaussian_blur(s, 10, 6.0);
-    otsu(s);
+    //otsu(s);
+    canny_edge_detector(s);
 
     /*
     // - Grid Detection
