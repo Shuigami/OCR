@@ -57,8 +57,10 @@ int processing_image(int argc, char** argv)
 
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
-    //otsu(s);
-    canny_edge_detector(s);
+    filter_gamma(s);
+    filter_contrast(s);
+    otsu(s);
+    //canny_edge_detector(s);
 
     /*
     // - Grid Detection

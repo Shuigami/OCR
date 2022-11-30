@@ -4,6 +4,7 @@
 #include <SDL2/SDL_image.h>
 #include "processing.h"
 #include "tools.h"
+#include "helpers.h"
 
 void surface_to_grayscale(SDL_Surface* surface)
 {
@@ -45,6 +46,56 @@ void surface_to_simple_blackORwhite(SDL_Surface* surface)
     }
 
     SDL_UnlockSurface(surface);
+}
+
+void filter_contrast(SDL_Surface *s)
+{
+    int w = s->w;
+    int h = s->h;
+    int len = w * h;
+
+    SDL_PixelFormat* format = s->format;
+
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
+
+    Uint32 *pixels = s->pixels;
+
+    for (int i = 0; i < len; i++)
+    {
+        SDL_GetRGB(pixels[i], format, &r, &g, &b);
+        r = clamp(3 * (r - 128) + 128, 0, 255);
+        g = clamp(3 * (g - 128) + 128, 0, 255);
+        b = clamp(3 * (b - 128) + 128, 0, 255);
+
+        pixels[i] = SDL_MapRGB(format, r, g, b);
+    }
+}
+
+void filter_gamma(SDL_Surface *s)
+{
+    int w = s->w;
+    int h = s->h;
+    int len = w * h;
+
+    SDL_PixelFormat* format = s->format;
+
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
+
+    Uint32 *pixels = s->pixels;
+
+    for (int i = 0; i < len; i++)
+    {
+        SDL_GetRGB(pixels[i], format, &r, &g, &b);
+        r = clamp((int)(((double)r / 255.0) * (double)r), 0, 255);
+        g = clamp((int)(((double)g / 255.0) * (double)g), 0, 255);
+        b = clamp((int)(((double)b / 255.0) * (double)b), 0, 255);
+
+        pixels[i] = SDL_MapRGB(format, r, g, b);
+    }
 }
 
 void otsu(SDL_Surface* surface)
