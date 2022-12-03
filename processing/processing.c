@@ -7,6 +7,8 @@
 #include "helpers.h"
 #include "rotate.h"
 #include "tools.h"
+#include "filter.h"
+#include "morph.h"
 #include "edge.h"
 
 // Event loop that calls the relevant event handler.
@@ -57,8 +59,20 @@ int processing_image(int argc, char** argv)
 
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
+    double average = 0;
+    Uint32 *pixels = s->pixels;
+    Uint8 c;
+    for (int i = 0; i < w * h; i++)
+    {
+        SDL_GetRGB(pixels[i], s->format, &c, &c, &c);
+        average += (double)c / (double)(w * h);
+    }
+
+    if (average > 175)
+        filter_normalize(s);
     filter_gamma(s);
     filter_contrast(s);
+    morph(s);
     otsu(s);
     //canny_edge_detector(s);
 

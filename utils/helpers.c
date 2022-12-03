@@ -351,3 +351,25 @@ int clamp(int val, int min, int max)
         return max;
     return val;
 }
+
+Uint32 *copy_pixels(SDL_Surface *s)
+{
+    int w = s->w;
+    int h = s->h;
+    int len = w*h;
+
+    Uint32 *pixels = malloc(len * sizeof(Uint32));
+    Uint32 *old_pixels = s->pixels;
+    Uint8 r;
+    Uint8 g;
+    Uint8 b;
+
+    for (int i = 0; i < len; i++)
+    {
+        SDL_GetRGB(old_pixels[i], s->format, &r, &g, &b);
+        pixels[i] = SDL_MapRGB(s->format, r, g, b);
+    }
+
+
+    return pixels;
+}

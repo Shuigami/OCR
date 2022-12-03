@@ -14,3 +14,4 @@ int get_bl(float **points);
 int get_tr(float **points);
 int get_br(float **points);
 int clamp(int val, int min, int max);
+Uint32 *copy_pixels(SDL_Surface *s);
