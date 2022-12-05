@@ -56,6 +56,7 @@ int processing_image(int argc, char** argv)
 
     double w = s->w;
     double h = s->h;
+    printf("Size : %0f * %0f\n", w, h);
 
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
@@ -74,9 +75,8 @@ int processing_image(int argc, char** argv)
     filter_contrast(s);
     morph(s);
     otsu(s);
-    //canny_edge_detector(s);
+    canny_edge_detector(s);
 
-    /*
     // - Grid Detection
     double angle = -1;
     for (int i = 1; i < argc - 1; i++)
@@ -102,7 +102,7 @@ int processing_image(int argc, char** argv)
 
     if (stop)
         return EXIT_SUCCESS;
-    */
+
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
             SDL_WINDOW_SHOWN);

@@ -23,12 +23,14 @@ float **find_line_equations(int **lines, int len)
         int x2 = lines[i][2];
         int y2 = lines[i][3];
 
+        // Vertical
         if (x1 <= x2 + 5 && x1 >= x2 - 5)
         {
             line_eq[i][0] = x1;
             line_eq[i][1] = -1;
             line_eq[i][2] = 1.;
         }
+        // Horizontal
         else
         {
             float m = (float) (y1 - y2) / (x1 - x2);
@@ -70,7 +72,7 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
     }
     printf("     Found max : %i\n", max);
 
-    int threshold = max * .9;
+    int threshold = max * .5;
     printf("    ﬕ Threshold : %i\n", threshold);
 
     int lines_index = 0;
@@ -116,17 +118,19 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
             int x2 = rho * ay - diag * ax;
             int y2 = rho * ax - diag * (-ay);
 
-            int *coords = draw_line(s, x1, y1, x2, y2);
+            int *coords = inside_coords(s, x1, y1, x2, y2);
+            //int coords[4] = {x1, y1, x2, y2};
             lines_index++;
 
-            lines = append_lines(lines, len_lines, coords[0], coords[1],
+            if (coords[0] != -1 || coords[1] != -1 || coords[2] != -1 || coords[3] != -1)
+                lines = append_lines(lines, len_lines, coords[0], coords[1],
                     coords[2], coords[3]);
         }
     }
     printf("     Found %i line(s) :\n", *len_lines);
 
     for (int i = 0; i < *len_lines; i++)
-        printf("        - Lines from (%i,%i) to (%i, %i)\n", lines[i][0], 
+        printf("        (%i) - Lines from (%i,%i) to (%i, %i)\n", i, lines[i][0], 
                 lines[i][1], lines[i][2], lines[i][3]);
 
     printf("     Found lines\n\n");
@@ -181,11 +185,18 @@ void grid_detection(SDL_Surface* s, double *angle)
 
     float **lines_eq = find_line_equations(lines, len);
 
+    for (int i = 0; i < len; i++)
+    {
+        printf("i = %i\n", i);
+        draw_line(s, lines_eq[i]);
+    }
+
+    /*
     int *square = square_detection(lines_eq, len);
 
     resize(s, lines_eq, square);
-
+    */
     free(lines);
     free(lines_eq);
-    free(square);
+    //free(square);
 }

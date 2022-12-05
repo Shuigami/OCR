@@ -53,15 +53,69 @@ void compute_magnitude(SDL_Surface *s, int *deltaX, int *deltaY)
     int w = s->w;
     int h = s->h;
 
-    int t = 0;
-    for (int i = 0; i < h; ++i)
+    for (int i = 0; i < w * h; i++)
     {
-        for (int j = 0; j < w; ++j, ++t)
-        {
-            int val = (int) (sqrt((double)deltaX[t] * deltaX[t] 
-                        + (double)deltaY[t] * deltaY[t]) + 0.5);
+        int val = (int) (sqrt((double)deltaX[i] * deltaX[i] + (double)deltaY[i] * deltaY[i]) + 0.5);
+        pixels[i] = SDL_MapRGB(s->format, val, val, val);
+    }
+}
 
-            pixels[t] = SDL_MapRGB(s->format, val, val, val);
+void sobel_filtering(SDL_Surface *s)
+{
+    int w = s->w;
+    int h = s->h;
+
+    int Gx[3][3] = 
+    {
+        {-1, 0, 1},
+        {-2, 0, 2},
+        {-1, 0, 1}
+    };
+
+    int Gy[3][3] =
+    {
+        {1, 2, 1},
+        {0, 0, 0},
+        {-1, -2, -1}
+    };
+
+    Uint32 *old_pixels = copy_pixels(s);
+    Uint32 *pixels = s->pixels;
+    int x = 0;
+    int y = 0;
+    for (int i = 1; i < w - 1; i++)
+    {
+        for (int j = 1; j < h - 1; j++)
+        {
+            Uint8 c0;
+            Uint8 c1;
+            Uint8 c2;
+            Uint8 c3;
+            Uint8 c4;
+            Uint8 c5;
+            Uint8 c6;
+            Uint8 c7;
+            Uint8 c8;
+            SDL_GetRGB(old_pixels[(j - 1) * w + i - 1], s->format, &c0, &c0, &c0);
+            SDL_GetRGB(old_pixels[(j - 1) * w + i], s->format, &c1, &c1, &c1);
+            SDL_GetRGB(old_pixels[(j - 1) * w + i + 1], s->format, &c2, &c2, &c2);
+            SDL_GetRGB(old_pixels[j * w + i - 1], s->format, &c3, &c3, &c3);
+            SDL_GetRGB(old_pixels[j * w + i], s->format, &c4, &c4, &c4);
+            SDL_GetRGB(old_pixels[j * w + i + 1], s->format, &c5, &c5, &c5);
+            SDL_GetRGB(old_pixels[(j + 1) * w + i - 1], s->format, &c6, &c6, &c6);
+            SDL_GetRGB(old_pixels[(j + 1) * w + i], s->format, &c7, &c7, &c7);
+            SDL_GetRGB(old_pixels[(j + 1) * w + i + 1], s->format, &c8, &c8, &c8);
+
+            x = (Gx[0][0] * c0 + Gx[0][1] * c1 + Gx[0][1] * c2) +
+                (Gx[1][0] * c3 + Gx[1][1] * c4 + Gx[1][1] * c5) +
+                (Gx[2][0] * c6 + Gx[2][1] * c7 + Gx[2][1] * c8);
+
+            y = (Gy[0][0] * c0 + Gy[0][1] * c1 + Gy[0][1] * c2) +
+                (Gy[1][0] * c3 + Gy[1][1] * c4 + Gy[1][1] * c5) +
+                (Gy[2][0] * c6 + Gy[2][1] * c7 + Gy[2][1] * c8);
+
+            int val = sqrt(x * x + y * y);
+            pixels[j * w + i] = SDL_MapRGB(s->format, val, val, val);
         }
     }
 }
@@ -172,10 +226,7 @@ void NMS(SDL_Surface *s, int *dX, int *dY)
                 if (pixels[t] < mag1 || pixels[t] < mag2)
                     nms[t] = 0;
                 else
-                {
-                    printf("t = %i\n", t);
                     nms[t] = pixels[t];
-                }
             }
         }
     }
@@ -187,14 +238,11 @@ void canny_edge_detector(SDL_Surface *s)
     int len = s->w * s->h;
 
     printf("    Bluring the image...\n");
-    gaussian_blur(s, 10, 6.0);
+    gaussian_blur(s, 10, 1.5);
 
     printf("    Generating gradients...\n");
-    int *deltaX = malloc(sizeof(int) * len);
-    int *deltaY = malloc(sizeof(int) * len);
-    //get_gradients(s, deltaX, deltaY);
-    //compute_magnitude(s, deltaX, deltaY);
+    sobel_filtering(s);
 
     printf("    Applying non-maximal suppression algorithm...\n");
-    // NMS(s, deltaX, deltaY);
+    //NMS(s, deltaX, deltaY);
 }

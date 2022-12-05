@@ -6,6 +6,15 @@
 #include <stdio.h>
 #include <string.h>
 
+int clamp(int val, int min, int max)
+{
+    if (val < min)
+        return min;
+    if (val > max)
+        return max;
+    return val;
+}
+
 double *create_array(int size, double min, double max, double step)
 {
     double *array = malloc(sizeof(double) * size + 1);
@@ -38,7 +47,7 @@ void print_2d_array(int **array, int size_x, int size_y)
     }
 }
 
-int *draw_line(SDL_Surface *s, int x0, int y0, int x1, int y1)
+int *inside_coords(SDL_Surface *s, int x0, int y0, int x1, int y1)
 {
     int w = s->w;
     int h = s->h;
@@ -87,6 +96,60 @@ int *draw_line(SDL_Surface *s, int x0, int y0, int x1, int y1)
     }
 
     return coordinates;
+}
+
+void draw_line(SDL_Surface *s, float *line)
+{
+    int w = s->w;
+    int h = s->h;
+    int len = w*h;
+
+    Uint32 *pixels = s->pixels;
+
+    if (line[2] == 1.)
+    {
+        for (int i = line[0]; i < len; i += w)
+            pixels[i] = SDL_MapRGB(s->format, 255, 0, 0);
+    }
+
+    else 
+    {
+        if (line[0] < 1. && line[0] > -1.)
+        {
+            line[1] = clamp(line[1], 0, w - 1);
+
+            /*
+            printf("G\n");
+            printf("line[0] = %f\n", line[0]);
+            printf("line[1] = %f\n", line[1]);
+            printf("line[2] = %f\n", line[2]);
+            */
+
+            int j = (int)line[1] * w;
+            for (int i = 0; i < w; i += 1)
+                pixels[i + j] = SDL_MapRGB(s->format, 0, 255, 0);
+            printf("\n");
+        }
+        else
+        {
+            int i = (int)line[1] * w;
+            printf("%i\n", i);
+            while (i < 0 || i >= len)
+                i += line[0] * w;
+            printf("%i\n", i);
+
+            printf("B\n");
+            printf("line[0] = %f\n", line[0]);
+            printf("line[1] = %i\n", i);
+            printf("line[2] = %f\n", line[2]);
+
+            for (; i >= 0 && i < len; i += line[0] * w)
+            {
+                pixels[i] = SDL_MapRGB(s->format, 0, 0, 255);
+            }
+            printf("\n");
+        }
+    }
 }
 
 double str_to_double(char *str)
@@ -341,15 +404,6 @@ int get_br(float **points)
             return b0;
         return b1;
     }
-}
-
-int clamp(int val, int min, int max)
-{
-    if (val < min)
-        return min;
-    if (val > max)
-        return max;
-    return val;
 }
 
 Uint32 *copy_pixels(SDL_Surface *s)
