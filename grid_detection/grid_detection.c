@@ -72,7 +72,7 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
     }
     printf("     Found max : %i\n", max);
 
-    int threshold = max * .5;
+    int threshold = max * .4;
     printf("    ﬕ Threshold : %i\n", threshold);
 
     int lines_index = 0;
@@ -119,7 +119,6 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
             int y2 = rho * ax - diag * (-ay);
 
             int *coords = inside_coords(s, x1, y1, x2, y2);
-            //int coords[4] = {x1, y1, x2, y2};
             lines_index++;
 
             if (coords[0] != -1 || coords[1] != -1 || coords[2] != -1 || coords[3] != -1)
@@ -186,17 +185,13 @@ void grid_detection(SDL_Surface* s, double *angle)
     float **lines_eq = find_line_equations(lines, len);
 
     for (int i = 0; i < len; i++)
-    {
-        printf("i = %i\n", i);
         draw_line(s, lines_eq[i]);
-    }
 
-    /*
     int *square = square_detection(lines_eq, len);
 
     resize(s, lines_eq, square);
-    */
+
     free(lines);
     free(lines_eq);
-    //free(square);
+    free(square);
 }

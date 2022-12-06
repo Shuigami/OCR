@@ -114,40 +114,11 @@ void draw_line(SDL_Surface *s, float *line)
 
     else 
     {
-        if (line[0] < 1. && line[0] > -1.)
+        for (int x = 0; x < w; x++)
         {
-            line[1] = clamp(line[1], 0, w - 1);
-
-            /*
-            printf("G\n");
-            printf("line[0] = %f\n", line[0]);
-            printf("line[1] = %f\n", line[1]);
-            printf("line[2] = %f\n", line[2]);
-            */
-
-            int j = (int)line[1] * w;
-            for (int i = 0; i < w; i += 1)
-                pixels[i + j] = SDL_MapRGB(s->format, 0, 255, 0);
-            printf("\n");
-        }
-        else
-        {
-            int i = (int)line[1] * w;
-            printf("%i\n", i);
-            while (i < 0 || i >= len)
-                i += line[0] * w;
-            printf("%i\n", i);
-
-            printf("B\n");
-            printf("line[0] = %f\n", line[0]);
-            printf("line[1] = %i\n", i);
-            printf("line[2] = %f\n", line[2]);
-
-            for (; i >= 0 && i < len; i += line[0] * w)
-            {
-                pixels[i] = SDL_MapRGB(s->format, 0, 0, 255);
-            }
-            printf("\n");
+            int y = line[0] * w + line[1];
+            if (y >= 0 && y < h)
+                pixels[y * w + x] = SDL_MapRGB(s->format, 0, 255, 0);
         }
     }
 }

@@ -60,7 +60,7 @@ void compute_magnitude(SDL_Surface *s, int *deltaX, int *deltaY)
     }
 }
 
-void sobel_filtering(SDL_Surface *s)
+void sobel_filtering(SDL_Surface *s, int *dX, int *dY)
 {
     int w = s->w;
     int h = s->h;
@@ -106,13 +106,16 @@ void sobel_filtering(SDL_Surface *s)
             SDL_GetRGB(old_pixels[(j + 1) * w + i], s->format, &c7, &c7, &c7);
             SDL_GetRGB(old_pixels[(j + 1) * w + i + 1], s->format, &c8, &c8, &c8);
 
-            x = (Gx[0][0] * c0 + Gx[0][1] * c1 + Gx[0][1] * c2) +
-                (Gx[1][0] * c3 + Gx[1][1] * c4 + Gx[1][1] * c5) +
-                (Gx[2][0] * c6 + Gx[2][1] * c7 + Gx[2][1] * c8);
+            x = (Gx[0][0] * c0 + Gx[0][1] * c1 + Gx[0][2] * c2) +
+                (Gx[1][0] * c3 + Gx[1][1] * c4 + Gx[1][2] * c5) +
+                (Gx[2][0] * c6 + Gx[2][1] * c7 + Gx[2][2] * c8);
 
-            y = (Gy[0][0] * c0 + Gy[0][1] * c1 + Gy[0][1] * c2) +
-                (Gy[1][0] * c3 + Gy[1][1] * c4 + Gy[1][1] * c5) +
-                (Gy[2][0] * c6 + Gy[2][1] * c7 + Gy[2][1] * c8);
+            y = (Gy[0][0] * c0 + Gy[0][1] * c1 + Gy[0][2] * c2) +
+                (Gy[1][0] * c3 + Gy[1][1] * c4 + Gy[1][2] * c5) +
+                (Gy[2][0] * c6 + Gy[2][1] * c7 + Gy[2][2] * c8);
+
+            deltaX[y * w + x] = x;
+            deltaY[y * w + x] = y;
 
             int val = sqrt(x * x + y * y);
             pixels[j * w + i] = SDL_MapRGB(s->format, val, val, val);
@@ -238,9 +241,11 @@ void canny_edge_detector(SDL_Surface *s)
     int len = s->w * s->h;
 
     printf("    Bluring the image...\n");
-    gaussian_blur(s, 10, 1.5);
+    gaussian_blur(s, 5, 1.4);
 
     printf("    Generating gradients...\n");
+    int *deltaX = calloc(len * sizeof(int));
+    int *deltaY = calloc(len * sizeof(int));
     sobel_filtering(s);
 
     printf("    Applying non-maximal suppression algorithm...\n");
