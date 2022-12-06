@@ -114,8 +114,8 @@ void sobel_filtering(SDL_Surface *s, int *dX, int *dY)
                 (Gy[1][0] * c3 + Gy[1][1] * c4 + Gy[1][2] * c5) +
                 (Gy[2][0] * c6 + Gy[2][1] * c7 + Gy[2][2] * c8);
 
-            deltaX[y * w + x] = x;
-            deltaY[y * w + x] = y;
+            dX[j * w + i] = x;
+            dY[j * w + i] = y;
 
             int val = sqrt(x * x + y * y);
             pixels[j * w + i] = SDL_MapRGB(s->format, val, val, val);
@@ -123,114 +123,61 @@ void sobel_filtering(SDL_Surface *s, int *dX, int *dY)
     }
 }
 
-void NMS(SDL_Surface *s, int *dX, int *dY)
+void NMS(SDL_Surface *s, int *angle)
 {
-    int t = 0;
-    float alpha;
-    float mag1, mag2;
-
     int w = s->w;
     int h = s->h;
     int len = w * h;
 
-    Uint8 *nms = s->pixels;
-    Uint8 pixels[len];
-    for (int i = 0; i < len; i++)
-        pixels[i] = nms[i];
+    Uint32 *pixels = copy_pixels(s);
+    Uint32 *nms = s->pixels;
 
-    for (int i = 0; i < w; i++)
-        nms[i] = 0;
-
-    for (int i = (h - 1) * w; i < len; i++)
-        nms[i] = 0;
-
-    for (int i = w; i < len; i += w)
+    for(int i = 0; i < len; i++)
     {
-        nms[i] = 0;
-        nms[i + w - 1] = 0;
+        angle[i] = angle[i] * 180 / M_PI;
+        if (angle[i] < 0)
+            angle[i] += 180;
     }
 
-    t = w + 1;
-    for (int i = 1; i < h - 1; i++, t += 2)
+    for (int x = 1; x < w - 1; x++)
     {
-        for (int j = 1; j < w - 1; j++, t++)
+        for (int y = 1; y < h - 1; y++)
         {
-            if (pixels[t] == 0)
-                nms[t] = 0;
-            else
-            {
-                if (dX[t] >= 0)
-                {
-                    if (dY[t] >= 0)
-                    {
-                        if (dX[t] - dY[t] >= 0)
-                        {
-                            alpha = (float) dY[t] / dX[t];
-                            mag1 = (1 - alpha) * pixels[t + 1] + alpha * pixels[t + w + 1];
-                            mag2 = (1 - alpha) * pixels[t - 1] + alpha * pixels[t - w - 1];
-                        }
-                        else
-                        {
-                            alpha = (float) dX[t] / dY[t];
-                            mag1 = (1 - alpha) * pixels[t + w] + alpha * pixels[t + w + 1];
-                            mag2 = (1 - alpha) * pixels[t - w] + alpha * pixels[t - w - 1];
-                        }
-                    }
-                    else
-                    {
-                        if (dX[t] + dY[t] >= 0)
-                        {
-                            alpha = (float) - dY[t] / dX[t];
-                            mag1 = (1 - alpha) * pixels[t + 1] + alpha * pixels[t - w + 1];
-                            mag2 = (1 - alpha) * pixels[t - 1] + alpha * pixels[t + w - 1];
-                        }
-                        else
-                        {
-                            alpha = (float) - dX[t] / dY[t];
-                            mag1 = (1 - alpha) * pixels[t + w] + alpha * pixels[t + w + 1];
-                            mag2 = (1 - alpha) * pixels[t - w] + alpha * pixels[t - w - 1];
-                        }
-                    }
-                }
-                else
-                {
-                    if (dY[t] >= 0)
-                    {
-                        if (dX[t] + dY[t] >= 0)
-                        {
-                            alpha = (float) - dX[t] / dY[t];
-                            mag1 = (1 - alpha) * pixels[t + w] + alpha * pixels[t + w - 1];
-                            mag2 = (1 - alpha) * pixels[t - w] + alpha * pixels[t - w + 1];
-                        }
-                        else
-                        {
-                            alpha = (float) - dY[t] / dX[t];
-                            mag1 = (1 - alpha) * pixels[t - 1] + alpha * pixels[t + w - 1];
-                            mag2 = (1 - alpha) * pixels[t + 1] + alpha * pixels[t - w + 1];
-                        }
-                    }
-                    else
-                    {
-                        if (-dX[t] + dY[t] >= 0)
-                        {
-                            alpha = (float) dY[t] / dX[t];
-                            mag1 = (1 - alpha) * pixels[t - 1] + alpha * pixels[t - w - 1];
-                            mag2 = (1 - alpha) * pixels[t + 1] + alpha * pixels[t + w + 1];
-                        }
-                        else
-                        {
-                            alpha = (float) dX[t] / dY[t];
-                            mag1 = (1 - alpha) * pixels[t - w] + alpha * pixels[t - w - 1];
-                            mag2 = (1 - alpha) * pixels[t + w] + alpha * pixels[t + w + 1];
-                        }
-                    }
-                }
+            Uint8 q = 255;
+            Uint8 r = 255;
 
-                if (pixels[t] < mag1 || pixels[t] < mag2)
-                    nms[t] = 0;
-                else
-                    nms[t] = pixels[t];
+            int i = y * w + x;
+
+            if ((angle[i] >= 0 && angle[i] < 22.5) || (angle[i] >= 157.5 && angle[i] <= 180))
+            {
+                SDL_GetRGB(pixels[(y+1) * w + x], s->format, &q, &q, &q);
+                SDL_GetRGB(pixels[(y-1) * w + x], s->format, &r, &r, &r);
             }
+
+            else if (angle[i] >= 22.5 && angle[i] < 67.5)
+            {
+                SDL_GetRGB(pixels[(y-1) * w + x + 1], s->format, &q, &q, &q);
+                SDL_GetRGB(pixels[(y+1) * w + x - 1], s->format, &r, &r, &r);
+            }
+
+            else if (angle[i] >= 67.5 && angle[i] < 112.5)
+            {
+                SDL_GetRGB(pixels[y * w + x + 1], s->format, &q, &q, &q);
+                SDL_GetRGB(pixels[y * w + x - 1], s->format, &r, &r, &r);
+            }
+
+            else if (angle[i] >= 112.5 && angle[i] < 157.5)
+            {
+                SDL_GetRGB(pixels[(y-1) * w + x - 1], s->format, &q, &q, &q);
+                SDL_GetRGB(pixels[(y+1) * w + x + 1], s->format, &r, &r, &r);
+            }
+
+            Uint8 c;
+            SDL_GetRGB(pixels[i], s->format, &c, &c, &c);
+            if (c >= q && c >= r)
+                nms[i] = pixels[i];
+            else
+                nms[i] = 0;
         }
     }
 }
@@ -244,10 +191,14 @@ void canny_edge_detector(SDL_Surface *s)
     gaussian_blur(s, 5, 1.4);
 
     printf("    Generating gradients...\n");
-    int *deltaX = calloc(len * sizeof(int));
-    int *deltaY = calloc(len * sizeof(int));
-    sobel_filtering(s);
+    int *deltaX = calloc(len, sizeof(int));
+    int *deltaY = calloc(len, sizeof(int));
+    sobel_filtering(s, deltaX, deltaY);
+
+    int *angle = calloc(len, sizeof(int));
+    for (int i = 0; i < len; i++)
+        angle[i] = (int)atan((double)deltaX[i] / (double)deltaY[i]);
 
     printf("    Applying non-maximal suppression algorithm...\n");
-    //NMS(s, deltaX, deltaY);
+    NMS(s, angle);
 }
