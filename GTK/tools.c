@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <err.h>
-#include "solver.h"
 
 //______________________________________________________________________________
 
@@ -13,68 +12,8 @@ size_t back[11] = {11,23,35,36,48,60,72,73,85,97,109};
 
 //______________________________________________________________________________
 
-size_t x_of(size_t i)
-{
-  //return the x coordonate of i
-    return i % 9;
-}
-
-size_t y_of(size_t i)
-{
-  //return the y coordonate of i
-    return i / 9;
-}
-
-size_t i_of(size_t i)
-{
-  //return the area coordonate of i
-    return (y_of(i) / 3)*27 + (x_of(i) / 3)*3;
-}
-
-//______________________________________________________________________________
-
-size_t valid_numb(char s[81][10], size_t i, size_t j)
-{
-    //return the next possible number
-    j++;
-    while(s[i][j] == 0)
-        j++;
-    return j;
-}
-
-//______________________________________________________________________________
-
-void print(char s[81][10])
-{
-    //print the grid
-    for(size_t i = 0; i < 9; i++)
-    {
-        for(size_t j = 0; j < 9; j++)
-            printf("%hhi ",s[i*9+j][0]);
-        printf("\n");
-    }
-    printf("\n");
-}
-
-//______________________________________________________________________________
-
-void write(char* filename,char* result)
-{
-  FILE* output_file = fopen(filename, "w+");
-  if (!output_file) {
-      errx(1,"fopen");
-  }
-
-  //write the grid in the file
-  fwrite(result, 1, 110, output_file);
-  printf("Done Writing!\n");
-
-  fclose(output_file);
-}
-
 void read(char* filename,char* buffer)
 {
-
     FILE* input_file = fopen(filename , "r+");
     if (!input_file) {
         errx(1,"fopen");
@@ -113,47 +52,18 @@ void verified(char *board,char *output)
           j++;
         }
     }
-    output[j] = 0;
 }
 
 void translate(char* board,char result[81][10])
 {
   //translate the grid on the file in a empty list result
-    char vboard[82];
+    char vboard[81];
     //delete every invalid character and verified the syntax
     verified(board,vboard);
     //put numbers of the grid to the list
     for(size_t i = 0;i<81;i++)
         if(vboard[i] != '.')
-            result[i][0] = vboard[i]-48;
-}
-
-void translateback(char board[81][10], char* result)
-{
-  //translate a list with the file syntax to a string
-    size_t j = 0 ;
-    for(size_t i = 0; i<81;i++)
-    {
-      if(board[i][0] != 0)
-  	    result[j] = board[i][0] + 48;
-      else
-        result[j] = '.';
-    	j++;
-      if(i == 26 || i == 53)
-      {
-        result[j] = '\n';
-        j++;
-      }
-      if((i+1)%9 == 0)
-      {
-        result[j] = '\n';
-        j++;
-      }
-      else if((i+1)%3 == 0 && i != 0)
-      {
-        result[j] = ' ';
-        j++;
-      }
-    }
-    result[j] = 0;
+          result[i] = vboard[i]-48;
+        else
+          result[i] = 0;
 }

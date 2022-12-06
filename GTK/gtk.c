@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <stdio.h >
+#include "tools.h"
 
 typedef struct UserInterface
 {
@@ -10,24 +11,113 @@ typedef struct UserInterface
     gint size;
 } UserInterface;
 
+typedef struct Sudoku
+{
+  bool solved;
+  char grid[81];
+  siwe_t *index;
+  bool showed;
+} Sudoku
+
 typedef struct APK
 {
   UserInterface* UI;
   char* File;
-  bool Showed;
-  bool Result;
+  Sudoku* SDK;
+} APK;
+
+void update_sdk(Sudoku *sdk,char *file)
+{
+  char buffer1[111];
+  char buffer2[111];
+
+  read(file,buffer1);
+  strcat(file,".result");
+  read(file,buffer2);
+
+  char vboard[81];
+  verified(buffer1,vboard);
+  size_t j = 0;
+  for (size_t i = 0; i < 81; i++)
+    if(vboard[i] == '.')
+      sdk->index[j++] = i;
+  translate(buffer2,sdk->grid);
+
+  free(vboard);
+  free(buffer1);
+  free(buffer2);
 }
 
-gboolean draw_result(int[81] board);
+gboolean on_draw(GtkWidget *widget, cairo_t *cr,gpointer user_data)
+{
+  APK *master = user_data;
+  Sudoku *sdk = master->SDK;
+  UserInterface *ui = master->UI;
+
+  cairo_set_source_rgb(cr, 1, 1, 1);
+  cairo_paint(cr);
+
+  int shift = ui->size / 9;
+  char *tmp;
+  size_t k = 0;
+  for (size_t i = 0; i < 8; i++) {
+
+    for (size_t j = 0; j < 9; j++) {
+      if(sdk->index[k] == j*9+i)
+      {
+        cairo_set_source_rgb(cr, 0, 1, 0);
+        k++;
+      }
+      else
+      {
+        cairo_set_source_rgb(cr, 0, 0, 0);
+      }
+      cairo_move_to(cr, shift*i, shift*j);
+      sprintf(tmp, "%d", sdk->grid[j*9+i]);
+      cairo_show_text(cr, tmp);
+    }
+
+      cairo_set_source_rgb(cr, 0, 0, 0);
+      cairo_move_to(cr, shift + shift*i, 0);
+      cairo_line_to(cr, shift + shift*i, ui->size);
+
+      cairo_move_to(cr, 0, shift + shift*j);
+      cairo_line_to(cr, ui->size, shift + shift*j);
+
+  }
+
+  for (size_t j = 0; j < 9; j++) {
+    if(sdk->index[k] == j*9+i)
+    {
+      cairo_set_source_rgb(cr, 0, 1, 0);
+      k++;
+    }
+    else
+    {
+      cairo_set_source_rgb(cr, 0, 0, 0);
+    }
+    cairo_move_to(cr, shift*8, shift*j);
+    sprintf(tmp, "%d", sdk->grid[j*9+8]);
+    cairo_show_text(cr, tmp);
+  }
+
+  sdk->showed = TRUE;
+
+  return FALSE;
+}
+
+void draw(UserInterface *ui)
+{
+  gtk_widget_queue_draw(ui->result);
+}
 
 gboolean on_configure(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
   UserInterface* ui = user_data;
-  UserInterface *ui = user_data;
   ui->size = min(gtk_widget_get_allocated_width(GTK_WIDGET(ui->result)),gtk_widget_get_allocated_width(GTK_WIDGET(ui->result)));
+  draw(ui);
   return TRUE;
 }
-
 
 // Event handler for the "key-release-event" signal.
 gboolean on_key_release(GtkWidget *widget, GdkEventKey *event, gpointer user_data)
@@ -74,9 +164,11 @@ gboolean on_start(GtkWidget *widget, GdkEvent *event)
   if(master->File)
   {
     //calcul sudoku
-    master->Result = true;
+    master->SDK->solved = true;
+    update_sdk(master->SDK,master->File);
+    
     //show Result
-    draw_result(NULL);
+    draw(master->UI);
     return TRUE;
   }
   return FALSE;
@@ -117,18 +209,23 @@ int start_app()
       .size = 0,
     },
     .File = NULL,
-    .Showed = FALSE,
-    .Result = FALSE,
+    .SDK =
+    {
+      .solved = FALSE,
+      .grid = NULL,
+      .index = NULL,
+      .showed = FALSE,
+    }
   }
   UserInterface ui = master.UI;
 
   // Connects event handlers.
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
-  //g_signal_connect(result, "draw", G_CALLBACK(on_draw), &ui);
+  g_signal_connect(result, "draw", G_CALLBACK(on_draw), &master);
   g_signal_connect(start_button, "clicked", G_CALLBACK(on_start), &master);
   g_signal_connect(choose_button, "clicked", G_CALLBACK(on_choose_file), &master);
   g_signal_connect(window, "key_release_event", G_CALLBACK(on_key_release), &master);
-  g_signal_connect(result,"configure-event",G_CALLBACK(on_configure),&master);
+  g_signal_connect(result,"configure-event",G_CALLBACK(on_configure),&ui);
 
     // Runs the main loop.
     gtk_main();
