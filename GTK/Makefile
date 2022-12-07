@@ -1,18 +1,23 @@
 # Makefile
 
 CC = gcc
-CFLAGS = `pkg-config --cflags gtk+-3.0` -Wall -O3
+CPPFLAGS =
+CFLAGS = -g -Wextra -O3 `pkg-config --cflags gtk+-3.0`
+LDFLAGS =
 LDLIBS = `pkg-config --libs gtk+-3.0`
 
-EXE = gtk
+SRC = gtk.c
+OBJ = ${SRC:.c=.o}
+EXE = ${SRC:.c=}
 
-all: $(EXE)
+all: gtk
 
-$(foreach f, $(EXE), $(eval $(f):))
+main: ${OBJ}
 
 .PHONY: clean
 
 clean:
-	${RM} $(EXE)
+	${RM} ${OBJ}
+	${RM} ${EXE}
 
 # END
