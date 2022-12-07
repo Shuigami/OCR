@@ -69,17 +69,14 @@ int processing_image(int argc, char** argv)
         average += (double)c / (double)(w * h);
     }
 
-    /*
     if (average > 175)
         filter_normalize(s);
     filter_gamma(s);
     filter_contrast(s);
     morph(s);
     otsu(s);
-    */
     canny_edge_detector(s);
 
-    /*
     // - Grid Detection
     double angle = -1;
     for (int i = 1; i < argc - 1; i++)
@@ -105,7 +102,7 @@ int processing_image(int argc, char** argv)
 
     if (stop)
         return EXIT_SUCCESS;
-    */
+
     // - Create a window.
     SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
             SDL_WINDOW_SHOWN);

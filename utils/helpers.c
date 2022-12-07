@@ -114,11 +114,23 @@ void draw_line(SDL_Surface *s, float *line)
 
     else 
     {
-        for (int x = 0; x < w; x++)
+        if (line[0] <= 1 && line[0] >= -1)
         {
-            int y = line[0] * w + line[1];
-            if (y >= 0 && y < h)
-                pixels[y * w + x] = SDL_MapRGB(s->format, 0, 255, 0);
+            for (int x = 0; x < w; x++)
+            {
+                int y = line[0] * x + line[1];
+                if (y >= 0 && y < h)
+                    pixels[y * w + x] = SDL_MapRGB(s->format, 0, 255, 0);
+            }
+        }
+        else
+        {
+            for (int y = 0; y < h; y++)
+            {
+                int x = (y - line[1]) / line[0];
+                if (y >= 0 && y < h)
+                    pixels[y * w + x] = SDL_MapRGB(s->format, 0, 0, 255);
+            }
         }
     }
 }

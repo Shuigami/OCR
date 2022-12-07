@@ -72,7 +72,7 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
     }
     printf("     Found max : %i\n", max);
 
-    int threshold = max * .4;
+    int threshold = max * .5;
     printf("    ﬕ Threshold : %i\n", threshold);
 
     int lines_index = 0;
