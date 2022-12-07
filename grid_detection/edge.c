@@ -74,8 +74,8 @@ void sobel_filtering(SDL_Surface *s, int *dX, int *dY)
 
     int Gy[3][3] =
     {
-        {1, 2, 1},
-        {0, 0, 0},
+        { 1,  2,  1},
+        { 0,  0,  0},
         {-1, -2, -1}
     };
 
@@ -182,6 +182,91 @@ void NMS(SDL_Surface *s, int *angle)
     }
 }
 
+void threshold(SDL_Surface *s)
+{
+    int w = s->w;
+    int h = s->h;
+    int len = w * h;
+
+    Uint32 *threshold = s->pixels;
+    Uint32 *pixels = copy_pixels(s);
+    SDL_PixelFormat * format = s->format;
+
+    Uint8 max = 0;
+    Uint8 c;
+    for (int i = 0; i < len; i++)
+    {
+        SDL_GetRGB(pixels[i], format, &c, &c, &c);
+        if (c > max)
+            max = c;
+    }
+
+    int highThreshold = max * 0.09;
+    int lowThreshold = highThreshold * 0.1;
+
+    Uint8 weak = 25;
+    Uint8 strong = 255;
+
+    for (int i = 0; i < len; i++)
+    {
+        SDL_GetRGB(pixels[i], s->format, &c, &c, &c);
+        if (c >= highThreshold)
+            threshold[i] = SDL_MapRGB(format, strong, strong, strong);
+        else if (c < lowThreshold)
+            threshold[i] = SDL_MapRGB(format, 0, 0, 0);
+        else
+            threshold[i] = SDL_MapRGB(format, weak, weak, weak);
+    }
+}
+
+void hysteresis(SDL_Surface *s)
+{
+    Uint8 weak = 25;
+    Uint8 strong = 255;
+
+    int w = s->w;
+    int h = s->h;
+
+    Uint32 *hysteresis = s->pixels;
+    Uint32 *pixels = copy_pixels(s);
+    SDL_PixelFormat * format = s->format;
+
+    Uint8 c;
+    for (int i = 1; i < w - 1; i++)
+    {
+        for (int j = 1; j < h - 1; j++)
+        {
+            SDL_GetRGB(pixels[j * w + i], format, &c, &c, &c);
+            if (c == weak)
+            {
+                Uint8 c0;
+                Uint8 c1;
+                Uint8 c2;
+                Uint8 c3;
+                Uint8 c5;
+                Uint8 c6;
+                Uint8 c7;
+                Uint8 c8;
+                SDL_GetRGB(pixels[(j - 1) * w + i - 1], s->format, &c0, &c0, &c0);
+                SDL_GetRGB(pixels[(j - 1) * w + i], s->format, &c1, &c1, &c1);
+                SDL_GetRGB(pixels[(j - 1) * w + i + 1], s->format, &c2, &c2, &c2);
+                SDL_GetRGB(pixels[j * w + i - 1], s->format, &c3, &c3, &c3);
+                SDL_GetRGB(pixels[j * w + i + 1], s->format, &c5, &c5, &c5);
+                SDL_GetRGB(pixels[(j + 1) * w + i - 1], s->format, &c6, &c6, &c6);
+                SDL_GetRGB(pixels[(j + 1) * w + i], s->format, &c7, &c7, &c7);
+                SDL_GetRGB(pixels[(j + 1) * w + i + 1], s->format, &c8, &c8, &c8);
+
+                if (c0 == strong || c1 == strong || c2 == strong 
+                        || c3 == strong || c5 == strong || c6 == strong
+                        || c7 == strong || c8 == strong)
+                    hysteresis[j * w + i] = SDL_MapRGB(s->format, strong, strong, strong);
+                else
+                    hysteresis[j * w + i] = SDL_MapRGB(s->format, 0, 0, 0);
+            }
+        }
+    }
+}
+
 void canny_edge_detector(SDL_Surface *s)
 {
     printf("Detecting edges...\n");
@@ -201,4 +286,10 @@ void canny_edge_detector(SDL_Surface *s)
 
     printf("    Applying non-maximal suppression algorithm...\n");
     NMS(s, angle);
+
+    printf("    Double Threshold...\n");
+    threshold(s);
+
+    printf("    Hysteresis...\n");
+    hysteresis(s);
 }
