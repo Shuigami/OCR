@@ -15,18 +15,18 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
     SDL_PixelFormat* format = surface->format;
 
 
-    int length = (surface->w)/9;
+    /*int length = (surface->w)/9;
     //length *= 0.95;
     int pas = length*0.10;
-    int spas = length*0.05;
+    //int spas = length*0.05;
     //SDL_Surface* L[81] = {};
     size_t count = 0;
 
     int nb_pixel = surface->w;  
     size_t i2 = 0;
     size_t j2 = 0;
-    //i2 += pas;
-    //j2 += pas;
+    i2 += pas;
+    j2 += pas;
 
     for(size_t i = 0; i < 9; i++)
     {
@@ -36,8 +36,57 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
 		    SDL_Rect rect;
 		    rect.x = j2;
 		    rect.y = i2;
-		    rect.w = length;//nb_pixel;
-		    rect.h = length;//nb_pixel;
+		    rect.w = length - pas;//nb_pixel;
+		    rect.h = length - pas;//nb_pixel;
+
+		    if(i%3 == 0)
+			    rect.w -= pas;
+		    else
+			    rect.w -= spas;
+		    if(j%3 == 0)
+			    rect.h -= pas;
+		    else
+			    rect.h -= spas;
+					  
+		    if(!SDL_BlitSurface(surface, &rect, surface_tmp, NULL)) // blitsSurface
+			printf("error");
+
+		    (*L)[count] = surface_tmp;
+		    count++;
+
+		    j2 += length;
+
+	    }
+	    j2 = pas;
+	    //j2 = 0;
+	    i2 += length;
+    }
+    SDL_PixelFormat* format = surface->format;*/
+
+
+    int length = (surface->w)/9;
+    //length *= 0.95;
+    int pas = length*0.10;
+    //int spas = length*0.05;
+    //SDL_Surface* L[81] = {};
+    size_t count = 0;
+
+    int nb_pixel = surface->w;  
+    size_t i2 = 0;
+    size_t j2 = 0;
+    i2 += pas;
+    j2 += pas;
+
+    for(size_t i = 0; i < 9; i++)
+    {
+	    for(size_t j = 0; j < 9; j++)
+	    {
+		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 28, format->format);
+		    SDL_Rect rect;
+		    rect.x = j2;
+		    rect.y = i2;
+		    rect.w = length - pas;//nb_pixel;
+		    rect.h = length - pas;//nb_pixel;
 
 		    /*if(i%3 == 0)
 			    rect.w -= pas;
@@ -52,14 +101,58 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
 			printf("error");
 
 		    (*L)[count] = surface_tmp;
-		    count++;
+		    int** M[81] = 0;
+		    size_t a = 0;
+		    while(a < 81)
+		    {
+			    int* mat[81] = 0
+			    SDL_Surface surface = L[a];
+			    Uint32* pixels = surface->pixels;
+			    int len = surface->w * surface->h;
+
+			    SDL_pixelFormat* format = surface->format;
+
+			    SDL_LockSurface(surface);
+
+			    for(size_t i = 0; i < len; i++)
+			    {
+				    mat[i] = pixels[i];
+			    }
+			    M[i} = mat;
+			    SDL_UnlockSurface(surface);
+			    a++;
+
+				    count++;
 
 		    j2 += length;
 
 	    }
-	    //j2 = pas;
-	    j2 = 0;
+	    j2 = pas;
+	    //j2 = 0;
 	    i2 += length;
+    }
+
+
+    int** M[81] = 0;
+    size_t a = 0;
+    while(a < 81)
+    {
+	    int* mat[81] = 0
+	    SDL_Surface surface = L[a];
+	    Uint32* pixels = surface->pixels;
+	    int len = surface->w * surface->h;
+
+	    SDL_pixelFormat* format = surface->format;
+
+	    SDL_LockSurface(surface);
+
+	    for(size_t i = 0; i < len; i++)
+	    {
+		    mat[i] = pixels[i];
+	    }
+	    M[i} = mat;
+	    SDL_UnlockSurface(surface);
+	    a++;
     }
 
     /*for(size_t i = 0; i < (size_t)nb_pixel-1; i+=length) 
