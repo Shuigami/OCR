@@ -76,6 +76,7 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
     size_t j2 = 0;
     i2 += pas;
     j2 += pas;
+    uint32_t* M[81] = {};
 
     for(size_t i = 0; i < 9; i++)
     {
@@ -88,41 +89,29 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
 		    rect.w = length - pas;//nb_pixel;
 		    rect.h = length - pas;//nb_pixel;
 
-		    /*if(i%3 == 0)
-			    rect.w -= pas;
-		    else
-			    rect.w -= spas;
-		    if(j%3 == 0)
-			    rect.h -= pas;
-		    else
-			    rect.h -= spas;*/
 					  
 		    if(!SDL_BlitSurface(surface, &rect, surface_tmp, NULL)) // blitsSurface
 			printf("error");
 
 		    (*L)[count] = surface_tmp;
-		    int** M[81] = 0;
-		    size_t a = 0;
-		    while(a < 81)
+
+		    Uint32 mat[784] = {};
+		    SDL_Surface* surface = surface_tmp;
+		    Uint32* pixels = surface->pixels;
+		    size_t len = (size_t)(surface->w * surface->h);
+
+		    //SDL_pixelFormat* format = surface->format;
+
+		    SDL_LockSurface(surface);
+
+		    for(size_t i = 0; i < len; i++)
 		    {
-			    int* mat[81] = 0
-			    SDL_Surface surface = L[a];
-			    Uint32* pixels = surface->pixels;
-			    int len = surface->w * surface->h;
+			    mat[i] = pixels[i];
+		    }
+		    M[count] = mat;
+		    SDL_UnlockSurface(surface);
 
-			    SDL_pixelFormat* format = surface->format;
-
-			    SDL_LockSurface(surface);
-
-			    for(size_t i = 0; i < len; i++)
-			    {
-				    mat[i] = pixels[i];
-			    }
-			    M[i} = mat;
-			    SDL_UnlockSurface(surface);
-			    a++;
-
-				    count++;
+		    count++;
 
 		    j2 += length;
 
@@ -133,7 +122,7 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
     }
 
 
-    int** M[81] = 0;
+    /*int** M[81] = 0;
     size_t a = 0;
     while(a < 81)
     {
@@ -153,7 +142,7 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
 	    M[i} = mat;
 	    SDL_UnlockSurface(surface);
 	    a++;
-    }
+    }*/
 
     /*for(size_t i = 0; i < (size_t)nb_pixel-1; i+=length) 
     {
