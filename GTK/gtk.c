@@ -19,15 +19,15 @@ typedef struct UserInterface
 typedef struct Sudoku
 {
   gboolean solved;
-  char before[81];
-  char after[81];
+  char *before;
+  char *after;
   gboolean showed;
 } Sudoku;
 
 typedef struct APK
 {
   UserInterface UI;
-  char* File;
+  gchar* File;
   Sudoku SDK;
 } APK;
 
@@ -38,7 +38,7 @@ size_t back[11] = {11,23,35,36,48,60,72,73,85,97,109};
 
 //__________________________________TOOLS_______________________________________
 
-void f_read(char* filename,char* buffer)
+void f_read(gchar* filename,char* buffer)
 {
     FILE* input_file = fopen(filename , "r+");
     if (!input_file) {
@@ -78,10 +78,10 @@ void verified(char *board,char *output)
     }
 }
 
-void translate(char* board,char result[81])
+void translate(char* board,gchar *result)
 {
   //translate the grid on the file in a empty list result
-    char vboard[81];
+    char *vboard = calloc(81,sizeof(char));
     //delete every invalid character and verified the syntax
     verified(board,vboard);
     //put numbers of the grid to the list
@@ -97,10 +97,11 @@ void translate(char* board,char result[81])
 
 void update_sdk(Sudoku *sdk,char *file)
 {
-  char buffer1[111];
-  char buffer2[111];
+  char *buffer1 = calloc(111,sizeof(char));
+  char *buffer2 = calloc(111,sizeof(char));
 
   f_read(file,buffer1);
+  file = realloc(file,(strlen(file)+8) * sizeof(char));
   strcat(file,".result");
   f_read(file,buffer2);
 
@@ -118,6 +119,8 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr,gpointer user_data)
   cairo_set_source_rgb(cr, 1, 1, 1);
   cairo_paint(cr);
 
+  if(!sdk->solved)
+      return FALSE;
   int shift = ui->size / 9;
   char *tmp = "";
   for (size_t i = 0; i < 8; i++) {
@@ -179,22 +182,27 @@ gboolean on_configure(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 gboolean on_choose_file(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
 
-  APK *master = user_data;
-
-  GtkWidget* dialog = gtk_file_chooser_dialog_new ("Open File",
-            master->UI.window,  GTK_FILE_CHOOSER_ACTION_OPEN,("_Cancel"),
+    APK *master = user_data;
+    UserInterface *ui = &master->UI;
+  
+    GtkWidget* dialog = gtk_file_chooser_dialog_new ("Open File",
+            ui->window,  GTK_FILE_CHOOSER_ACTION_OPEN,("_Cancel"),
             GTK_RESPONSE_CANCEL,("_Open"),GTK_RESPONSE_ACCEPT,
             NULL);
-  gint res = gtk_dialog_run (GTK_DIALOG (dialog));
-  if (res == GTK_RESPONSE_ACCEPT)
-  {
-    GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
-    master->File = gtk_file_chooser_get_filename (chooser);
+
+    gtk_window_set_destroy_with_parent(ui->window,TRUE);
+
+    gint res = gtk_dialog_run (GTK_DIALOG (dialog));
     gtk_widget_destroy (dialog);
-    return TRUE;
-  }
-  gtk_widget_destroy (dialog);
-  return FALSE;
+
+    if (res == GTK_RESPONSE_ACCEPT)
+    {
+        GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+        master->File = gtk_file_chooser_get_filename (chooser);
+        //gtk_widget_set_sensitive((GtkWidget *)start_button,TRUE);
+        return TRUE;
+    }
+    return FALSE;
 }
 
 gboolean on_start(GtkWidget *widget, GdkEvent *event,gpointer user_data)
@@ -250,11 +258,12 @@ int main()
       return 1;
   }
 
+
   // Gets the widgets.
-  GtkWindow* window = GTK_WINDOW(gtk_builder_get_object(builder, "org.gtk.duel"));
-  GtkDrawingArea* result = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "area"));
+  GtkWindow* window = GTK_WINDOW(gtk_builder_get_object(builder, "org.gtk.ocr"));
+  GtkDrawingArea* result = GTK_DRAWING_AREA(gtk_builder_get_object(builder, "result"));
   GtkButton* start_button = GTK_BUTTON(gtk_builder_get_object(builder, "start_button"));
-  GtkButton* choose_button = GTK_BUTTON(gtk_builder_get_object(builder, "stop_button"));
+  GtkButton* choose_button = GTK_BUTTON(gtk_builder_get_object(builder, "choose_button"));
 
   APK master =
   {
@@ -270,8 +279,8 @@ int main()
     .SDK =
     {
       .solved = FALSE,
-      .before = {0},
-      .after = {0},
+      .before = calloc(81,sizeof(char)),
+      .after = calloc(81,sizeof(char)),
       .showed = FALSE,
     }
   };

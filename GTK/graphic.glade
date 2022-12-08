@@ -2,17 +2,17 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.18"/>
-  <object class="GtkWindow" id="org.gtk.duel">
+  <object class="GtkWindow" id="org.gtk.ocr">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Duel</property>
-    <child>
-      <placeholder/>
-    </child>
+    <property name="title" translatable="yes">OCR</property>
     <child>
       <object class="GtkPaned">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
+        <child>
+            <placeholder/>
+        </child>
         <child>
           <object class="GtkGrid">
             <property name="width_request">100</property>
@@ -25,12 +25,12 @@
             <property name="row_spacing">5</property>
             <property name="column_homogeneous">True</property>
             <child>
-              <object class="GtkButton" id="start_button">
-                <property name="label" translatable="yes">Start</property>
+              <object class="GtkButton" id="choose_button">
+                <property name="label" translatable="yes">Choose</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Start, pause or resume the game</property>
+                <property name="tooltip_text" translatable="yes">Choose an image</property>
                 <property name="margin_left">2</property>
                 <property name="margin_right">2</property>
               </object>
@@ -41,106 +41,19 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="stop_button">
-                <property name="label" translatable="yes">Stop</property>
+              <object class="GtkButton" id="start_button">
+                <property name="label" translatable="yes">Start</property>
                 <property name="visible">True</property>
-                <property name="sensitive">False</property>
+                <property name="sensitive">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Stop the game</property>
+                <property name="tooltip_text" translatable="yes">Solve the Sudoku</property>
                 <property name="margin_left">2</property>
                 <property name="margin_right">2</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
                 <property name="top_attach">1</property>
-                <property name="width">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">P1</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">P2</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="p1_score_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Score of the player 1</property>
-                <property name="label" translatable="yes">0</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="p2_score_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="tooltip_text" translatable="yes">Score of the player 2</property>
-                <property name="label" translatable="yes">0</property>
-              </object>
-              <packing>
-                <property name="left_attach">1</property>
-                <property name="top_attach">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Speed</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">4</property>
-                <property name="width">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkScale" id="speed_scale">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="tooltip_text" translatable="yes">Speed level</property>
-                <property name="round_digits">1</property>
-                <property name="digits">0</property>
-                <property name="value_pos">left</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">5</property>
-                <property name="width">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkCheckButton" id="training_cb">
-                <property name="label" translatable="yes">Training</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="draw_indicator">True</property>
-              </object>
-              <packing>
-                <property name="left_attach">0</property>
-                <property name="top_attach">6</property>
                 <property name="width">2</property>
               </packing>
             </child>
@@ -151,7 +64,7 @@
           </packing>
         </child>
         <child>
-          <object class="GtkDrawingArea" id="area">
+          <object class="GtkDrawingArea" id="result">
             <property name="width_request">800</property>
             <property name="height_request">500</property>
             <property name="visible">True</property>
