@@ -40,6 +40,7 @@ int main(int argc, char **argv)
     
     //SDL_Surface** L = calloc(81, sizeof(SDL_Surface));
     //SDL_Surface* L[81];
+
     SDL_Surface **L = malloc(sizeof(SDL_Surface*) * 81);
     cut(s, &L);
 
@@ -68,11 +69,13 @@ int main(int argc, char **argv)
     p[0] = tmp;
     p[1] = tmp2;
     
-    printf("oui");
+    //printf("oui");
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, *(L+1));
+    //rcut(s);
 
-    printf("ok");
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, *(L));
+
+    //printf("ok");
 
     int w, h;
     if(SDL_QueryTexture(texture, NULL, NULL, &w, &h) != 0)

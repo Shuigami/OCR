@@ -64,6 +64,7 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
     SDL_PixelFormat* format = surface->format;*/
 
 
+    int er = 1;
     int length = (surface->w)/9;
     //length *= 0.95;
     int pas = length*0.10;
@@ -76,13 +77,16 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
     size_t j2 = 0;
     i2 += pas;
     j2 += pas;
-    uint32_t* M[81] = {};
+    Uint8* M[81] = {};
+    FILE *f;
+    f = fopen("split.txt", "a");
 
     for(size_t i = 0; i < 9; i++)
     {
 	    for(size_t j = 0; j < 9; j++)
 	    {
-		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 28, format->format);
+		    //SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 28, format->format);
+		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, 28, 28, 32, format->format);
 		    SDL_Rect rect;
 		    rect.x = j2;
 		    rect.y = i2;
@@ -90,26 +94,44 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
 		    rect.h = length - pas;//nb_pixel;
 
 					  
-		    if(!SDL_BlitSurface(surface, &rect, surface_tmp, NULL)) // blitsSurface
-			printf("error");
+		    if(SDL_BlitScaled(surface, &rect, surface_tmp, NULL)) // blitsSurface
+		    {
+			    printf("%i\n",er);
+			    er++;
+			//printf("error\n");
+			//errx(1, "error");
+		    }
 
 		    (*L)[count] = surface_tmp;
 
-		    Uint32 mat[784] = {};
-		    SDL_Surface* surface = surface_tmp;
-		    Uint32* pixels = surface->pixels;
-		    size_t len = (size_t)(surface->w * surface->h);
+		    Uint8 mat[784] = {};
+		    SDL_Surface* surface2 = surface_tmp;
+		    Uint32* pixels = surface2->pixels;
+		    //²size_t len = (size_t)(surface->w * surface->h);
+		    size_t len = 784;
 
 		    //SDL_pixelFormat* format = surface->format;
 
-		    SDL_LockSurface(surface);
+		    SDL_LockSurface(surface2);
+		    Uint8 r,g,b;
 
 		    for(size_t i = 0; i < len; i++)
 		    {
-			    mat[i] = pixels[i];
+			    SDL_GetRGB(pixels[i], format, &r, &g, &b);
+			    //printf("%u,%u,%u", r,g,b);
+			    if(r < 128)
+				    mat[i] = 49;
+			    else
+				    mat[i] = 48;
+			    //mat[i] = pixels[i];
 		    }
+		    //ZZprintf("\n");
 		    M[count] = mat;
-		    SDL_UnlockSurface(surface);
+		    
+		    SDL_UnlockSurface(surface2);
+
+		    fwrite(mat, sizeof(mat), 1, f);
+		    fputc(10, f);
 
 		    count++;
 
@@ -120,6 +142,7 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
 	    //j2 = 0;
 	    i2 += length;
     }
+
 
 
     /*int** M[81] = 0;
@@ -206,6 +229,80 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
     //return L;
 
 }
+
+
+
+/*void rcut(SDL_Surface* surface)
+{
+	SDL_PixelFormat* format = surface->format;
+	int length = (surface->w)/9;
+	int pas = length*0.10;
+	SDL_Surface* L[81] = {};
+	size_t count = 0;
+
+	size_t i2 = 0;
+	size_t j2 = 0;
+	i2 += pas;
+	j2 += pas;
+	FILE *f;
+	f = fopen("split.txt", "a");
+
+	for(size_t i = 0; i < 9; i++)
+	{
+	    for(size_t j = 0; j < 9; j++)
+	    {
+		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 28, format->format);
+		    SDL_Rect rect;
+		    rect.x = j2;
+		    rect.y = i2;
+		    rect.w = length;// - pas;//nb_pixel;
+		    rect.h = length;// - pas;//nb_pixel;
+
+					  
+		    if(!SDL_BlitSurface(surface, &rect, surface_tmp, NULL)) // blitsSurface
+			printf("error\n");
+			//errx(1, "error");
+
+		    Uint8 mat[784] = {};
+		    Uint32* pixels = surface_tmp->pixels;
+		    //²size_t len = (size_t)(surface->w * surface->h);
+		    size_t len = 784;
+
+		    //SDL_pixelFormat* format = surface->format;
+
+		    //SDL_LockSurface(surface2);
+		    Uint8 r,g,b;
+
+		    for(size_t i = 0; i < len; i++)
+		    {
+			    SDL_GetRGB(pixels[i], format, &r, &g, &b);
+			    //printf("%u,%u,%u", r,g,b);
+			    if(r < 128)
+				    mat[i] = 48;
+			    else
+				    mat[i] = 49;
+		    }
+		    //printf("\n");
+		    
+		    //SDL_UnlockSurface(surface2);
+
+		    fwrite(mat, sizeof(mat), 1, f);
+		    fputc(10, f);
+
+		    count++;
+		    j2 += length;
+
+	    }
+	    j2 = pas;
+	    //j2 = 0;
+	    i2 += length;
+	}
+
+
+}*/
+
+
+
 
 /*SDL_Surface* load_image(const char* path)
 {
