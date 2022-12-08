@@ -1,4 +1,5 @@
 #include <err.h>
+#include <math.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <stdbool.h>
@@ -22,7 +23,7 @@ double *create_array(int size, double min, double max, double step)
         errx(1, "Not enough memory!");
 
     double cur = min;
-    for (int i = 0; i < size && cur <= max + 1; i++)
+    for (int i = 0; i < size && cur <= max; i++)
     {
         array[i] = cur;
         cur += step;
@@ -33,7 +34,7 @@ double *create_array(int size, double min, double max, double step)
 
 double degrees_to_rad(double degrees)
 {
-    double rad = degrees * (3.14149265359 / 180);
+    double rad = degrees * (M_PI / 180);
     return rad;
 }
 
@@ -172,6 +173,7 @@ int **append_lines(int **L, int *len, int x1, int y1, int x2, int y2)
     M[*len - 1][1] = y1;
     M[*len - 1][2] = x2;
     M[*len - 1][3] = y2;
+    free(L);
 
     return M;
 }

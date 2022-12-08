@@ -49,84 +49,110 @@ float **find_line_equations(int **lines, int len)
 int **find_lines(int **accumulator, SDL_Surface* s, double *rhos, 
         double *thetas, int *len_lines)
 {
-    printf(" Searching Lines...\n");
-    // Get width and height of the image
-    double w = s->w;
-    double h = s->h;
+    Uint32 *pixels = s->pixels;
 
-    // Max distance equals to the diagonal
-    double diag = sqrt(w*w + h*h);
-    double num = diag * 2;
+    double w = s->w, h = s->h;
+    // int w2 = w / 2, h2 = h / 2;
+    double diag = sqrt(w * w + h * h);
 
-    int **lines = NULL;
+    // Creating the rho values array
+    double rho_min = -diag, rho_max = diag, rho_num = (diag * 2);
 
-    printf("     Finding max...\n");
-    int max = 0;
-    for (int r = 0; r <= (int) num; r++)
+    // Creating the theta array
+    double theta_min = -90, theta_max = 90, theta_num = rho_num;
+    
+    printf("   📍 Fiding edges...\n");
+
+    // 1. Fiding the maximum
+    double max = 0;
+    for (int r = 0; r <= rho_num; r++)
     {
-        for (int t = 0; t <= (int) num; t++)
-        {
-            if (accumulator[r][t] > max)
-                max = accumulator[r][t];
-        }
-    }
-    printf("     Found max : %i\n", max);
-
-    int threshold = max * .5;
-    printf("    ﬕ Threshold : %i\n", threshold);
-
-    int lines_index = 0;
-    int last_t = 0;
-    int last_r = 0;
-    int step = num / 60;
-    for (int r = 0; r <= num; r += step)
-    {
-        for (int t = 0; t <= num; t += step)
+        for (int t = 0; t <= theta_num; t++)
         {
             int val = accumulator[r][t];
-            last_r = r;
-            last_t = t;
 
+            if (val == 0)
+                continue;
+
+            if (val > max)
+                max = val;
+        }
+    }
+
+    printf("   👆 Maximum: %f\n", max);
+
+    // 2. Computing threshold
+    int line_threshold = max * (30 / 100.0);
+
+    printf("   👈 Threshold: %i\n", line_threshold);
+
+    int **lines = malloc(sizeof(int*));
+    // 3. Fiding coordinates of the edges in the accumulator using the
+    // threshold
+
+    int prev_t = 0, prev_r = 0;
+    int step = rho_num / 60;
+
+    int r_c = 255, g_c = 0, b_c = 255;
+    int edges = 0;
+
+    for (int r = 0; r <= rho_num; r += step)
+    {
+        for (int t = 0; t <= theta_num; t += step)
+        {
+            int val = accumulator[r][t];
+            prev_r = r;
+            prev_t = t;
+
+            // Looking for the maximum in a 10*10 window
             for (int i = 0; i < step; i++)
             {
                 for (int j = 0; j < step; j++)
                 {
-                    if (r + i > num || t + j > num)
+                    int x = r + i;
+                    int y = t + j;
+
+                    if (x > rho_num || y > theta_num)
                         continue;
 
-                    if (accumulator[r + i][t + j] > val)
+                    if (accumulator[x][y] > val)
                     {
-                        val = accumulator[r + i][t + j];
-                        last_r = r + i;
-                        last_t = t + j;
+                        val = accumulator[x][y];
+                        prev_r = x;
+                        prev_t = y;
                     }
                 }
             }
 
-            if (val < threshold)
+            if (val < line_threshold)
                 continue;
 
-            double rho = rhos[last_r];
-            double theta = thetas[last_t];
+            double rho = rhos[prev_r];
+            double theta = thetas[prev_t];
 
             double ax = cos(theta);
             double ay = sin(theta);
 
-            int x1 = rho * ay + diag * ax;
-            int y1 = rho * ax + diag * (-ay);
+            int x0 = rho * ax;
+            int y0 = rho * ay;
 
-            int x2 = rho * ay - diag * ax;
-            int y2 = rho * ax - diag * (-ay);
+            int x1 = x0 + diag * (-ay);
+            int y1 = y0 + diag * (ax);
 
-            int *coords = inside_coords(s, x1, y1, x2, y2);
-            lines_index++;
+            int x2 = x0 - diag * (-ay);
+            int y2 = y0 - diag * (ax);
+
+            int coords[4] = {x1, y1, x2, y2};
+            edges++;
 
             if (coords[0] != -1 || coords[1] != -1 || coords[2] != -1 || coords[3] != -1)
-                lines = append_lines(lines, len_lines, coords[0], coords[1],
-                    coords[2], coords[3]);
+                lines = append_lines(lines, len_lines, coords[0], coords[1], coords[2], coords[3]);
+
+            fprintf(stderr, "\33[2K\r   📊 Edges: %i", edges);
         }
     }
-    printf("     Found %i line(s) :\n", *len_lines);
+
+    fprintf(stderr, "\n");
 
     for (int i = 0; i < *len_lines; i++)
         printf("        (%i) - Lines from (%i,%i) to (%i, %i)\n", i, lines[i][0], 
@@ -169,7 +195,7 @@ void grid_detection(SDL_Surface* s, double *angle)
 
     free(rhos);
     free(thetas);
-
+/*
     if (*angle == -1)
         *angle = automatic_rotation(hough_accumulator, s);
 
@@ -181,17 +207,17 @@ void grid_detection(SDL_Surface* s, double *angle)
 
         lines = rotate_lines(s, *angle, lines, len);
     }
+*/
 
     float **lines_eq = find_line_equations(lines, len);
 
     for (int i = 0; i < len; i++)
         draw_line(s, lines_eq[i]);
 
-    int *square = square_detection(lines_eq, len);
+    // int *square = square_detection(lines_eq, len);
 
-    resize(s, lines_eq, square);
-
+    // resize(s, lines_eq, square);
     free(lines);
-    free(lines_eq);
-    free(square);
+    //free(lines_eq);
+    // free(square);
 }
