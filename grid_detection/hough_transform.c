@@ -23,65 +23,54 @@ int **hough_transform(SDL_Surface* s)
 
     double rho_min = -diag;
     double rho_max = diag;
-    double rho_num = diag * 2;
+    int rho_num = diag * 2;
     double rho_step = (rho_max - rho_min) / rho_num;
     double *rhos = create_array(rho_num + 1, rho_min, rho_max, rho_step);
 
     double theta_min = -90;
     double theta_max = 90;
-    double theta_num = diag * 2;
+    int theta_num = diag * 2;
     double theta_step = (theta_max - theta_min) / theta_num;
     double *thetas = create_array(theta_num + 1, theta_min, 
             theta_max, theta_step);
 
-    // Creating caching arrays for faster computation
-    double *cos_t = malloc(sizeof(double) * (theta_num + 1));
-    double *sin_t = malloc(sizeof(double) * (theta_num + 1));
     for (int i = 0; i <= theta_num; i++)
-    {
         thetas[i] = degrees_to_rad(thetas[i]);
-        cos_t[i] = cos(thetas[i]);
-        sin_t[i] = sin(thetas[i]);
-    }
 
     int **accumulator = malloc(sizeof(int*) * (rho_num + 1) + 1);
     for (int r = 0; r <= rho_num; r++)
     {
         accumulator[r] = malloc(sizeof(int) * (theta_num + 1) + 1);
+        if (accumulator == NULL)
+            errx(1, "Not enough memory!");
+
         for (int t = 0; t <= theta_num; t++)
             accumulator[r][t] = 0;
     }
 
-    fprintf(stderr, "\33[2K\r   🖨️ Done: %i %%", 0);
-
-    int done = 0;
-    float total = w * h;
-    Uint8 c;
-    // Filling the accumulator
     for (int x = 0; x < w; x++)
     {
         for (int y = 0; y < h; y++)
         {
-            done++;
-            // Process pixel only if its an edge
-            SDL_GetRGB(pixels[y * (int) w + x], s->format, &c, &c, &c);
-            if (c != 255)
+            Uint8 r, g, b;
+            SDL_GetRGB(pixels[y * (int) w + x], s->format, &r, &g, &b);
+            if(r != 255)
                 continue;
 
             for (int t = 0; t <= theta_num; t++)
             {
-                double rho = x * cos_t[t] + y * sin_t[t];
+                double rho = x * cos(thetas[t]) + y * sin(thetas[t]);
                 int rho_i = rho + diag;
 
-                accumulator[rho_i][t]++;
+                accumulator[rho_i][t] += 1;
             }
         }
     }
 
     free(rhos);
     free(thetas);
-    free(cos_t);
-    free(sin_t);
+
+    printf("     Done Hough Transform\n\n");
 
     return accumulator;
 }

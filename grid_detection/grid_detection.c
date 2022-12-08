@@ -49,19 +49,17 @@ float **find_line_equations(int **lines, int len)
 int **find_lines(int **accumulator, SDL_Surface* s, double *rhos, 
         double *thetas, int *len_lines)
 {
-    Uint32 *pixels = s->pixels;
-
     double w = s->w, h = s->h;
     // int w2 = w / 2, h2 = h / 2;
     double diag = sqrt(w * w + h * h);
 
     // Creating the rho values array
-    double rho_min = -diag, rho_max = diag, rho_num = (diag * 2);
+    double rho_num = (diag * 2);
 
     // Creating the theta array
-    double theta_min = -90, theta_max = 90, theta_num = rho_num;
+    double theta_num = rho_num;
     
-    printf("   📍 Fiding edges...\n");
+    printf(" Searching Lines...\n");
 
     // 1. Fiding the maximum
     double max = 0;
@@ -79,12 +77,12 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
         }
     }
 
-    printf("   👆 Maximum: %f\n", max);
+    printf("     Found max : %0f\n", max);
 
     // 2. Computing threshold
     int line_threshold = max * (30 / 100.0);
 
-    printf("   👈 Threshold: %i\n", line_threshold);
+    printf("    ﬕ Threshold : %i\n", line_threshold);
 
     int **lines = malloc(sizeof(int*));
     // 3. Fiding coordinates of the edges in the accumulator using the
@@ -93,7 +91,6 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
     int prev_t = 0, prev_r = 0;
     int step = rho_num / 60;
 
-    int r_c = 255, g_c = 0, b_c = 255;
     int edges = 0;
 
     for (int r = 0; r <= rho_num; r += step)
@@ -147,12 +144,10 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
 
             if (coords[0] != -1 || coords[1] != -1 || coords[2] != -1 || coords[3] != -1)
                 lines = append_lines(lines, len_lines, coords[0], coords[1], coords[2], coords[3]);
-
-            fprintf(stderr, "\33[2K\r   📊 Edges: %i", edges);
         }
     }
 
-    fprintf(stderr, "\n");
+    printf("     Found %i line(s) :\n", *len_lines);
 
     for (int i = 0; i < *len_lines; i++)
         printf("        (%i) - Lines from (%i,%i) to (%i, %i)\n", i, lines[i][0], 
@@ -195,29 +190,34 @@ void grid_detection(SDL_Surface* s, double *angle)
 
     free(rhos);
     free(thetas);
-/*
+
     if (*angle == -1)
         *angle = automatic_rotation(hough_accumulator, s);
 
     if (*angle > .5)
     {
+        if(*angle > 45)
+            *angle = 90 - *angle;
+
         SDL_Surface *d = SDL_CreateRGBSurface(0, s->w, s->h, 32, 0, 255, 0, 0);
         rotate(s, d, *angle);
         *s = *d;
 
         lines = rotate_lines(s, *angle, lines, len);
+        for (int i = 0; i < len; i++)
+            printf("        (%i) - Lines from (%i,%i) to (%i, %i)\n", i, lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
+
     }
-*/
 
     float **lines_eq = find_line_equations(lines, len);
 
     for (int i = 0; i < len; i++)
         draw_line(s, lines_eq[i]);
 
-    // int *square = square_detection(lines_eq, len);
+    int *square = square_detection(lines_eq, len);
 
     // resize(s, lines_eq, square);
     free(lines);
-    //free(lines_eq);
-    // free(square);
+    free(lines_eq);
+    free(square);
 }
