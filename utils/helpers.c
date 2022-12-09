@@ -412,3 +412,60 @@ Uint32 *copy_pixels(SDL_Surface *s)
 
     return pixels;
 }
+
+void draw_points(SDL_Surface *s, float *p1)
+{
+    int x = (int)p1[0];
+    int y = (int)p1[1];
+
+    int size = 20;
+
+    Uint32 *pixels = s->pixels;
+
+    for (int i = -size; i <= size; i++)
+    {
+        int yy = clamp(y + i, 0, s->h);
+        for (int j = -size; j <= size; j++)
+        {
+            int xx = clamp(x + j, 0, s->w);
+            pixels[yy * s->w + xx] = SDL_MapRGB(s->format, 255, 0, 0);
+        }
+    }
+}
+
+void draw_line_points(SDL_Surface *s, float *p1, float *p2)
+{
+    if (p1[0] < p2[0]){
+        float *tmp = p2;
+        p2 = p1;
+        p1 = tmp;
+    }
+
+    Uint32 *pixels = s->pixels;
+
+    float deltaX = p1[0] - p2[0];
+    float deltaY = p1[1] - p2[1];
+    float error = 0;
+
+    // Note the below fails for completely vertical lines.
+    float deltaError = abs((int)deltaY / (int)deltaX);
+
+    float y = p1[1];
+    for (float x = p2[0]; x < p1[0]; x++) {
+        pixels[(int)y * s->w + (int)x] = SDL_MapRGB(s->format, 255, 0, 0);
+        error = error + deltaError;
+        if (error >= 0.5) {
+            ++y;
+            error -= 1.0;
+        }
+    }
+}
+
+void draw_square(SDL_Surface *s,  float *p1, float *p2, float *p3, float *p4)
+{
+    draw_points(s, p1);
+    draw_points(s, p2);
+    draw_points(s, p3);
+    draw_points(s, p4);
+}
+

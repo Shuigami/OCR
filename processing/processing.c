@@ -69,6 +69,8 @@ int processing_image(int argc, char** argv)
         average += (double)c / (double)(w * h);
     }
 
+    Uint32 *old = copy_pixels(s);
+
     if (average > 175)
         filter_normalize(s);
     filter_gamma(s);
@@ -83,7 +85,7 @@ int processing_image(int argc, char** argv)
         if (argv[i][0] == '-' && argv[i][1] == 'a')
             angle = str_to_double(argv[i+1]);
 
-    grid_detection(s, &angle);
+    grid_detection(s, old, &angle);
 
     int stop = 0;
     for (int i = 1; i < argc - 1; i++)

@@ -100,7 +100,7 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
             int val = accumulator[r][t];
             prev_r = r;
             prev_t = t;
-
+;
             // Looking for the maximum in a 10*10 window
             for (int i = 0; i < step; i++)
             {
@@ -158,9 +158,11 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
     return lines;
 }
 
-void grid_detection(SDL_Surface* s, double *angle)
+void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
 {
     int **hough_accumulator = hough_transform(s);
+
+    s->pixels = old;
 
     // Get width and height of the image
     double w = s->w;
@@ -194,6 +196,7 @@ void grid_detection(SDL_Surface* s, double *angle)
     if (*angle == -1)
         *angle = automatic_rotation(hough_accumulator, s);
 
+    /*
     if (*angle > .5)
     {
         if(*angle > 45)
@@ -208,13 +211,14 @@ void grid_detection(SDL_Surface* s, double *angle)
             printf("        (%i) - Lines from (%i,%i) to (%i, %i)\n", i, lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
 
     }
+    */
 
     float **lines_eq = find_line_equations(lines, len);
 
-    for (int i = 0; i < len; i++)
-        draw_line(s, lines_eq[i]);
+    //for (int i = 0; i < len; i++)
+        //draw_line(s, lines_eq[i]);
 
-    int *square = square_detection(lines_eq, len);
+    int *square = square_detection(s, lines_eq, len);
 
     // resize(s, lines_eq, square);
     free(lines);

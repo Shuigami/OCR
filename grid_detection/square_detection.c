@@ -94,7 +94,7 @@ float square_perimeter(float **lines, int i, int j, int k, int l)
     return d;
 }
 
-int *square_detection(float **lines, int len)
+int *square_detection(SDL_Surface *s, float **lines, int len)
 {
     printf(" Square detection...\n");
 
@@ -157,6 +157,11 @@ int *square_detection(float **lines, int len)
     float *p2 = intersection_point(lines, j, k);
     float *p3 = intersection_point(lines, k, l);
     float *p4 = intersection_point(lines, l, i);
+
+    draw_line(s, lines[i]);
+    draw_line(s, lines[j]);
+    draw_line(s, lines[k]);
+    draw_line(s, lines[l]);
 
     printf("     Largest square :\n");
     printf("        - p1 = (%.0f, %.0f)\n", p1[0], p1[1]);
