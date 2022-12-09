@@ -181,16 +181,17 @@ gboolean on_configure(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 
 gboolean on_choose_file(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
-
     APK *master = user_data;
     UserInterface *ui = &master->UI;
+
+    g_print("%i",GTK_IS_WINDOW(ui->window));
   
     GtkWidget* dialog = gtk_file_chooser_dialog_new ("Open File",
-            ui->window,  GTK_FILE_CHOOSER_ACTION_OPEN,("_Cancel"),
-            GTK_RESPONSE_CANCEL,("_Open"),GTK_RESPONSE_ACCEPT,
+            master->UI.window,  GTK_FILE_CHOOSER_ACTION_OPEN,("Cancel"),
+            GTK_RESPONSE_CANCEL,("Open"),GTK_RESPONSE_ACCEPT,
             NULL);
 
-    gtk_window_set_destroy_with_parent(ui->window,TRUE);
+    gtk_window_set_destroy_with_parent(master->UI.window,TRUE);
 
     gint res = gtk_dialog_run (GTK_DIALOG (dialog));
     gtk_widget_destroy (dialog);
@@ -209,7 +210,11 @@ gboolean on_start(GtkWidget *widget, GdkEvent *event,gpointer user_data)
 {
   APK *master = user_data;
 
-  if(master->File)
+
+  g_print("%i",GTK_IS_WINDOW(master->UI.window));
+  
+
+
   {
     //calcul sudoku
     master->SDK.solved = TRUE;
@@ -225,6 +230,9 @@ gboolean on_start(GtkWidget *widget, GdkEvent *event,gpointer user_data)
 gboolean on_key_release(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
   APK* master = user_data;
+
+  g_print("%i",GTK_IS_WINDOW(master->UI.window));
+  
 
   // If the 'f' key is released, stops the player 1.
   if ( ((GdkEventKey *)event)->keyval == GDK_KEY_3270_Enter)
@@ -265,16 +273,21 @@ int main()
   GtkButton* start_button = GTK_BUTTON(gtk_builder_get_object(builder, "start_button"));
   GtkButton* choose_button = GTK_BUTTON(gtk_builder_get_object(builder, "choose_button"));
 
+
+
+  UserInterface ui =
+  {
+	  .window = window,
+	  .result = result,
+	  .start_button = start_button,
+	  .choose_button = choose_button,
+	  .size = 0,
+  };
+
+
   APK master =
   {
-    .UI =
-    {
-      .window = window,
-      .result = result,
-      .start_button = start_button,
-      .choose_button = choose_button,
-      .size = 0,
-    },
+    .UI = ui,
     .File = NULL,
     .SDK =
     {
@@ -284,7 +297,8 @@ int main()
       .showed = FALSE,
     }
   };
-  UserInterface ui = master.UI;
+
+   g_print("%i\n",GTK_IS_WINDOW(master.UI.window));
 
   // Connects event handlers.
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
