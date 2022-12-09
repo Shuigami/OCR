@@ -41,8 +41,8 @@ int main(int argc, char **argv)
     //SDL_Surface** L = calloc(81, sizeof(SDL_Surface));
     //SDL_Surface* L[81];
 
-    SDL_Surface **L = malloc(sizeof(SDL_Surface*) * 81);
-    cut(s, &L);
+    //SDL_Surface **L = malloc(sizeof(SDL_Surface*) * 81);
+    cut(s);
 
     SDL_Rect rect;
     rect.x = 0;
@@ -73,11 +73,11 @@ int main(int argc, char **argv)
 
     //rcut(s);
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, *(L+80));
+    //SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, *(L+80));
 
     //printf("ok");
 
-    int w, h;
+    /*int w, h;
     if(SDL_QueryTexture(texture, NULL, NULL, &w, &h) != 0)
 	    errx(EXIT_FAILURE, "%s", SDL_GetError());
 		    
@@ -86,7 +86,7 @@ int main(int argc, char **argv)
 
 
     SDL_RenderCopy(renderer, texture, NULL, NULL);
-    SDL_RenderPresent(renderer);
+    SDL_RenderPresent(renderer);*/
     /*int i = 0;
     while(L[i] != 0)
     {
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
 
     // - Free the surface.
     SDL_FreeSurface(s);
-    free(L);
+    //free(L);
     size_t k = 0;
     /*while(L[k] != 0)
     {
