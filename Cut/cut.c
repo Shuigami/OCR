@@ -78,6 +78,7 @@ void cut(SDL_Surface* surface, SDL_Surface*** L)
     i2 += pas;
     j2 += pas;
     Uint8* M[81] = {};
+    remove("split.txt");
     FILE *f;
     f = fopen("split.txt", "a");
 

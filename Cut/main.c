@@ -73,7 +73,7 @@ int main(int argc, char **argv)
 
     //rcut(s);
 
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, *(L));
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, *(L+80));
 
     //printf("ok");
 
