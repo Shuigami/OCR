@@ -4,9 +4,9 @@
   <requires lib="gtk+" version="3.24"/>
   <object class="GtkFileFilter" id="filefilter1">
     <patterns>
-      <pattern>*.png</pattern>
-      <pattern>*.jpg</pattern>
       <pattern>*.jpeg</pattern>
+      <pattern>*.jpg</pattern>
+      <pattern>*.png</pattern>
     </patterns>
   </object>
   <object class="GtkWindow" id="window">
@@ -29,15 +29,16 @@
                 <property name="can-focus">False</property>
                 <property name="label" translatable="yes">STEL</property>
                 <attributes>
+                  <attribute name="font-desc" value="TeX Gyre Heros Bold 10"/>
                   <attribute name="weight" value="bold"/>
                   <attribute name="scale" value="2"/>
-                  <attribute name="foreground" value="#6262a0a0eaea"/>
+                  <attribute name="foreground" value="#35358484e4e4"/>
                 </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">0</property>
+                <property name="position">1</property>
               </packing>
             </child>
             <child>
@@ -66,7 +67,7 @@
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -78,12 +79,12 @@
 
  - choose an image
  - and click &lt;Apply&gt; 
-   or click "s"</property>
+   or press "s"</property>
               </object>
               <packing>
-                <property name="expand">False</property>
+                <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="position">3</property>
+                <property name="position">4</property>
               </packing>
             </child>
           </object>

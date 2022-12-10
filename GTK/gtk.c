@@ -56,7 +56,7 @@ void print(char *s)
 
 void f_read(gchar* filename,char* buffer)
 {
-    g_print("\n%s\n",filename);
+    //g_print("\n%s\n",filename);
 
     FILE* input_file = fopen(filename , "r+");
     if (!input_file) {
@@ -119,6 +119,9 @@ void update_sdk(Sudoku *sdk,gchar *file)
   char *buffer2 = calloc(111,sizeof(char));
 
   //g_print("%s",file);
+
+  file = realloc(file,(strlen(file)+6) * sizeof(char));
+  strcat(file,".save");
   f_read(file,buffer1);
   file = realloc(file,(strlen(file)+8) * sizeof(char));
   strcat(file,".result");
@@ -258,6 +261,8 @@ gboolean start(APK *master)
 {
   if(master->File)
   {
+    // function traitement d image ne pas oublier de rajouté l extension a la fin
+
     //calcul sudoku
     master->SDK.solved = TRUE;
     update_sdk(&master->SDK,master->File);
