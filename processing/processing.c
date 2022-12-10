@@ -58,6 +58,9 @@ int processing_image(int argc, char** argv)
     double h = s->h;
     printf("Size : %0f * %0f\n", w, h);
 
+    if(SDL_SaveBMP(s, "result/0.0-original.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+
     // - Convert the surface into grayscale.
     surface_to_grayscale(s);
     double average = 0;
@@ -71,14 +74,36 @@ int processing_image(int argc, char** argv)
 
     Uint32 *old = copy_pixels(s);
 
+    if(SDL_SaveBMP(s, "result/1.0-black_and_white.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+
     if (average > 175)
         filter_normalize(s);
+
+    if(SDL_SaveBMP(s, "result/1.1-normalize.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+    
     filter_gamma(s);
+
+    if(SDL_SaveBMP(s, "result/1.2-gamma.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+
     filter_contrast(s);
-    morph(s);
+
+    if(SDL_SaveBMP(s, "result/1.3-contrast.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+        
+    morph(s);   
     otsu(s);
+
+    if(SDL_SaveBMP(s, "result/1.6-otsu.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+        
     canny_edge_detector(s);
 
+    if(SDL_SaveBMP(s, "result/1.7-canny.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+        
     // - Grid Detection
     double angle = -1;
     for (int i = 1; i < argc - 1; i++)

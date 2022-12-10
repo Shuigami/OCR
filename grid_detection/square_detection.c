@@ -190,10 +190,21 @@ int *square_detection(SDL_Surface *s, float **lines, int len)
     float *p3 = points[2];
     float *p4 = points[3];
 
-    // draw_line(s, lines[i]);
-    // draw_line(s, lines[j]);
-    // draw_line(s, lines[k]);
-    // draw_line(s, lines[l]);
+    SDL_Surface *copy = SDL_CreateRGBSurfaceFrom(
+        copy_pixels(s), 
+        s->w, s->h, s->format->BitsPerPixel,
+        s->pitch, 
+        s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
+
+    draw_line(copy, lines[i]);
+    draw_line(copy, lines[j]);
+    draw_line(copy, lines[k]);
+    draw_line(copy, lines[l]);
+    if(SDL_SaveBMP(copy, "result/2.3-square.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+    
+    free(copy->pixels);
+    SDL_FreeSurface(copy);
 
     printf("     Largest square :\n");
     printf("        - p1 = (%.0f, %.0f)\n", p1[0], p1[1]);

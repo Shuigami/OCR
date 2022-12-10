@@ -85,6 +85,9 @@ void morph(SDL_Surface *s)
         }
     }
 
+    if(SDL_SaveBMP(s, "result/1.4-dilate.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+        
     for (int x = 0; x < w; x++)
     {
         for (int y = 0; y < h; y++)
@@ -94,4 +97,6 @@ void morph(SDL_Surface *s)
         }
     }
 
+    if(SDL_SaveBMP(s, "result/1.5-erode.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
 }

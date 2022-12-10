@@ -350,31 +350,50 @@ void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
     if (*angle == -1)
         *angle = automatic_rotation(hough_accumulator, s);
 
-    if (*angle > .5)
-    {
-        if(*angle > 45)
-            *angle = 90 - *angle;
+    if(*angle > 45)
+        *angle = 90 - *angle;
 
+    if (*angle > 5)
+    {
         SDL_Surface *d = SDL_CreateRGBSurface(0, s->w, s->h, 32, 0, 255, 0, 0);
         rotate(s, d, *angle);
         *s = *d;
 
         lines = rotate_lines(s, -*angle, lines, len);
         for (int i = 0; i < len; i++)
-            printf("        (%i) - Lines from (%i,%i) to (%i, %i)\n", i, lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
+            printf("        (%i) - Lines from (%i,%i) to (%i, %i)\n", i, 
+                lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
 
+
+        if(SDL_SaveBMP(s, "2.0-rotate.bmp") != 0)
+            printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
     }
 
-    float **lines_eq = find_line_equations(lines, len);
-    lines_averaging(lines_eq, &len);
+    SDL_Surface *copy = SDL_CreateRGBSurfaceFrom(
+        copy_pixels(s), 
+        s->w, s->h, s->format->BitsPerPixel,
+        s->pitch, 
+        s->format->Rmask, s->format->Gmask, s->format->Bmask, s->format->Amask);
 
-    // for (int i = 0; i < len; i++)
-        // draw_line(s, lines_eq[i]);
+    float **lines_eq = find_line_equations(lines, len);
+    for (int i = 0; i < len; i++)
+        draw_line(copy, lines_eq[i]);
+    if(SDL_SaveBMP(copy, "result/2.1-lines.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+    
+    free(copy->pixels);
+    copy->pixels = copy_pixels(s);
+    lines_averaging(lines_eq, &len);
+    for (int i = 0; i < len; i++)
+        draw_line(copy, lines_eq[i]);
+    if(SDL_SaveBMP(copy, "result/2.2-lines_averaged.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
 
     int *square = square_detection(s, lines_eq, len);
 
     resize(s, lines_eq, square);
     free(lines);
     free(lines_eq);
-    // free(square);
+    free(square);
+    SDL_FreeSurface(copy);
 }
