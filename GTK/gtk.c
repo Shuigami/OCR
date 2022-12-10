@@ -13,7 +13,7 @@ typedef struct UserInterface
     GtkDrawingArea* result;
     GtkButton* start_button;
     GtkFileChooserButton* choose_button;
-    gint size;
+    gint *size;
 } UserInterface;
 
 typedef struct Sudoku
@@ -37,6 +37,22 @@ size_t space[18] = {3,7,15,19,27,31,40,44,52,56,64,68,77,81,89,93,101,105};
 size_t back[11] = {11,23,35,36,48,60,72,73,85,97,109};
 
 //__________________________________TOOLS_______________________________________
+
+
+void print(char *s)
+{
+    //print the grid
+    for(size_t i = 0; i < 9; i++)
+    {
+        for(size_t j = 0; j < 9; j++)
+            g_print("%hhi ",s[i*9+j]);
+        g_print("\n");
+    }
+    g_print("\n");
+}
+
+
+
 
 void f_read(gchar* filename,char* buffer)
 {
@@ -102,65 +118,109 @@ void update_sdk(Sudoku *sdk,gchar *file)
   char *buffer1 = calloc(111,sizeof(char));
   char *buffer2 = calloc(111,sizeof(char));
 
-  g_print("%s",file);
+  //g_print("%s",file);
   f_read(file,buffer1);
   file = realloc(file,(strlen(file)+8) * sizeof(char));
   strcat(file,".result");
+
+  //g_print("\n%s\n",buffer1);
+
   f_read(file,buffer2);
+
+  //g_print("\n%s\n",buffer2);
 
   translate(buffer1,sdk->before);
   translate(buffer2,sdk->after);
 
+  //print(sdk->before);
+  //print(sdk->after);
 }
 
 gboolean on_draw(GtkWidget *widget, cairo_t *cr,gpointer user_data)
 {
   APK *master = user_data;
   Sudoku *sdk = &master->SDK;
+  //print(sdk->before);
+  //print(sdk->after);
   UserInterface *ui = &master->UI;
+  gint size = *ui->size;
+  gint w = gtk_widget_get_allocated_width(GTK_WIDGET(ui->result));
+  gint h = gtk_widget_get_allocated_height(GTK_WIDGET(ui->result));
 
   cairo_set_source_rgb(cr, 1, 1, 1);
   cairo_paint(cr);
 
   if(!sdk->solved)
       return FALSE;
-  int shift = ui->size / 9;
-  char *tmp = "";
+
+  int shift = size / 9;
+  int sx = (w - size) / 2;
+  int sy = (h - size) / 2;
+
+  //set line size
+  cairo_set_line_width(cr, 5.0);
+  cairo_set_font_size(cr, shift);
+  //g_print(" %i ",size);
+
+  char *tmp = calloc(2,sizeof(char));
+
+  //border
+  cairo_set_source_rgb(cr, 0.4, 0.4, 0.4);
+  cairo_move_to(cr,sx, sy);
+  cairo_line_to(cr,sx+ size,sy);
+  cairo_move_to(cr,sx, sy);
+  cairo_line_to(cr,sx,sy+ size);
+  cairo_move_to(cr,sx, sy+size);
+  cairo_line_to(cr,sx+ size,sy+ size);
+  cairo_move_to(cr,sx+ size, sy);
+  cairo_line_to(cr,sx+ size,sy+ size);
+  cairo_stroke(cr);
+
+  
   for (size_t i = 0; i < 8; i++) {
 
     for (size_t j = 0; j < 9; j++) {
         if(sdk->before[j*9+i] == 0)
-            cairo_set_source_rgb(cr, 0, 1, 0);
+            cairo_set_source_rgb(cr, 0, 0.8, 0);
         else
             cairo_set_source_rgb(cr, 0, 0, 0);
-        cairo_move_to(cr, shift*i, shift*j);
+
+        cairo_move_to(cr,sx+ shift*i+ shift/2-shift/3,sy+ shift*j+ shift/2+shift/3);
         sprintf(tmp, "%d", sdk->after[j*9+i]);
         cairo_show_text(cr, tmp);
     }
 
     cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, shift + shift*i, 0);
-    cairo_line_to(cr, shift + shift*i, ui->size);
+    cairo_set_line_width(cr, 5);
 
-    cairo_move_to(cr, 0, shift + shift*i);
-    cairo_line_to(cr, ui->size, shift + shift*i);
+    cairo_move_to(cr,sx+ shift + shift*i, sy);
+    cairo_line_to(cr,sx+ shift + shift*i,sy+ size);
+
+    cairo_move_to(cr, sx,sy+ shift + shift*i);
+    cairo_line_to(cr, sx+ size,sy+ shift + shift*i);
+
+    cairo_stroke(cr);
 
   }
 
   for (size_t j = 0; j < 9; j++) {
     if(sdk->before[j*9+8] == 0)
-        cairo_set_source_rgb(cr, 0, 1, 0);
+        cairo_set_source_rgb(cr, 0, 0.8, 0);
     else
         cairo_set_source_rgb(cr, 0, 0, 0);
-    cairo_move_to(cr, shift*8, shift*j);
+
+    cairo_move_to(cr,sx+ shift*8+ shift/2-shift/3,sy+ shift*j+ shift/2+shift/3);
     sprintf(tmp, "%d", sdk->after[j*9+8]);
     cairo_show_text(cr, tmp);
   }
+
+  cairo_stroke(cr);
 
   sdk->showed = TRUE;
 
   return FALSE;
 }
+
 
 void draw(UserInterface *ui)
 {
@@ -174,11 +234,11 @@ gboolean on_configure(GtkWidget *widget, GdkEvent *event, gpointer user_data)
   gint h = gtk_widget_get_allocated_height(GTK_WIDGET(ui->result));
 
   if(w < h)
-      ui->size = w;
+      *ui->size = w;
   else
-      ui->size = h;
+      *ui->size = h;
 
-  g_print(" %i ",ui->size);
+  //g_print(" %i ",*ui->size);
 
   draw(ui);
   return TRUE;
@@ -190,7 +250,7 @@ gboolean on_choose_file(GtkWidget *widget, gpointer user_data)
 
     master->File = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(master->UI.choose_button));
 
-    g_print("\n%s\n",master->File);
+    //g_print("\n%s\n",master->File);
     return TRUE;
 }
 
@@ -201,15 +261,16 @@ gboolean start(APK *master)
     //calcul sudoku
     master->SDK.solved = TRUE;
     update_sdk(&master->SDK,master->File);
+    master->File = NULL;
     //show Result
     draw(&master->UI);
-    return TRUE;
+    return FALSE;
   }
   return FALSE;
 }
 
 
-gboolean on_start(GtkWidget *widget, GdkEvent *event,gpointer user_data)
+gboolean on_start(GtkWidget *widget,gpointer user_data)
 {
   APK *master = user_data;
   return start(master);
@@ -219,17 +280,12 @@ gboolean on_start(GtkWidget *widget, GdkEvent *event,gpointer user_data)
 gboolean on_key_release(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 {
   APK* master = user_data;
-  g_print("\n%s\n",master->File);
+  //g_print("\n%s\n",master->File);
 
   // If the 'f' key is released, stops the player 1.
   if ( ((GdkEventKey *)event)->keyval == GDK_KEY_s)
-  {
-    return on_start(widget,event,master);
-  }
-  else if ( ((GdkEventKey *)event)->keyval == GDK_KEY_c)
-  {
-    return on_choose_file(widget,master);
-  }
+  	return on_start(widget,master);
+
   return TRUE;
 }
 
@@ -268,7 +324,7 @@ int main()
       .result = result,
       .start_button = start_button,
       .choose_button = choose_button,
-      .size = 0,
+      .size = calloc(1,sizeof(int)),
   };
 
 

@@ -2,10 +2,18 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
+  <object class="GtkFileFilter" id="filefilter1">
+    <patterns>
+      <pattern>*.png</pattern>
+      <pattern>*.jpg</pattern>
+      <pattern>*.jpeg</pattern>
+    </patterns>
+  </object>
   <object class="GtkWindow" id="window">
     <property name="can-focus">False</property>
-    <property name="default-width">192</property>
-    <property name="default-height">108</property>
+    <property name="title" translatable="yes">STEL OCR</property>
+    <property name="default-width">960</property>
+    <property name="default-height">540</property>
     <child>
       <object class="GtkPaned">
         <property name="visible">True</property>
@@ -16,10 +24,15 @@
             <property name="can-focus">False</property>
             <property name="orientation">vertical</property>
             <child>
-              <object class="GtkFileChooserButton" id="choose_button">
+              <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="title" translatable="yes"/>
+                <property name="label" translatable="yes">STEL</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                  <attribute name="scale" value="2"/>
+                  <attribute name="foreground" value="#6262a0a0eaea"/>
+                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -28,16 +41,49 @@
               </packing>
             </child>
             <child>
-              <object class="GtkButton" id="start_button">
-                <property name="label" translatable="yes">start</property>
+              <object class="GtkFileChooserButton" id="choose_button">
                 <property name="visible">True</property>
-                <property name="can-focus">True</property>
-                <property name="receives-default">True</property>
+                <property name="can-focus">False</property>
+                <property name="create-folders">False</property>
+                <property name="filter">filefilter1</property>
+                <property name="title" translatable="yes">select</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="start_button">
+                <property name="label">gtk-apply</property>
+                <property name="visible">True</property>
+                <property name="can-focus">True</property>
+                <property name="receives-default">True</property>
+                <property name="use-stock">True</property>
+                <property name="always-show-image">True</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can-focus">False</property>
+                <property name="label" translatable="yes">
+ Sudoku solver: 
+
+ - choose an image
+ - and click &lt;Apply&gt; 
+   or click "s"</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
