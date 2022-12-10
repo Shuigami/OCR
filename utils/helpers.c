@@ -142,8 +142,9 @@ double str_to_double(char *str)
     double r = 0;
     size_t n = strlen(str);
 
-    for (size_t i = 0; i < n; i++)
+    for (size_t i = 0; i < n; i++){
         r = r * 10 + (double) (str[i] - '0');
+    }
 
     return r;
 }
