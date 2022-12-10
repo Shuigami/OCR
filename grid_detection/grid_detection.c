@@ -350,7 +350,6 @@ void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
     if (*angle == -1)
         *angle = automatic_rotation(hough_accumulator, s);
 
-    /*
     if (*angle > .5)
     {
         if(*angle > 45)
@@ -360,12 +359,11 @@ void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
         rotate(s, d, *angle);
         *s = *d;
 
-        lines = rotate_lines(s, *angle, lines, len);
+        lines = rotate_lines(s, -*angle, lines, len);
         for (int i = 0; i < len; i++)
             printf("        (%i) - Lines from (%i,%i) to (%i, %i)\n", i, lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
 
     }
-    */
 
     float **lines_eq = find_line_equations(lines, len);
     lines_averaging(lines_eq, &len);
@@ -378,5 +376,5 @@ void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
     resize(s, lines_eq, square);
     free(lines);
     free(lines_eq);
-    free(square);
+    // free(square);
 }

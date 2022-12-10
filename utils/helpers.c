@@ -198,16 +198,16 @@ int comp(int sign, int x, int y, int threshold)
     }
 }
 
-int is_min(int i, int j, int k, int l)
+int is_min(int i, int j, int k)
 {
-    if (i <= j && i <= k && i <= l)
+    if (i <= j && i <= k)
         return 1;
     return 0;
 }
 
-int is_max(int i, int j, int k, int l)
+int is_max(int i, int j, int k)
 {
-    if (i >= j && i >= k && i >= l)
+    if (i >= j && i >= k)
         return 1;
     return 0;
 }
@@ -222,22 +222,22 @@ int get_tl(float **points)
     int *top = malloc(sizeof(int) * 3);
     int top_index = 0;
 
-    if (is_min(p1[1], p2[1], p3[1], p4[1]))
+    if (is_min(p1[1], p2[1], p3[1]) || is_min(p1[1], p2[1], p4[1]) || is_min(p1[1], p3[1], p4[1]))
     {
         top[top_index] = 0;
         top_index++;
     }
-    if (is_min(p2[1], p1[1], p3[1], p4[1]))
+    if (is_min(p2[1], p1[1], p3[1]) || is_min(p2[1], p1[1], p4[1]) || is_min(p2[1], p2[1], p4[1]))
     {
         top[top_index] = 1;
         top_index++;
     }
-    if (is_min(p3[1], p2[1], p1[1], p4[1]))
+    if (is_min(p3[1], p1[1], p2[1]) || is_min(p3[1], p1[1], p4[1]) || is_min(p3[1], p2[1], p4[1]))
     {
         top[top_index] = 2;
         top_index++;
     }
-    if (is_min(p4[1], p2[1], p3[1], p1[1]))
+    if (is_min(p4[1], p1[1], p2[1]) || is_min(p4[1], p1[1], p3[1]) || is_min(p4[1], p2[1], p3[1]))
     {
         top[top_index] = 3;
         top_index++;
@@ -267,22 +267,22 @@ int get_bl(float **points)
     int *bottom = malloc(sizeof(int) * 3);
     int bottom_index = 0;
 
-    if (is_min(p1[0], p2[0], p3[0], p4[0]))
+    if (is_min(p1[0], p2[0], p3[0]) || is_min(p1[0], p2[0], p4[0]) || is_min(p1[0], p3[0], p4[0]))
     {
         bottom[bottom_index] = 0;
         bottom_index++;
     }
-    if (is_min(p2[0], p1[0], p3[0], p4[0]))
+    if (is_min(p2[0], p1[0], p3[0]) || is_min(p2[0], p1[0], p4[0]) || is_min(p2[0], p2[0], p4[0]))
     {
         bottom[bottom_index] = 1;
         bottom_index++;
     }
-    if (is_min(p3[0], p2[0], p1[0], p4[0]))
+    if (is_min(p3[0], p2[0], p1[0]) || is_min(p3[0], p1[0], p4[0]) || is_min(p3[0], p2[0], p4[0]))
     {
         bottom[bottom_index] = 2;
         bottom_index++;
     }
-    if (is_min(p4[0], p2[0], p3[0], p1[0]))
+    if (is_min(p4[0], p2[0], p3[0]) || is_min(p4[0], p1[0], p3[0]) || is_min(p4[0], p2[0], p3[0]))
     {
         bottom[bottom_index] = 3;
         bottom_index++;
@@ -312,22 +312,22 @@ int get_tr(float **points)
     int *top = malloc(sizeof(int) * 3);
     int top_index = 0;
 
-    if (is_max(p1[0], p2[0], p3[0], p4[0]))
+    if (is_max(p1[0], p2[0], p3[0]) || is_max(p1[0], p2[0], p4[0]) || is_max(p1[0], p3[0], p4[0]))
     {
         top[top_index] = 0;
         top_index++;
     }
-    if (is_max(p2[0], p1[0], p3[0], p4[0]))
+    if (is_max(p2[0], p1[0], p3[0]) || is_max(p2[0], p1[0], p4[0]) || is_max(p2[0], p2[0], p4[0]))
     {
         top[top_index] = 1;
         top_index++;
     }
-    if (is_max(p3[0], p2[0], p1[0], p4[0]))
+    if (is_max(p3[0], p2[0], p1[0]) || is_max(p3[0], p1[0], p4[0]) || is_max(p3[0], p2[0], p4[0]))
     {
         top[top_index] = 2;
         top_index++;
     }
-    if (is_max(p4[0], p2[0], p3[0], p1[0]))
+    if (is_max(p4[0], p2[0], p3[0]) || is_max(p4[0], p1[0], p3[0]) || is_max(p4[0], p2[0], p3[0]))
     {
         top[top_index] = 3;
         top_index++;
@@ -357,22 +357,22 @@ int get_br(float **points)
     int *bottom = malloc(sizeof(int) * 3);
     int bottom_index = 0;
 
-    if (is_max(p1[1], p2[1], p3[1], p4[1]))
+    if (is_max(p1[1], p2[1], p3[1]) || is_max(p1[1], p2[1], p4[1]) || is_max(p1[1], p3[1], p4[1]))
     {
         bottom[bottom_index] = 0;
         bottom_index++;
     }
-    if (is_max(p2[1], p1[1], p3[1], p4[1]))
+    if (is_max(p2[1], p1[1], p3[1]) || is_max(p2[1], p1[1], p4[1]) || is_max(p2[1], p2[1], p4[1]))
     {
         bottom[bottom_index] = 1;
         bottom_index++;
     }
-    if (is_max(p3[1], p2[1], p1[1], p4[1]))
+    if (is_max(p3[1], p2[1], p1[1]) || is_max(p3[1], p1[1], p4[1]) || is_max(p3[1], p2[1], p4[1]))
     {
         bottom[bottom_index] = 2;
         bottom_index++;
     }
-    if (is_max(p4[1], p2[1], p3[1], p1[1]))
+    if (is_max(p4[1], p2[1], p3[1]) || is_max(p4[1], p1[1], p3[1]) || is_max(p4[1], p2[1], p3[1]))
     {
         bottom[bottom_index] = 3;
         bottom_index++;
