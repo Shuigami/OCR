@@ -7,6 +7,9 @@
 #include "helpers.h"
 #include "rotate.h"
 #include "tools.h"
+#include "filter.h"
+#include "morph.h"
+#include "edge.h"
 
 // Event loop that calls the relevant event handler.
 //
@@ -53,18 +56,61 @@ int processing_image(int argc, char** argv)
 
     double w = s->w;
     double h = s->h;
+    printf("Size : %0f * %0f\n", w, h);
+
+    if(SDL_SaveBMP(s, "result/0.0-original.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
 
     // - Convert the surface into grayscale.
-    // surface_to_grayscale(s);
+    surface_to_grayscale(s);
+    double average = 0;
+    Uint32 *pixels = s->pixels;
+    Uint8 c;
+    for (int i = 0; i < w * h; i++)
+    {
+        SDL_GetRGB(pixels[i], s->format, &c, &c, &c);
+        average += (double)c / (double)(w * h);
+    }
+
+    Uint32 *old = copy_pixels(s);
+
+    if(SDL_SaveBMP(s, "result/1.0-black_and_white.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+
+    if (average > 175)
+        filter_normalize(s);
+
+    if(SDL_SaveBMP(s, "result/1.1-normalize.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+    
+    filter_gamma(s);
+
+    if(SDL_SaveBMP(s, "result/1.2-gamma.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+
+    filter_contrast(s);
+
+    if(SDL_SaveBMP(s, "result/1.3-contrast.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+        
+    morph(s);   
     otsu(s);
 
+    if(SDL_SaveBMP(s, "result/1.6-otsu.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+        
+    canny_edge_detector(s);
+
+    if(SDL_SaveBMP(s, "result/1.7-canny.bmp") != 0)
+        printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
+        
     // - Grid Detection
     double angle = -1;
     for (int i = 1; i < argc - 1; i++)
         if (argv[i][0] == '-' && argv[i][1] == 'a')
             angle = str_to_double(argv[i+1]);
 
-    grid_detection(s, &angle);
+    grid_detection(s, old, &angle);
 
     int stop = 0;
     for (int i = 1; i < argc - 1; i++)
@@ -96,7 +142,7 @@ int processing_image(int argc, char** argv)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
     // - Resize the window according to the size of the image.
-    SDL_SetWindowSize(window, w, h);
+    SDL_SetWindowSize(window, s->w, s->h);
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* t = SDL_CreateTextureFromSurface(renderer, s);

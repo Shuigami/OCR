@@ -82,25 +82,24 @@ void resize(SDL_Surface *s, float **lines, int *square_corners)
     printf("        - Width of square : %f\n", w);
     printf("        - Height of square : %f\n", h);
 
-    int sizeLine = 1;
-    w += sizeLine;
-    h += sizeLine;
-    SDL_Rect newRect;
     int x = tl[0];
     int y = tl[1];
-    newRect.x = x;
-    newRect.y = y;
-    newRect.w = w;
-    newRect.h = h;
-    const SDL_Rect newRectC = newRect;
+    
+    Uint32 *pixels = s->pixels;
 
-    SDL_Rect pastRect;
-    pastRect.x = 0;
-    pastRect.y = 0;
-    pastRect.w = s->w;
-    pastRect.h = s->h;
+    Uint8 r, g, b;
+    int startpos = y * (int)s->w + x;
+    for (int yy = 0; yy < h; yy++)
+    {
+        for (int xx = 0; xx < w; xx++)
+        {
+            SDL_GetRGB(pixels[yy * s->w + xx + startpos], s->format, &r, &g, &b);
+            pixels[yy * s->w + xx] = SDL_MapRGB(s->format, r, g, b);
+        }
+    }
 
-    SDL_BlitSurface(s, &newRectC, s, &pastRect);
+    SDL_UnlockSurface(s);
+
     s->w = w;
     s->h = h;
 

@@ -80,7 +80,9 @@ double automatic_rotation(int **hough_accumulator, SDL_Surface *s)
     free(thetas);
     free(thetas_v);
 
-    most_freq_theta = abs((int)most_freq_theta);
+    most_freq_theta = most_freq_theta;
+    if (most_freq_theta < 0)
+        most_freq_theta = -most_freq_theta;
 
     printf("不 Automatic angle found : %.2f\n", most_freq_theta);
 
