@@ -111,57 +111,89 @@ int *square_detection(SDL_Surface *s, float **lines, int len)
         return square_lines;
     }
 
+    float **points = NULL;
+
     for (int i = 0; i < len; i++)
     {
         float *line1 = lines[i];
         for (int j = 0; j < len; j++)
         {
             float *line2 = lines[j];
-            if (i != j && is_perpendicular(line1, line2))
+            if (i == j || !is_perpendicular(line1, line2))
+                continue;
+            
+            for (int k = 0; k < len; k++)
             {
-                for (int k = 0; k < len; k++)
+                float *line3 = lines[k];
+                if (i == k || j == k || !is_perpendicular(line2, line3))
+                    continue;
+
+                for (int l = 0; l < len; l++)
                 {
-                    float *line3 = lines[k];
-                    if (i != k && j != k && is_perpendicular(line2, line3))
+                    float *line4 = lines[l];
+                    if (i == l || j == l || k == l 
+                            || !is_perpendicular(line3, line4)
+                            || !is_perpendicular(line4, line1))
+                        continue;
+
+
+                    float perimeter = square_perimeter(lines, i, j, k, l);
+
+                    if (perimeter > max_length)
                     {
-                        for (int l = 0; l < len; l++)
-                        {
-                            float *line4 = lines[l];
-                            if (i != l && j != l && k != l 
-                                    && is_perpendicular(line3, line4)
-                                    && is_perpendicular(line4, line1))
-                            {
-                                float perimeter = 
-                                    square_perimeter(lines, i, j, k, l);
-                                if (perimeter > max_length)
-                                {
-                                    max_length = perimeter;
-                                    square_lines[0] = i;
-                                    square_lines[1] = j;
-                                    square_lines[2] = k;
-                                    square_lines[3] = l;
-                                }
-                            }
-                        }
+                        float **tmp_points = get_points(lines, &i, &j, &k, &l);
+
+                        float h = dist(tmp_points[0], tmp_points[1]);
+                        float w = dist(tmp_points[0], tmp_points[2]);
+
+                        if (abs((int)w - (int)h) > 30)
+                            continue;
+
+                        int min = 120;
+                        if ((tmp_points[0][0] >= min && tmp_points[2][0] > s->w - min)
+                            || (tmp_points[0][0] < min && tmp_points[2][0] <= s->w - min))
+                            continue;
+
+                        min = 40;
+                        if ((tmp_points[0][1] >= min && tmp_points[1][1] > s->h - min)
+                            || (tmp_points[0][1] < min && tmp_points[1][1] <= s->h - min))
+                            continue;
+
+                        points = tmp_points;
+
+                        // draw_line(s, lines[i]);
+                        // draw_line(s, lines[j]);
+                        // draw_line(s, lines[k]);
+                        // draw_line(s, lines[l]);
+                        
+                        max_length = perimeter;
+                        square_lines[0] = i;
+                        square_lines[1] = j;
+                        square_lines[2] = k;
+                        square_lines[3] = l;
                     }
                 }
             }
         }
     }
+
+    if (points == NULL)
+        errx(1, "    No square found");
+
     int i = square_lines[0];
     int j = square_lines[1];
     int k = square_lines[2];
     int l = square_lines[3];
+    
+    float *p1 = points[0];
+    float *p2 = points[1];
+    float *p3 = points[2];
+    float *p4 = points[3];
 
-    float *p1 = intersection_point(lines, i, j);
-    float *p2 = intersection_point(lines, j, k);
-    float *p3 = intersection_point(lines, k, l);
-    float *p4 = intersection_point(lines, l, i);
-
-    draw_line(s, lines[i]);
-    draw_line(s, lines[j]);
-    draw_line(s, lines[k]);
-    draw_line(s, lines[l]);
+    // draw_line(s, lines[i]);
+    // draw_line(s, lines[j]);
+    // draw_line(s, lines[k]);
+    // draw_line(s, lines[l]);
 
     printf("     Largest square :\n");
     printf("        - p1 = (%.0f, %.0f)\n", p1[0], p1[1]);
@@ -172,9 +204,5 @@ int *square_detection(SDL_Surface *s, float **lines, int len)
     printf("     Perimeter of largest square : %.2f\n\n", 
             square_perimeter(lines, i, j, k, l));
 
-    free(p1);
-    free(p2);
-    free(p3);
-    free(p4);
     return square_lines;
 }

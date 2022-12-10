@@ -17,3 +17,5 @@ int get_br(float **points);
 int clamp(int val, int min, int max);
 Uint32 *copy_pixels(SDL_Surface *s);
 void draw_square(SDL_Surface *s,  float *p1, float *p2, float *p3, float *p4);
+float **get_points(float **lines, int* i, int* j, int* k, int* l);
+float dist(float *p1, float *p2);

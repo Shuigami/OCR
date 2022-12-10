@@ -41,7 +41,29 @@ float **find_line_equations(int **lines, int len)
         }
     }
 
-    printf("     Found line equations\n\n");
+    for (int i = 0; i < len; i++)
+    {
+        if (line_eq[i][2] != 1. && abs((int)line_eq[i][0]) > 60)
+        {
+            line_eq[i][0] = - line_eq[i][1] / line_eq[i][0];
+            line_eq[i][1] = -1.;
+            line_eq[i][2] = 1.;
+        }
+    }
+
+    printf("     Found line equations\n");
+
+    /*
+    for (int i = 0; i < len; i++)
+    {
+        if (line_eq[i][2] == 1)
+            printf("    Lines[%i] : x = %.1f\n", i, line_eq[i][0]);
+        else
+            printf("    Lines[%i] : y = %.1f * x + %.1f\n", i, line_eq[i][0], line_eq[i][1]);
+    }
+    */
+
+    printf("\n");
 
     return line_eq;
 }
@@ -158,15 +180,147 @@ int **find_lines(int **accumulator, SDL_Surface* s, double *rhos,
     return lines;
 }
 
+void lines_averaging(float **lines, int *len_lines)
+{
+    int *lines_deleted = malloc(sizeof(int) * *len_lines);
+    int len_lines_deleted = 0;
+
+    float threshold = .5;
+    float delta = 40;
+    for (int i = 0; i < *len_lines; i++)
+    {
+        // Check if already deleted
+        int found = 0;
+        for (int k = 0; k < len_lines_deleted; k++)
+            if (lines_deleted[k] == i)
+                found = 1;
+        if (found)
+            continue;
+
+        float m1 = lines[i][0];
+        float b1 = lines[i][1];
+        float v1 = lines[i][2];
+
+        for (int j = 0; j < *len_lines; j++)
+        {
+            if (j == i)
+                continue;
+
+            // Check if already deleted
+            int found = 0;
+            for (int k = 0; k < len_lines_deleted; k++)
+                if (lines_deleted[k] == j)
+                    found = 1;
+            if (found)
+                continue;
+    
+            float m2 = lines[j][0];
+            float b2 = lines[j][1];
+            float v2 = lines[j][2];
+
+            if ((v1 == 1. && v2 == 1.))
+            {
+                if (m1 <= m2 + delta && m1 >= m2 - delta)
+                {
+                    int found = 0;
+                    for (int k = 0; k < len_lines_deleted; k++)
+                        if (lines_deleted[k] == j)
+                            found = 1;
+                    
+                    if (!found)
+                        lines_deleted[len_lines_deleted++] = j;
+                }
+            }
+
+            else if (v1 == 1. && abs((int)m2) >= 50)
+            {
+                if (m1 <= b2 + delta && m1 >= b2 - delta)
+                {
+                    int found = 0;
+                    for (int k = 0; k < len_lines_deleted; k++)
+                        if (lines_deleted[k] == j)
+                            found = 1;
+                    
+                    if (!found)
+                        lines_deleted[len_lines_deleted++] = j;
+                }
+            }
+
+            else if (v2 == 1. && abs((int)m1) >= 50)
+            {
+                if (m2 <= b1 + delta && m2 >= b1 - delta)
+                {
+                    int found = 0;
+                    for (int k = 0; k < len_lines_deleted; k++)
+                        if (lines_deleted[k] == j)
+                            found = 1;
+                    
+                    if (!found)
+                        lines_deleted[len_lines_deleted++] = j;
+                }
+            }
+
+            else if (m1 <= m2 + threshold && m1 >= m2 - threshold && b1 <= b2 + delta && b1 >= b2 - delta)
+            {
+                int found = 0;
+                for (int k = 0; k < len_lines_deleted; k++)
+                    if (lines_deleted[k] == j)
+                        found = 1;
+                
+                if (!found)
+                    lines_deleted[len_lines_deleted++] = j;
+            }
+        }
+    }
+
+    printf("%i lines deleted\n", len_lines_deleted);
+    
+    int new_len = *len_lines - len_lines_deleted;
+    int d = 0;
+    for (int i = 0; i < *len_lines; i++)
+    {
+        int supp = 0;
+        for (int j = 0; j < len_lines_deleted; j++)
+        {
+            if (lines_deleted[j] == i)
+                supp = 1;
+        }
+        if (!supp){
+            lines[i - d][0] = lines[i][0];
+            lines[i - d][1] = lines[i][1];
+            lines[i - d][2] = lines[i][2];
+        }
+        else
+            d++;
+    }
+
+    for (int i = 0; i < new_len; i++)
+    {
+        if (lines[i][2] == 1)
+            printf("    Lines[%i] : x = %.1f\n", i, lines[i][0]);
+        else
+            printf("    Lines[%i] : y = %.1f * x + %.1f\n", i, lines[i][0], lines[i][1]);
+    }
+    printf("\n");
+
+    *len_lines = new_len;
+}
+
 void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
 {
     int **hough_accumulator = hough_transform(s);
 
-    s->pixels = old;
+    Uint32 *pixels = s->pixels;
 
     // Get width and height of the image
     double w = s->w;
     double h = s->h;
+
+    Uint8 r, g, b;
+    for (int i = 0; i < w * h; i++){
+        SDL_GetRGB(old[i], s->format, &r, &g, &b);
+        pixels[i] = SDL_MapRGB(s->format, r, g, b);
+    }
 
     // Max distance equals to the diagonal
     double diag = sqrt(w*w + h*h);
@@ -214,13 +368,14 @@ void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
     */
 
     float **lines_eq = find_line_equations(lines, len);
+    lines_averaging(lines_eq, &len);
 
-    //for (int i = 0; i < len; i++)
-        //draw_line(s, lines_eq[i]);
+    // for (int i = 0; i < len; i++)
+        // draw_line(s, lines_eq[i]);
 
     int *square = square_detection(s, lines_eq, len);
 
-    // resize(s, lines_eq, square);
+    resize(s, lines_eq, square);
     free(lines);
     free(lines_eq);
     free(square);

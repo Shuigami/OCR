@@ -117,7 +117,7 @@ int processing_image(int argc, char** argv)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
     // - Resize the window according to the size of the image.
-    SDL_SetWindowSize(window, w, h);
+    SDL_SetWindowSize(window, s->w, s->h);
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* t = SDL_CreateTextureFromSurface(renderer, s);

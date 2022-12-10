@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include "square_detection.h"
 
 int clamp(int val, int min, int max)
 {
@@ -469,3 +470,60 @@ void draw_square(SDL_Surface *s,  float *p1, float *p2, float *p3, float *p4)
     draw_points(s, p4);
 }
 
+float **get_points(float **lines, int* i, int* j, int* k, int* l)
+{
+    float threshold = .5;
+    
+    float *p1 = intersection_point(lines, *i, *j);
+    float *p2 = intersection_point(lines, *j, *k);
+    float *p3 = intersection_point(lines, *k, *l);
+    float *p4 = intersection_point(lines, *l, *i);
+
+    int max = 0;
+    if (p1[0] > max)
+        max = p1[0];
+    if (p1[1] > max)
+        max = p1[1];
+    if (p2[0] > max)
+        max = p2[0];
+    if (p2[1] > max)
+        max = p2[1];
+    if (p3[0] > max)
+        max = p3[0];
+    if (p3[1] > max)
+        max = p3[1];
+    if (p4[0] > max)
+        max = p4[0];
+    if (p4[1] > max)
+        max = p4[1];
+
+    threshold *= max;
+
+    float **points = malloc(sizeof(float*) * 4);
+    for (int i = 0; i < 4; i++)
+    {
+        points[i] = malloc(sizeof(float) * 2);
+        for (int j = 0; j < 2; j++)
+            points[i][j] = -1.;
+    }
+
+    float **comp_points = malloc(sizeof(float*) * 4);
+    comp_points[0] = p1;
+    comp_points[1] = p2;
+    comp_points[2] = p3;
+    comp_points[3] = p4;
+
+    points[0] = comp_points[get_tl(comp_points)];
+    points[1] = comp_points[get_bl(comp_points)];
+    points[2] = comp_points[get_tr(comp_points)];
+    points[3] = comp_points[get_br(comp_points)];
+
+    free(comp_points);
+
+    return points;
+}
+
+float dist(float *p1, float *p2)
+{
+    return sqrt((p1[0] - p2[0]) * (p1[0] - p2[0]) + (p1[1] - p2[1]) * (p1[1] - p2[1]));
+}
