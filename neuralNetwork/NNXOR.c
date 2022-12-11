@@ -5,7 +5,7 @@
 #include <err.h>
 #include <string.h>
 
-double sigmoid(double x)
+double _sigmoid(double x)
 {
 	return 1/(1+exp(-x));
 }
@@ -114,7 +114,7 @@ int NNXOR()
 				double activation = hideNodeBias[j];//fonction d'activation
 				for(int k = 0; k < 2;k++)
 					activation +=inputs[i][k]*hiddenWeights[k][j];
-				hiddenNode[j] = sigmoid(activation);
+				hiddenNode[j] = _sigmoid(activation);
 			}
 
 			for(int j = 0; j < 1;j++)
@@ -122,7 +122,7 @@ int NNXOR()
 				double activation = outputNodeBias[j];
 				for(int k = 0; k < 2;k++)
 					activation += hiddenNode[k]*outputWeights[k][j];
-				outputNode[j] = sigmoid(activation);
+				outputNode[j] = _sigmoid(activation);
 			}
 
 			printf("Input: %g %g	Output: %g Predicted Output: %g \n",

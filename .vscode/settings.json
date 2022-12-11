@@ -10,6 +10,12 @@
         "processing.h": "c",
         "string.h": "c",
         "stdio.h": "c",
-        "math.h": "c"
+        "math.h": "c",
+        "img.h": "c",
+        "activations.h": "c",
+        "matrix.h": "c",
+        "ops.h": "c",
+        "nn.h": "c",
+        "cut.h": "c"
     }
 }

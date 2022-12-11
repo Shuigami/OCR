@@ -3,11 +3,11 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "processing.h"
-#include "NNXOR.h"
 #include "helpers.h"
 #include "rotate.h"
 #include "tools.h"
 #include "cut.h"
+#include "nn_main.h"
 
 // Event loop that calls the relevant event handler.
 //
@@ -43,7 +43,6 @@ void print_help()
 {
     printf("Usage: ./main file [options]\n\n");
     printf("Options:\n");
-    printf("\t-n                Display NNXOR results\n");
     printf("\t-r <angle>        Rotate the image by the specified <angle>\n");
 }
 
@@ -55,10 +54,7 @@ int main(int argc, char **argv)
     double angle = -1;
     char *filename = NULL;
 
-    if (argv[1][0] == '-' && argv[1][1] == 'n') {
-        NNXOR();
-        return EXIT_SUCCESS;
-    } else if (argv[1][0] == '-' && argv[1][1] == 'h') {
+    if (argv[1][0] == '-' && argv[1][1] == 'h') {
         print_help();
         return EXIT_SUCCESS;
     } else {
@@ -96,6 +92,7 @@ int main(int argc, char **argv)
     // - Convert the surface into grayscale.
     processing_image(s, angle);
     cut(s);
+    nn_function();
 
     // - Create a window.
     SDL_Window* window_sdl = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
