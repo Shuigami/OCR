@@ -17,11 +17,11 @@ int nn_function() {
 	/*
 
 	int number_imgs = 15000;
-	Img** imgs = csv_to_imgs("data_set_final2.txt", number_imgs);
+	Img** imgs = csv_to_imgs("neuralNetwork/data_set_final3.txt", number_imgs);
 	//for(int i = 0; i < 15;i++)
 	NeuralNetwork* net = network_create(784, 300, 10,0.1);
 	network_train_batch_imgs(net, imgs, number_imgs);
-	network_save(net, "testing_net");
+	network_save(net, "neuralNetwork/testing_net");
 	// PREDICTING
 	//imgs_free(imgs,number_imgs);
 	//network_free(net);
