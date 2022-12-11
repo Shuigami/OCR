@@ -6,11 +6,11 @@ CFLAGS = -g -Wextra -O3 `pkg-config --cflags gtk+-3.0`
 LDFLAGS =
 LDLIBS = `pkg-config --libs gtk+-3.0`
 
-SRC = gtk.c
+SRC = gui.c
 OBJ = ${SRC:.c=.o}
 EXE = ${SRC:.c=}
 
-all: gtk
+all: gui
 
 main: ${OBJ}
 

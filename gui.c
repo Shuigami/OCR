@@ -225,7 +225,7 @@ gboolean on_draw(GtkWidget *widget, cairo_t *cr,gpointer user_data)
 }
 
 
-void draw(UserInterface *ui)
+void draw_bis(UserInterface *ui)
 {
   gtk_widget_queue_draw((GtkWidget *)ui->result);
 }
@@ -243,7 +243,7 @@ gboolean on_configure(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 
   //g_print(" %i ",*ui->size);
 
-  draw(ui);
+  draw_bis(ui);
   return TRUE;
 }
 
@@ -261,14 +261,12 @@ gboolean start(APK *master)
 {
   if(master->File)
   {
-    // function traitement d image ne pas oublier de rajouté l extension a la fin
-
     //calcul sudoku
     master->SDK.solved = TRUE;
     update_sdk(&master->SDK,master->File);
     master->File = NULL;
     //show Result
-    draw(&master->UI);
+    draw_bis(&master->UI);
     return FALSE;
   }
   return FALSE;
@@ -298,11 +296,14 @@ gboolean on_key_release(GtkWidget *widget, GdkEvent *event, gpointer user_data)
 
 int main()
 {
+  printf("IKLUWEGQBFRAk\n");
   // Initializes GTK.
   gtk_init(NULL, NULL);
+  printf("IKLUWEGQBFRAk\n");
 
   // Constructs a GtkBuilder instance.
   GtkBuilder* builder = gtk_builder_new ();
+  printf("IKLUWEGQBFRAk\n");
 
   // Loads the UI description.
   // (Exits if an error occurs.)
@@ -313,6 +314,7 @@ int main()
       g_clear_error(&error);
       return 1;
   }
+  printf("IKLUWEGQBFRAk\n");
 
 
   // Gets the widgets.
@@ -346,7 +348,7 @@ int main()
     }
   };
 
-   g_print("%i\n",GTK_IS_WINDOW(master.UI.window));
+   // g_print("%i\n",GTK_IS_WINDOW(master.UI.window));
 
   // Connects event handlers.
   g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);

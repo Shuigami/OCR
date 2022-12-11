@@ -43,10 +43,11 @@ void print_help()
     printf("Usage: ./main file [options]\n\n");
     printf("Options:\n");
     printf("\t-n                Display NNXOR results\n");
+    printf("\t-g                Start graphical user interface\n");
     printf("\t-r <angle>        Rotate the image by the specified <angle>\n");
 }
 
-int main(int argc, char **argv)
+int main_bis(int argc, char **argv)
 {
     if (argc < 2)
         errx(EXIT_FAILURE, "Usage: image-file");
@@ -65,10 +66,11 @@ int main(int argc, char **argv)
     }
 
     for (int i = 2; i < argc; i++){
-        if (i < argc - 1 && argv[i][0] == '-' && argv[i][1] == 'r')
+        if (i < argc - 2 && argv[i][0] == '-' && argv[i][1] == 'r'){
             angle = strtod(argv[i+1], NULL);
+            i++;
+        }
     }
-
 
     // - Initialize the SDL.
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
