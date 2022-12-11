@@ -181,6 +181,7 @@ void NMS(SDL_Surface *s, int *angle)
                 nms[i] = 0;
         }
     }
+    free(pixels);
 }
 
 void threshold(SDL_Surface *s)
