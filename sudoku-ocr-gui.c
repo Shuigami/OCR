@@ -8,6 +8,10 @@
 #include "processing.h"
 #include "tools.h"
 #include "cut.h"
+#include "nn_main.h"
+#include "solver.h"
+#include <unistd.h>
+#include <limits.h>
 
 //__________________________________DATA________________________________________
 
@@ -123,16 +127,18 @@ void update_sdk(Sudoku *sdk,gchar *file)
   char *buffer2 = calloc(111,sizeof(char));
 
   //g_print("%s",file);
+  char cwd[PATH_MAX];
+   if (getcwd(cwd, sizeof(cwd)) != NULL) {
+       printf("Current working dir: %s\n", cwd);
+   }
 
-  file = realloc(file,(strlen(file)+6) * sizeof(char));
-  strcat(file,".save");
   f_read(file,buffer1);
-  file = realloc(file,(strlen(file)+8) * sizeof(char));
-  strcat(file,".result");
+
+  char *file2 = malloc(strlen(file) + 8);
+  sprintf(file2, "%s.result", file);
 
   //g_print("\n%s\n",buffer1);
-
-  f_read(file,buffer2);
+  f_read(file2,buffer2);
 
   //g_print("\n%s\n",buffer2);
 
@@ -283,11 +289,12 @@ gboolean start(APK *master)
     // - Convert the surface into grayscale.
     processing_image(s, angle);
     cut(s);
-    return FALSE;
+    nn_function();
+    solver("../../grid_result/grid.save");
 
     //calcul sudoku
     master->SDK.solved = TRUE;
-    update_sdk(&master->SDK,master->File);
+    update_sdk(&master->SDK,"../../grid_result/grid.save");
     master->File = NULL;
     //show Result
     draw_bis(&master->UI);

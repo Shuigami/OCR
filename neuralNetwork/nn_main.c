@@ -29,7 +29,7 @@ int nn_function() {
 	*/
 
 	int number_imgss = 81;
-	Img** imgss = csv_to_imgs2("neuralNetwork/split.txt", number_imgss);
+	Img** imgss = csv_to_imgs2("grid_result/grid.txt", number_imgss);
 
 	int a[81]={0};
 	NeuralNetwork* neto = network_load("neuralNetwork/testing_net");
@@ -43,7 +43,7 @@ int nn_function() {
 	for(int i = 0; i < 81;i++)
 		printf("a[%i] = %i\n",i,a[i]);
 
-	writeee(a,"neuralNetwork/testing_net");
+	writeee(a);
 
 	return 0;
 }

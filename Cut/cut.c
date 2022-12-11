@@ -19,9 +19,9 @@ void cut(SDL_Surface* surface)
     size_t j2 = 0;
     i2 += pas;
     j2 += pas;
-    remove("neuralNetwork/split.txt");
+    remove("grid_result/grid.txt");
     FILE *f;
-    f = fopen("neuralNetwork/split.txt", "a");
+    f = fopen("grid_result/grid.txt", "a");
 
     for(size_t i = 0; i < 9; i++)
     {

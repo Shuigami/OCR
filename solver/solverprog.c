@@ -9,7 +9,7 @@ size_t valid_numb(char s[81][10],size_t i,size_t j);
 
 //_____________________________initialisation___________________________________
 
-void fill(char s[81][10])
+void fill_solver(char s[81][10])
 {
     //for each empty box, init possible numbers
     for(size_t i = 0;i<81;i++)
@@ -94,7 +94,7 @@ void one(char s[81][10])
 void init(char s[81][10])
 {
     //init sudoku board
-    fill(s);
+    fill_solver(s);
     //delete impossible numbers for each line
     for(size_t i = 0;i<81;i+=9)
         del_h(s,i);

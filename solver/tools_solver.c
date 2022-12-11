@@ -7,9 +7,9 @@
 //______________________________________________________________________________
 
 //the list of every space position in a file
-size_t space[18] = {3,7,15,19,27,31,40,44,52,56,64,68,77,81,89,93,101,105};
+size_t space_solver[18] = {3,7,15,19,27,31,40,44,52,56,64,68,77,81,89,93,101,105};
 //the list of every line break position in a file
-size_t back[11] = {11,23,35,36,48,60,72,73,85,97,109};
+size_t back_solver[11] = {11,23,35,36,48,60,72,73,85,97,109};
 
 //______________________________________________________________________________
 
@@ -44,7 +44,7 @@ size_t valid_numb(char s[81][10], size_t i, size_t j)
 
 //______________________________________________________________________________
 
-void print(char s[81][10])
+void print_solver(char s[81][10])
 {
     //print the grid
     for(size_t i = 0; i < 9; i++)
@@ -58,7 +58,7 @@ void print(char s[81][10])
 
 //______________________________________________________________________________
 
-void write(char* filename,char* result)
+void write_solver(char* filename,char* result)
 {
   FILE* output_file = fopen(filename, "w+");
   if (!output_file) {
@@ -72,9 +72,9 @@ void write(char* filename,char* result)
   fclose(output_file);
 }
 
-void read(char* filename,char* buffer)
+void read_solver(char* filename,char* buffer)
 {
-
+    printf("%s\n", filename);
     FILE* input_file = fopen(filename , "r+");
     if (!input_file) {
         errx(1,"fopen");
@@ -87,19 +87,19 @@ void read(char* filename,char* buffer)
 
 //_____________________________________________________________________________
 
-void verified(char *board,char *output)
+void verified_solver(char *board,char *output)
 {
     //verified if the grid on the file have a correct syntax and delete every space and line break
     size_t j = 0 ; size_t ispace = 0 ; size_t iback = 0;
     for(size_t i = 0; i < 110; i++)
     {
-      if(i == space[ispace] )
+      if(i == space_solver[ispace] )
 	      {
           if(board[i] != ' ')
             errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match (unexpect number, must be ' ' at %lu) \033[0m",i);
 	        ispace++;
 	      }
-      else if(i == back[iback] )
+      else if(i == back_solver[iback] )
 	     {
           if(board[i] != '\n')
             errx(2,"\033[0;31m verified:\n-invalid syntax: the input don't match (unexpect number, must be \\n at %lu) \033[0m",i);
@@ -116,12 +116,12 @@ void verified(char *board,char *output)
     output[j] = 0;
 }
 
-void translate(char* board,char result[81][10])
+void translate_solver(char* board,char result[81][10])
 {
   //translate the grid on the file in a empty list result
     char vboard[82];
     //delete every invalid character and verified the syntax
-    verified(board,vboard);
+    verified_solver(board,vboard);
     //put numbers of the grid to the list
     for(size_t i = 0;i<81;i++)
         if(vboard[i] != '.')

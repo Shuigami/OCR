@@ -16,6 +16,11 @@
         "matrix.h": "c",
         "ops.h": "c",
         "nn.h": "c",
-        "cut.h": "c"
+        "cut.h": "c",
+        "solver.h": "c",
+        "solverprog.h": "c",
+        "time.h": "c",
+        "limits.h": "c",
+        "unistd.h": "c"
     }
 }

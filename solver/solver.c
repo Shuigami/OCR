@@ -1,16 +1,13 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 #include <err.h>
 #include <time.h>
-#include "solver.h"
+#include "solverprog.h"
+#include "tools_solver.h"
 
-int main(int argc,char** argv)
+int solver(char *filename)
 {
-	if(argc == 1)
-		printf("solver(char* filename) => void\nsolve the sudoku of filename and save it in filename.result");
-	else if (argc != 2)
-		errx(2,"\033[0;31m main:\n-invalid argument: solver must have just 1 argument (try ./solver to know more about) \033[0m");
-
 	char grid[111];
 	char sudoku[81][10] = {{0}};
 
@@ -20,8 +17,8 @@ int main(int argc,char** argv)
 	char success;
 	*/
 
-	read(argv[1],grid);
-	translate(grid,sudoku);
+	read_solver(filename,grid);
+	translate_solver(grid,sudoku);
 
 
 	//initstart = clock();
@@ -32,16 +29,16 @@ int main(int argc,char** argv)
 	int success = force(sudoku,0);
 	//stop = clock();
 
-	print(sudoku);
+	print_solver(sudoku);
 	/*time = (unsigned long) difftime (stop, start);
 	inittime = (unsigned long) difftime (initstop, initstart);
 	printf("Init finished in %6.3ld millisec\n Solve finished in %6.3ld millisec\n\n",inittime,time);
 	*/
 	translateback(sudoku,grid);
 
-	char*fileresult = argv[1];
-	strcat(fileresult,".result");
-	write(fileresult,grid);
+	char *result = malloc(sizeof(char) * strlen(filename) + 8);
+	sprintf(result, "%s.result",filename);
+	write_solver(result,grid);
 
 	if(success)
 		return EXIT_FAILURE;

@@ -8,6 +8,7 @@
 #include "tools.h"
 #include "cut.h"
 #include "nn_main.h"
+#include "solver.h"
 
 // Event loop that calls the relevant event handler.
 //
@@ -93,6 +94,7 @@ int main(int argc, char **argv)
     processing_image(s, angle);
     cut(s);
     nn_function();
+    solver("../../grid_result/grid.save");
 
     // - Create a window.
     SDL_Window* window_sdl = SDL_CreateWindow("Display Image", 0, 0, 1, 1,

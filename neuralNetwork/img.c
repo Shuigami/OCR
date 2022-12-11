@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <err.h>
+#include <unistd.h>
+#include <limits.h>
 
 #define MAXCHAR 10000
 
@@ -95,7 +97,7 @@ Img** csv_to_imgs(char* file_string, int number_of_imgs) {
 	fclose(fp);
 	return imgs;
 }
-void writeee(int grid[81], char *filename)
+void writeee(int grid[81])
 {
   size_t j = 0;
   char *save = calloc(111,sizeof(char));
@@ -125,10 +127,10 @@ void writeee(int grid[81], char *filename)
   printf("%s",save);
   //filename = realloc(filename,strlen(filename+6)*sizeof(char));
   //strcat(filename,".save");
-  chdir(filename);
-  FILE* out = fopen("lorenzolemancho", "w+");
+
+  FILE* out = fopen("../../grid_result/grid.save", "w+");
   if (out == NULL)
-		fprintf(stderr, "Error opening file %s\n", filename);
+		fprintf(stderr, "Error opening file\n");
 
   fwrite(save,1,110,out);
   fclose(out);
