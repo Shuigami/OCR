@@ -366,7 +366,7 @@ void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
                 lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
 
 
-        if(SDL_SaveBMP(s, "2.0-rotate.bmp") != 0)
+        if(SDL_SaveBMP(s, "result/2.0-rotate.bmp") != 0)
             printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
     }
 
