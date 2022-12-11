@@ -6,6 +6,7 @@
 #include <SDL2/SDL_image.h>
 #include "cut.h"
 
+
 void cut(SDL_Surface* surface)
 {
 	SDL_PixelFormat* format = surface->format;
@@ -42,31 +43,45 @@ void cut(SDL_Surface* surface)
 		    }
 
 
-		    Uint8 mat[784] = {};
-		    SDL_Surface* surface2 = surface_tmp;
-		    Uint32* pixels = surface2->pixels;
+		    //Uint8 mat[784] = {};
+		    char mat[3] = {};
+		    Uint32* pixels = surface_tmp->pixels;
 		    size_t len = 783;
 
 
 		    Uint8 r,g,b;
+		    fputs("0", f);
+		    fputc(44, f);
 
 		    for(size_t i = 0; i < len; i++)
 		    {
 			    SDL_GetRGB(pixels[i], format, &r, &g, &b);
-			    if(r < 128)
-				    mat[i] = 49;
+			    if(0.3*r+0.59*g+0.11*b < 128)
+			    {
+				    //mat[i] = 50;
+				    fputs("255", f);
+			    }
 			    else
-				    mat[i] = 48;
-			    fputc(mat[i], f);
+			    {
+				    //mat[i] = 48;
+				    fputs("0", f);
+			    }
+			    //fputc(mat[i], f);
 			    fputc(44, f);
 		    }
 		    SDL_GetRGB(pixels[i], format, &r, &g, &b);
-		    if(r < 128)
-			    mat[i] = 49;
+		    if(0.3*r+0.59*g+0.11*b < 128)
+		    {
+			    //mat[i] = 50;
+			    fputs("255", f);
+		    }
 		    else
-			    mat[i] = 48;
-		    fputc(mat[i], f);
-
+		    {
+			    //mat[i] = 48;
+			    fputs("0", f);
+			    //fputc(48, f);
+		    }
+		    //fputc(mat[i], f);
 
 		    
 		    fputc(10, f);
@@ -79,4 +94,5 @@ void cut(SDL_Surface* surface)
 	    j2 = pas;
 	    i2 += length;
     }
+    fclose(f);
 }
