@@ -38,7 +38,10 @@ int main(int argc,char** argv)
 	printf("Init finished in %6.3ld millisec\n Solve finished in %6.3ld millisec\n\n",inittime,time);
 	*/
 	translateback(sudoku,grid);
-	write(argv[1],grid);
+
+	char*fileresult = argv[1];
+	strcat(fileresult,".result");
+	write(fileresult,grid);
 
 	if(success)
 		return EXIT_FAILURE;

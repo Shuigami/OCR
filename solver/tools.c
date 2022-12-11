@@ -60,18 +60,16 @@ void print(char s[81][10])
 
 void write(char* filename,char* result)
 {
-  //add ".result" after the filename
-    strcat(filename,".result");
-    FILE* output_file = fopen(filename, "w+");
-    if (!output_file) {
-        errx(1,"fopen");
-    }
+  FILE* output_file = fopen(filename, "w+");
+  if (!output_file) {
+      errx(1,"fopen");
+  }
 
-    //write the grid in the file
-    fwrite(result, 1, 110, output_file);
-    printf("Done Writing!\n");
+  //write the grid in the file
+  fwrite(result, 1, 110, output_file);
+  printf("Done Writing!\n");
 
-    fclose(output_file);
+  fclose(output_file);
 }
 
 void read(char* filename,char* buffer)
@@ -136,23 +134,26 @@ void translateback(char board[81][10], char* result)
     size_t j = 0 ;
     for(size_t i = 0; i<81;i++)
     {
-  	result[j] = board[i][0] + 48;
-  	j++;
-        if(i == 26 || i == 53)
-        {
-            result[j] = '\n';
-            j++;
-        }
-        if((i+1)%9 == 0)
-        {
-            result[j] = '\n';
-	    j++;
-        }
-        else if((i+1)%3 == 0 && i != 0)
-        {
-            result[j] = ' ';
-	    j++;
-        }
+      if(board[i][0] != 0)
+  	    result[j] = board[i][0] + 48;
+      else
+        result[j] = '.';
+    	j++;
+      if(i == 26 || i == 53)
+      {
+        result[j] = '\n';
+        j++;
+      }
+      if((i+1)%9 == 0)
+      {
+        result[j] = '\n';
+        j++;
+      }
+      else if((i+1)%3 == 0 && i != 0)
+      {
+        result[j] = ' ';
+        j++;
+      }
     }
     result[j] = 0;
 }
