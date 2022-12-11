@@ -6,7 +6,7 @@ CFLAGS=  -g -Wextra  -std=c99 -O0
 LDFLAGS= 
 LDLIBS= `pkg-config --libs gtk+-3.0` `pkg-config --libs sdl2` -lSDL2_image -lm -lpthread
 
-SRC = main_test.c $(wildcard utils/*.c) $(wildcard processing/*.c) $(wildcard grid_detection/*.c) $(wildcard Cut/*.c) $(wildcard neuralNetwork/*.c)	
+SRC = $(wildcard utils/*.c) $(wildcard processing/*.c) $(wildcard grid_detection/*.c) $(wildcard Cut/*.c) $(wildcard neuralNetwork/*.c)	
 OBJ = ${SRC:.c=.o}
 EXE = ${SRC:.c=}
 

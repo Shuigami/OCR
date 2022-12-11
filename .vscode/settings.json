@@ -8,6 +8,8 @@
         "sdl_image.h": "c",
         "err.h": "c",
         "processing.h": "c",
-        "string.h": "c"
+        "string.h": "c",
+        "stdio.h": "c",
+        "math.h": "c"
     }
 }
