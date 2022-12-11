@@ -17,10 +17,6 @@ int nn_function(int i) {
 
 	//TRAINING
 	if (i){
-		char cwd[PATH_MAX];
-		if (getcwd(cwd, sizeof(cwd)) != NULL) {
-			printf("Current working dir: %s\n", cwd);
-		}
 		int number_imgs = 15000;
 		Img** imgs = csv_to_imgs("neuralNetwork/data_set_final6.txt", number_imgs);
 		//for(int i = 0; i < 15;i++)

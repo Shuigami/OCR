@@ -37,6 +37,7 @@ typedef struct APK
   UserInterface UI;
   gchar* File;
   Sudoku SDK;
+  gchar* root;
 } APK;
 
 //the list of every space position in a file
@@ -265,42 +266,50 @@ gboolean on_choose_file(GtkWidget *widget, gpointer user_data)
 
 gboolean start(APK *master)
 {
-  if(master->File)
-  {
-    // - Initialize the SDL.
-    if (SDL_Init(SDL_INIT_VIDEO) != 0)
-        errx(EXIT_FAILURE, "%s", SDL_GetError());
+    free(master->SDK.before);
+    free(master->SDK.after);
+    master->SDK.before = calloc(81,sizeof(char));
+    master->SDK.after = calloc(81,sizeof(char));
+    if(master->File)
+    {
+        chdir(master->root);
 
-    // - Create a surface from the colored image.
-    SDL_Surface* s = load_image(master->File);
+        // - Initialize the SDL.
+        if (SDL_Init(SDL_INIT_VIDEO) != 0)
+            errx(EXIT_FAILURE, "%s", SDL_GetError());
 
-    double w = s->w;
-    double h = s->h;
-    double angle = -1;
+        // - Create a surface from the colored image.
+        SDL_Surface* s = load_image(master->File);
 
-    g_print("Size : %0f * %0f\n", w, h);
+        double w = s->w;
+        double h = s->h;
+        double angle = -1;
 
-    SDL_SaveBMP(s, "result/0.0-original.bmp");
+        g_print("Size : %0f * %0f\n", w, h);
 
-    // - Convert the surface into grayscale.
-    processing_image(s, angle);
-    cut(s);
-    nn_function(0);
-    solver("../../grid_result/grid.save");
+        SDL_SaveBMP(s, "result/0.0-original.bmp");
 
-    //calcul sudoku
-    master->SDK.solved = TRUE;
-    update_sdk(&master->SDK,"../../grid_result/grid.save");
-    master->File = NULL;
-    //show Result
-    draw_bis(&master->UI);
+        // - Convert the surface into grayscale.
+        processing_image(s, angle);
+        cut(s);
+        SDL_FreeSurface(s);
+        nn_function(0);
+        solver("../../grid_result/grid.save");
+
+        //calcul sudoku
+        master->SDK.solved = TRUE;
+        update_sdk(&master->SDK,"../../grid_result/grid.save");
+        free(master->File);
+        master->File = NULL;
+        //show Result
+        draw_bis(&master->UI);
+        return FALSE;
+    }
     return FALSE;
-  }
-  return FALSE;
 }
 
 
-gboolean on_start(GtkWidget *widget,gpointer user_data)
+gboolean on_start(GtkWidget *widget, gpointer user_data)
 {
   APK *master = user_data;
   return start(master);
@@ -349,6 +358,9 @@ int main()
 
     gtk_widget_show_all(GTK_WIDGET(window));
 
+    char cwd[PATH_MAX];
+    getcwd(cwd, sizeof(cwd));
+
     UserInterface ui =
     {
         .window = window,
@@ -365,11 +377,10 @@ int main()
         .File = NULL,
         .SDK =
         {
-        .solved = FALSE,
-        .before = calloc(81,sizeof(char)),
-        .after = calloc(81,sizeof(char)),
-        .showed = FALSE,
-        }
+            .solved = FALSE,
+            .showed = FALSE,
+        },
+        .root = cwd,
     };
 
     // ("%i\n",GTK_IS_WINDOW(master.UI.window));
