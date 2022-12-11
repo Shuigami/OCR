@@ -321,6 +321,7 @@ void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
         SDL_GetRGB(old[i], s->format, &r, &g, &b);
         pixels[i] = SDL_MapRGB(s->format, r, g, b);
     }
+    free(old);
 
     // Max distance equals to the diagonal
     double diag = sqrt(w*w + h*h);
@@ -392,6 +393,7 @@ void grid_detection(SDL_Surface* s, Uint32 *old, double *angle)
     int *square = square_detection(s, lines_eq, len);
 
     resize(s, lines_eq, square);
+
     free(lines);
     free(lines_eq);
     free(square);
