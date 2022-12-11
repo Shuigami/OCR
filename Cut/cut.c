@@ -11,8 +11,6 @@ void cut(SDL_Surface* surface)
 {
 	SDL_PixelFormat* format = surface->format;
 
-
-
     int length = (surface->w)/9;
     int pas = length*0.10;
     size_t count = 0;

@@ -7,6 +7,7 @@
 #include "helpers.h"
 #include "rotate.h"
 #include "tools.h"
+#include "cut.h"
 
 // Event loop that calls the relevant event handler.
 //
@@ -94,6 +95,7 @@ int main(int argc, char **argv)
     
     // - Convert the surface into grayscale.
     processing_image(s, angle);
+    cut(s);
 
     // - Create a window.
     SDL_Window* window_sdl = SDL_CreateWindow("Display Image", 0, 0, 1, 1,

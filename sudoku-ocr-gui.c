@@ -7,6 +7,7 @@
 #include <err.h>
 #include "processing.h"
 #include "tools.h"
+#include "cut.h"
 
 //__________________________________DATA________________________________________
 
@@ -281,6 +282,7 @@ gboolean start(APK *master)
 
     // - Convert the surface into grayscale.
     processing_image(s, angle);
+    cut(s);
     return FALSE;
 
     //calcul sudoku
