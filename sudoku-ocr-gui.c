@@ -127,10 +127,6 @@ void update_sdk(Sudoku *sdk,gchar *file)
   char *buffer2 = calloc(111,sizeof(char));
 
   //g_print("%s",file);
-  char cwd[PATH_MAX];
-   if (getcwd(cwd, sizeof(cwd)) != NULL) {
-       printf("Current working dir: %s\n", cwd);
-   }
 
   f_read(file,buffer1);
 
