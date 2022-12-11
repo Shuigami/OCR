@@ -1,8 +1,13 @@
 {
     "files.associations": {
-        "processing.h": "c",
-        "err.h": "c",
+        "tools.h": "c",
         "stdlib.h": "c",
-        "main_test.h": "c"
+        "sdl.h": "c",
+        "helpers.h": "c",
+        "rotate.h": "c",
+        "sdl_image.h": "c",
+        "err.h": "c",
+        "processing.h": "c",
+        "string.h": "c"
     }
 }

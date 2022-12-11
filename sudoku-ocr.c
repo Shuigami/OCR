@@ -43,11 +43,10 @@ void print_help()
     printf("Usage: ./main file [options]\n\n");
     printf("Options:\n");
     printf("\t-n                Display NNXOR results\n");
-    printf("\t-g                Start graphical user interface\n");
     printf("\t-r <angle>        Rotate the image by the specified <angle>\n");
 }
 
-int main_bis(int argc, char **argv)
+int main(int argc, char **argv)
 {
     if (argc < 2)
         errx(EXIT_FAILURE, "Usage: image-file");
@@ -66,11 +65,10 @@ int main_bis(int argc, char **argv)
     }
 
     for (int i = 2; i < argc; i++){
-        if (i < argc - 2 && argv[i][0] == '-' && argv[i][1] == 'r'){
+        if (i < argc - 1 && argv[i][0] == '-' && argv[i][1] == 'r')
             angle = strtod(argv[i+1], NULL);
-            i++;
-        }
     }
+
 
     // - Initialize the SDL.
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
@@ -98,18 +96,18 @@ int main_bis(int argc, char **argv)
     processing_image(s, angle);
 
     // - Create a window.
-    SDL_Window* window = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
+    SDL_Window* window_sdl = SDL_CreateWindow("Display Image", 0, 0, 1, 1,
             SDL_WINDOW_SHOWN);
-    if (window == NULL)
+    if (window_sdl == NULL)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
     // - Creates a renderer.
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer* renderer = SDL_CreateRenderer(window_sdl, -1, SDL_RENDERER_ACCELERATED);
     if (renderer == NULL)
         errx(EXIT_FAILURE, "%s", SDL_GetError());
 
     // - Resize the window according to the size of the image.
-    SDL_SetWindowSize(window, s->w, s->h);
+    SDL_SetWindowSize(window_sdl, s->w, s->h);
 
     // - Create a new texture from the grayscale surface.
     SDL_Texture* t = SDL_CreateTextureFromSurface(renderer, s);
@@ -123,7 +121,7 @@ int main_bis(int argc, char **argv)
     // - Destroy the objects.
     SDL_DestroyTexture(t);
     SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    SDL_DestroyWindow(window_sdl);
     SDL_Quit();
 
     return EXIT_SUCCESS;

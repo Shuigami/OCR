@@ -5,6 +5,7 @@
 #include <SDL2/SDL_image.h>
 #include "helpers.h"
 #include "blur.h"
+#define M_PI 3.141592653589793
 
 void get_gradients(SDL_Surface *s, int *deltaX, int *deltaY)
 {

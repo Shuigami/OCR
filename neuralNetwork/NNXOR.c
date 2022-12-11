@@ -43,16 +43,16 @@ void clear(char *filename)
 	fclose(of);
 }
 
-void write(char* filename, char* result)
-{
-	FILE* output_file = fopen(filename,"a+");
-	if(!output_file)
-	{
-		errx(1,"fopen");
-	}
-	fwrite(result,1,strlen(result),output_file);
-	fclose(output_file);
-}
+// void write(char* filename, char* result)
+// {
+// 	FILE* output_file = fopen(filename,"a+");
+// 	if(!output_file)
+// 	{
+// 		errx(1,"fopen");
+// 	}
+// 	fwrite(result,1,strlen(result),output_file);
+// 	fclose(output_file);
+// }
 
 int NNXOR()
 {
@@ -173,7 +173,7 @@ int NNXOR()
 			char bu[40] = {0};
 			//printf("%f ", hiddenWeights[k][j]);
 			sprintf(bu,"%lf\n",hiddenWeights[k][j]);
-			write("FinalHiddenWeights",bu);
+			// write("FinalHiddenWeights",bu);
 		}
 		//fputs("] ",stdout);
 	}
@@ -185,7 +185,7 @@ int NNXOR()
 		char buf[40] = {0};
 		//printf("%f ", hideNodeBias[j]);
 		sprintf(buf,"%lf\n",hideNodeBias[j]);
-		write("FinalHiddenBias",buf);
+		// write("FinalHiddenBias",buf);
 	}
 	//fputs("] \n",stdout);
 
@@ -199,7 +199,7 @@ int NNXOR()
 			char buff[40] = {0};
 			//printf("%f ", outputWeights[k][j]);
 			sprintf(buff,"%lf\n",outputWeights[k][j]);
-			write("FinalOutputWeight",buff);
+			// write("FinalOutputWeight",buff);
 		}
 		//fputs("] ",stdout);
 
@@ -212,7 +212,7 @@ int NNXOR()
 		char buffe[40] = {0};
 		//printf("%f ", outputNodeBias[j]);
 		sprintf(buffe,"%lf\n",outputNodeBias[j]);
-		write("FinalOutputBias",buffe);
+		// write("FinalOutputBias",buffe);
 	}
 
 	//fputs("] \n",stdout);

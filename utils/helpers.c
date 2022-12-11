@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "square_detection.h"
+#define M_PI 3.141592653589793
 
 int clamp(int val, int min, int max)
 {

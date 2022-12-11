@@ -4,6 +4,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include "helpers.h"
+#define M_PI 3.141592653589793
 
 double **get_gaussian_kernel(int size, double sigma)
 {
