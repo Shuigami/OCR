@@ -25,5 +25,6 @@ clean:
 	${RM} gui
 	${RM} gui.o
 	${RM} nogui
+	${RM} nogui.o
 
 # END
