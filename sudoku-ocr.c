@@ -62,7 +62,7 @@ int main(int argc, char **argv)
         filename = argv[1];
     }
 
-    for (int i = 2; i < argc; i++){
+    for (int i = 1; i < argc; i++){
         if (i < argc - 1 && argv[i][0] == '-' && argv[i][1] == 'r')
             angle = strtod(argv[i+1], NULL);
     }
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
     // - Convert the surface into grayscale.
     processing_image(s, angle);
     cut(s);
-    nn_function();
+    nn_function(0);
     solver("../../grid_result/grid.save");
 
     // - Create a window.

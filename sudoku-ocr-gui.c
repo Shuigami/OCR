@@ -285,7 +285,7 @@ gboolean start(APK *master)
     // - Convert the surface into grayscale.
     processing_image(s, angle);
     cut(s);
-    nn_function();
+    nn_function(0);
     solver("../../grid_result/grid.save");
 
     //calcul sudoku

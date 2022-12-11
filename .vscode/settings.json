@@ -21,6 +21,7 @@
         "solverprog.h": "c",
         "time.h": "c",
         "limits.h": "c",
-        "unistd.h": "c"
+        "unistd.h": "c",
+        "nn_main.h": "c"
     }
 }

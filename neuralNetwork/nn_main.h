@@ -1,3 +1,3 @@
 #pragma once
 
-int nn_function();
+int nn_function(int i);
