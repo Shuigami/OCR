@@ -6,81 +6,84 @@
 #include <SDL2/SDL_image.h>
 #include "cut.h"
 
-void cut(SDL_Surface* surface, SDL_Surface*** L)
+
+void cut(SDL_Surface* surface)
 {
-    //Uint32* pixels = surface->pixels;
-    //int len = surface->w * surface->h;
-    /*if(SDL_LockSurface(surface) != 0)
-       errx(EXIT_FAILURE, "%s", SDL_GetError());*/
-    SDL_PixelFormat* format = surface->format;
+	SDL_PixelFormat* format = surface->format;
+
 
 
     int length = (surface->w)/9;
-    //SDL_Surface* L[81] = {};
+    int pas = length*0.10;
     size_t count = 0;
 
-    int nb_pixel = surface->w;  
+    size_t i2 = 0;
+    size_t j2 = 0;
+    i2 += pas;
+    j2 += pas;
+    remove("split.txt");
+    FILE *f;
+    f = fopen("split.txt", "a");
 
-    for(size_t i = 0; i < (size_t)nb_pixel-1; i+=length) 
+    for(size_t i = 0; i < 9; i++)
     {
-	    for(size_t j = 0; j < (size_t)nb_pixel-1; j+=length)
+	    for(size_t j = 0; j < 9; j++)
 	    {
-		    //SDL_Surface* surface_tmp = (SDL_Surface*)malloc(sizeof(SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 28, format->format)));//peut etre 32
-		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, surface->w, surface->h, 28, format->format);
-		    //surface_tmp = malloc(sizeof(SDL_Surface));
-		    //Uint32* pixels_tmp = surface_tmp->pixels;
-		    //SDL_LockSurface(surface_tmp);
-		    //size_t pixels_tmp_count = 0;
-		    
+		    SDL_Surface* surface_tmp = SDL_CreateRGBSurfaceWithFormat(0, 28, 28, 32, format->format);
 		    SDL_Rect rect;
-		    rect.x = j;
-		    rect.y = i;
-		    rect.w = length;//nb_pixel;
-		    rect.h = length;//nb_pixel;
+		    rect.x = j2;
+		    rect.y = i2;
+		    rect.w = length - pas;//nb_pixel;
+		    rect.h = length - pas;//nb_pixel;
 
-		    /*SDL_Rect dest;
-		    dest.x = 0;
-		    dest.y = 0;
-		    dest.w = nb_pixel;
-		    dest.h = nb_pixel;*/
+					  
+		    if(SDL_BlitScaled(surface, &rect, surface_tmp, NULL)) // blitsSurface
+		    {
+			errx(1, "error");
+		    }
 
-		    //SDL_BlitSurface(surface, &rect, surface_tmp, NULL);
+
+		    Uint32* pixels = surface_tmp->pixels;
+		    size_t len = 783;
+
+
+		    Uint8 r,g,b;
+		    fputs("0", f);
+		    fputc(44, f);
+
+		    for(size_t i = 0; i < len; i++)
+		    {
+			    SDL_GetRGB(pixels[i], format, &r, &g, &b);
+			    if(0.3*r+0.59*g+0.11*b < 128)
+			    {
+				    fputs("255", f);
+			    }
+			    else
+			    {
+				    fputs("0", f);
+			    }
+			    fputc(44, f);
+		    }
+		    SDL_GetRGB(pixels[i], format, &r, &g, &b);
+		    if(0.3*r+0.59*g+0.11*b < 128)
+		    {
+			    fputs("255", f);
+		    }
+		    else
+		    {
+			    fputs("0", f);
+		    }
+
 		    
-		    //SDL_BlitScaled(surface, &rect, surface_tmp, NULL);
+		    fputc(10, f);
 
-
-		    if(!SDL_BlitSurface(surface, &rect, surface_tmp, NULL))
-			printf("error");
-
-		    
-		    //SDL_UnlockSurface(surface_tmp);
-		    //printf("%zi\n",count);
-		    //*L = malloc(sizeof(SDL_Surface) * 82);
-		    //if(*L == NULL)
-		    //	    return;
-		    //(*L)[count] = malloc(sizeof(SDL_Surface));
-		    (*L)[count] = surface_tmp;
-		    //*(*L + count) = surface_tmp;
-		    //L[count] = surface_tmp;
 		    count++;
 
+		    j2 += length;
 
-
-		}
-	}
-
-		    
-
-    //SDL_UnlockSurface(surface);
-    //return L;
-
+	    }
+	    j2 = pas;
+	    i2 += length;
+    }
+    fclose(f);
 }
-
-/*SDL_Surface* load_image(const char* path)
-{
-    SDL_Surface* tmp = IMG_Load(path);
-    SDL_Surface* surface = SDL_ConvertSurfaceFormat(tmp, SDL_PIXELFORMAT_RGB888, 0);
-    SDL_FreeSurface(tmp);
-    return surface;
-}*/
-
