@@ -43,8 +43,6 @@ void cut(SDL_Surface* surface)
 		    }
 
 
-		    //Uint8 mat[784] = {};
-		    char mat[3] = {};
 		    Uint32* pixels = surface_tmp->pixels;
 		    size_t len = 783;
 
@@ -58,30 +56,23 @@ void cut(SDL_Surface* surface)
 			    SDL_GetRGB(pixels[i], format, &r, &g, &b);
 			    if(0.3*r+0.59*g+0.11*b < 128)
 			    {
-				    //mat[i] = 50;
 				    fputs("255", f);
 			    }
 			    else
 			    {
-				    //mat[i] = 48;
 				    fputs("0", f);
 			    }
-			    //fputc(mat[i], f);
 			    fputc(44, f);
 		    }
 		    SDL_GetRGB(pixels[i], format, &r, &g, &b);
 		    if(0.3*r+0.59*g+0.11*b < 128)
 		    {
-			    //mat[i] = 50;
 			    fputs("255", f);
 		    }
 		    else
 		    {
-			    //mat[i] = 48;
 			    fputs("0", f);
-			    //fputc(48, f);
 		    }
-		    //fputc(mat[i], f);
 
 		    
 		    fputc(10, f);
