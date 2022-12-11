@@ -27,7 +27,7 @@ int processing_image(SDL_Surface *s, double angle)
         average += (double)c / (double)(w * h);
     }
 
-    // Uint32 *old = copy_pixels(s);
+    Uint32 *old = copy_pixels(s);
 
     if(SDL_SaveBMP(s, "result/1.0-black_and_white.bmp") != 0)
         printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
@@ -51,8 +51,6 @@ int processing_image(SDL_Surface *s, double angle)
     morph(s);   
     otsu(s);
 
-    Uint32 *bow = copy_pixels(s);
-
     if(SDL_SaveBMP(s, "result/1.6-otsu.bmp") != 0)
         printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
         
@@ -62,7 +60,7 @@ int processing_image(SDL_Surface *s, double angle)
         printf("SDL_SaveBMP failed: %s\n", SDL_GetError());
         
     // - Grid Detection
-    grid_detection(s, bow, &angle);
+    grid_detection(s, old, &angle);
 
     return EXIT_SUCCESS;
 }
